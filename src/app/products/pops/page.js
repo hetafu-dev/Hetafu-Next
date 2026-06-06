@@ -31,12 +31,14 @@ const productData = {
     '/Images/Products/Dollipops/Dollipop1.png',
     '/Images/Products/Dollipops/Dollipop2.png',
     '/Images/Products/Dollipops/Dollipop3.png', 
+    '/Images/Products/Dollipops/Dollipop4.png',
   ],
   thumbnails: [
     '/Images/Products/Dollipops/Dollipop.png',
     '/Images/Products/Dollipops/Dollipop1.png',
     '/Images/Products/Dollipops/Dollipop2.png',
     '/Images/Products/Dollipops/Dollipop3.png',
+    '/Images/Products/Dollipops/Dollipop4.png',
   ],
   fragranceSample: true,
   sampleDescription: 'A free matching sample is included with every 60ml or 100ml perfume purchase.',
@@ -67,13 +69,13 @@ const ratingBreakdown = [
 
 function DecadeSection() {
   const fragranceNotes = [
-    { label: 'top', description: 'sweet violet · blooming jasmine · soft citrus', image: 'https://uk.moroccanoil.com/cdn/shop/files/D3685_MO.Com_Content_Modules_EDP_Launch_Polaroid_592x698_e18821dc-3d68-434e-9ea0-e3d16e84a50f_1.png?v=1740314381&width=270', alt: 'White gardenia flower — top notes' },
-    { label: 'mid', description: 'black pepper · velvet woods · clove vanilla', image: 'https://uk.moroccanoil.com/cdn/shop/files/D3685_MO.Com_Content_Modules_EDP_Launch_Polaroid_592x698_e18821dc-3d68-434e-9ea0-e3d16e84a50f_1.png?v=1740314381&width=270', alt: 'Warm spice mid notes' },
-    { label: 'base', description: 'silky sandalwood · shimmery musk · spicy amber', image: 'https://uk.moroccanoil.com/cdn/shop/files/D3685_MO.Com_Content_Modules_EDP_Launch_Polaroid_592x698_e18821dc-3d68-434e-9ea0-e3d16e84a50f_1.png?v=1740314381&width=270', alt: 'Amber resin base notes' },
+    { label: 'top', description: 'sweet violet · blooming jasmine · soft citrus', image: '/Images/Products/Dollipops/DIng1.png', alt: 'White gardenia flower — top notes' },
+    { label: 'mid', description: 'black pepper · velvet woods · clove vanilla', image: '/Images/Products/Dollipops/DIng2.png', alt: 'Warm spice mid notes' },
+    { label: 'base', description: 'silky sandalwood · shimmery musk · spicy amber', image: '/Images/Products/Dollipops/DIng3.png', alt: 'Amber resin base notes' },
   ];
 
   return (
-    <section className="max-w-[1400px] mx-auto px-10 py-20 bg-[#fdf8f4]" style={{ fontFamily: '"Futura BT Book", sans-serif', color: '#401E17' }}>
+    <section className="max-w-[1400px] mx-auto px-10 py-20 bg-[#fdf8f4]" style={{ fontFamily: 'var(--font-sans)', color: 'var(--primary-brown)'}}>
       <div className="grid grid-cols-2" style={{ gridTemplateRows: 'auto auto' }}>
         <div className="relative">
           <img src="/Images/Products/Dollipops/Dollipopsection2.png" alt="Woman wearing Dollipops fragrance" className="w-full object-cover" />
@@ -88,7 +90,7 @@ function DecadeSection() {
         </div>
         <div className="relative pt-4" style={{ height: '640px' }}>
           <div className="absolute flex items-start gap-6" style={{ top: 0, left: 0, transform: 'rotate(-7deg)' }}>
-            <div className="bg-white shadow-md flex-shrink-0" style={{ width: '260px', padding: '10px' }}>
+            <div className="bg-white shadow-md flex-shrink-0" style={{ width: '280px', padding: '10px' }}>
               <img src={fragranceNotes[0].image} alt={fragranceNotes[0].alt} className="w-full aspect-square object-cover" />
             </div>
             <div className="pt-8">
@@ -98,8 +100,8 @@ function DecadeSection() {
               ))}
             </div>
           </div>
-          <div className="absolute flex items-start gap-6" style={{ top: '220px', left: '430px', transform: 'rotate(-8deg)' }}>
-            <div className="bg-white shadow-md flex-shrink-0" style={{ width: '260px', padding: '10px' }}>
+          <div className="absolute flex items-start gap-6" style={{ top: '220px', left: '420px', transform: 'rotate(-8deg)' }}>
+            <div className="bg-white shadow-md flex-shrink-0" style={{ width: '280px', padding: '10px' }}>
               <img src={fragranceNotes[2].image} alt={fragranceNotes[2].alt} className="w-full aspect-square object-cover" />
             </div>
             <div className="pt-2">
@@ -110,7 +112,7 @@ function DecadeSection() {
             </div>
           </div>
           <div className="absolute flex items-start gap-6" style={{ top: '430px', left: 0, transform: 'rotate(3deg)' }}>
-            <div className="bg-white shadow-md flex-shrink-0" style={{ width: '260px', padding: '10px' }}>
+            <div className="bg-white shadow-md flex-shrink-0" style={{ width: '280px', padding: '10px' }}>
               <img src={fragranceNotes[1].image} alt={fragranceNotes[1].alt} className="w-full aspect-square object-cover" />
             </div>
             <div className="pt-2">
@@ -121,9 +123,9 @@ function DecadeSection() {
             </div>
           </div>
         </div>
-        <div className="flex items-start justify-end pt-4">
-          <div className="bg-white shadow-md hover:shadow-lg transition-all" style={{ width: '460px', transform: 'rotate(2deg)', padding: '14px' }}>
-            <img src="https://images.unsplash.com/photo-1602928321679-560bb453f190?w=400&q=80" alt="Scent notes" className="w-full object-cover rounded-sm" />
+        <div className="flex items-start relative justify-end">
+          <div className="bg-white shadow-md absolute hover:shadow-lg transition-all" style={{ width: '550px', left: '220px', transform: 'rotate(10deg)', padding: '14px' }}>
+            <img src="https://images.unsplash.com/photo-1602928321679-560bb453f190?w=400&q=80" alt="Scent notes" className="w-full h-[500px] object-cover rounded-sm" />
             <p className="text-center mt-4 pr-1" style={{ fontFamily: 'var(--font-signature)', fontSize: '3.4rem' }}>scent notes</p>
           </div>
         </div>
@@ -156,6 +158,7 @@ function PostcardsSection() {
     </section>
   );
 }
+
 
 function ReviewsSection() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -190,7 +193,56 @@ function ReviewsSection() {
   );
 
   return (
-    <section id="reviews-section-anchor" className="max-w-[1400px] mx-auto px-10 py-20 bg-[#fdf8f4] border-t border-[#e8ddd0]">
+    <section id="reviews-section-anchor" className="max-w-[1400px] mx-auto" style={{ position: 'relative', paddingTop: '100px' }}>
+      {/* Tiger Divider Banner */}
+      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', marginTop: '-30px' }}>
+        {/* Plants Behind Wave */}
+        <div style={{ position: 'absolute', top: '-50px', left: '50%', transform: 'translateX(-50%)', zIndex: 1 }}>
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/footer_plants.png" 
+            alt="decorative plants" 
+            style={{ height: '150px', width: 'auto', display: 'block' }}
+          />
+        </div>
+
+        {/* Wave SVG In Front */}
+        <svg className="w-full"  viewBox="0 0 1400 80" preserveAspectRatio="none" style={{ display: 'block', position: 'relative', zIndex: 2, height: '100px' }}>
+          <defs>
+            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style={{ stopColor: '#fdf8f4', stopOpacity: 1 }} />
+              <stop offset="100%" style={{ stopColor: 'var(--color-background)', stopOpacity: 1 }} />
+            </linearGradient>
+          </defs>
+          <path d="M0,40 Q350,15 700,40 T1400,40 L1400,80 L0,80 Z" fill="url(#waveGradient)" stroke="none"/>
+        </svg>
+
+        {/* Tiger Behind Wave - Half Behind Half Outside */}
+        <div style={{ position: 'absolute', top: '-70px', left: '50%', transform: 'translateX(-50%)', zIndex: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Tiger Head */}
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/tiger_head.png" 
+            alt="tiger head peeking" 
+            style={{ width: '280px', height: 'auto', marginBottom: '-30px' }}
+          />
+        </div>
+
+        {/* Tiger Paws Outside - On Top of Wave */}
+        <div style={{ position: 'absolute', top: '26px', left: '50%', transform: 'translateX(-50%)', zIndex: 4, display: 'flex', gap: '90px', alignItems: 'flex-start', transition: 'transform 0.3s ease' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(-50%) rotateY(5deg)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(-50%)'}>
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/left_leg.png" 
+            alt="tiger left paw" 
+            style={{ width: '75px', height: 'auto' }}
+          />
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/right_leg.png" 
+            alt="tiger right paw" 
+            style={{ width: '75px', height: 'auto' }}
+          />
+        </div>
+      </div>
+
+      {/* Reviews Content */}
+      <div className="px-10 py-20">
       <style>{`
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         .review-card-anim { animation: fadeSlideUp 0.35s ease both; }
@@ -272,6 +324,7 @@ function ReviewsSection() {
           <button className="w-8.5 h-8.5 cursor-pointer inline-flex items-center justify-center text-xs font-medium transition-all hover:border-[#401E17] hover:bg-[#401E17] hover:text-[#fdf8f4] disabled:opacity-35 disabled:cursor-default" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Next page"><ChevronRight size={14} /></button>
         </div>
       )}
+      </div>
     </section>
   );
 }
