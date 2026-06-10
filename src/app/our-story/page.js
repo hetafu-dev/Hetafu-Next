@@ -26,7 +26,7 @@ export default function OurStoryPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1" style={{ backgroundColor: 'var(--background)', fontFamily: 'var(--font-sans-family)', color: 'var(--primary-brown)' }}>
+      <main className="flex-1 bg-background font-sans text-primary-brown">
         {/* Section 1 — Hero with overlay text */}
         <section className="relative w-full h-[70vh] overflow-hidden">
           <img
@@ -46,7 +46,7 @@ export default function OurStoryPage() {
         </section>
 
         {/* Section 2 — How It Started + image + The Brand Today */}
-        <section style={{ backgroundColor: 'var(--background)' }}>
+        <section className="bg-background">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 px-12 md:px-20 py-16">
               <h2 className="text-3xl font-light">How It Started</h2>
@@ -70,8 +70,8 @@ export default function OurStoryPage() {
 
         {/* Section 3 — Our Promises slider */}
         <section>
-          <div style={{ backgroundColor: 'var(--background)' }} className="text-center pt-14 pb-10">
-            <h2 className="text-3xl font-light">Our Promises</h2>
+          <div className="relative z-10 flex items-center justify-center h-full px-12 md:px-20 bg-background">
+            <h2 className="text-3xl font-light text-center pb-6">Our Promises</h2>
           </div>
           <div className="relative w-full h-[60vh] overflow-hidden">
             <img

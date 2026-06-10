@@ -6,58 +6,51 @@ import Navbar from "@/app/Components/Common/Navbar/Page";
 import Footer from "@/app/Components/Common/Footer/Page";
 import BestSellers from "@/app/Components/Common/BestSellers/Page";
 
-const salons = [
+const clinics = [
   {
     id: 1,
-    name: 'Bounce Salon & Spa, Banjara Hills',
+    name: 'Hetafu Dental Clinic, Banjara Hills',
     address: 'Shop No 8-2-686/8/6/1a, 1st floor, 12th square building, opp audi car show room, road no 12, banjara\nHyderabad, TELANGANA 500034\nIndia',
-    email: 'bounce.banjarahills@gmail.com',
-    category: 'Hair Care',
+    email: 'clinic.banjarahills@hetafu.com',
+    category: 'General Dentistry',
     distance: '2.5 mi',
   },
   {
     id: 2,
-    name: 'Bounce Unisex Salon, Panjagutta',
+    name: 'Hetafu Dental Care, Panjagutta',
     address: 'unit no. L2- shop 36, first floor, l & t mall, panjagutta, survey no 1/1, ward no 89, block e khairt\nHyderabad, TELANGANA 500082\nIndia',
-    category: 'Hair Care',
+    email: 'clinic.panjagutta@hetafu.com',
+    category: 'Orthodontics',
     distance: '2.6 mi',
   },
   {
     id: 3,
-    name: 'AAKAARA Salon & Beauty',
+    name: 'Hetafu Smile Studio, Aparna Crest',
     address: 'Aparna Crest Building, Ground Floor, Rear Portion,, Banjara Hills, Road Number 2, Hyderabad,\nTelangana',
-    category: 'Hair Care',
+    email: 'clinic.aparna@hetafu.com',
+    category: 'Cosmetic Dentistry',
     distance: '3.8 mi',
   },
 ];
 
-const categories = ['Hair Care', 'Hair Color', 'Body'];
-
 export default function LocatorPage() {
   const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState([]);
 
-  const toggle = (cat) =>
-    setSelected((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
-    );
-
-  const filtered = salons.filter((s) => {
+  const filtered = clinics.filter((c) => {
     const matchSearch =
       !search ||
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.address.toLowerCase().includes(search.toLowerCase());
-    const matchCat = selected.length === 0 || selected.includes(s.category);
-    return matchSearch && matchCat;
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.address.toLowerCase().includes(search.toLowerCase());
+    return matchSearch;
   });
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background font-sans text-primary-brown">
       <Navbar />
       <main className="flex-1">
-        <div className="min-h-screen" style={{ backgroundColor: 'var(--background)', color: 'var(--primary-brown)' }}>
+        <div className="min-h-screen bg-background text-primary-brown">
           <div className="max-w-7xl mx-auto px-6 py-10">
-            <h1 className="text-4xl mb-8" style={{ fontFamily: 'Cormorant Garamond, serif' }}>Locators</h1>
+            <h1 className="text-4xl mb-8">Clinic Locators</h1>
             <div className="flex gap-0 h-[600px]">
               <div className="w-80 flex-shrink-0 flex flex-col border border-gray-200 overflow-hidden">
                 <div className="flex border-b border-gray-200">
@@ -68,32 +61,24 @@ export default function LocatorPage() {
                     onChange={(e) => setSearch(e.target.value)}
                     className="flex-1 px-3 py-2 text-sm outline-none bg-white"
                   />
-                  <button className="px-3 py-2 text-white" style={{ backgroundColor: 'var(--primary-brown)' }}>
+                  <button className="px-3 py-2 text-white bg-primary-brown">
                     <Search size={16} />
                   </button>
                 </div>
-                <div className="flex gap-4 px-3 py-2 border-b border-gray-200 bg-white">
-                  {categories.map((cat) => (
-                    <label key={cat} className="flex items-center gap-1 text-xs cursor-pointer">
-                      <input type="checkbox" checked={selected.includes(cat)} onChange={() => toggle(cat)} className="accent-current" />
-                      {cat}
-                    </label>
-                  ))}
-                </div>
                 <div className="overflow-y-auto flex-1 bg-white">
-                  {filtered.map((salon) => (
-                    <div key={salon.id} className="flex gap-3 px-3 py-4 border-b border-gray-100">
+                  {filtered.map((clinic) => (
+                    <div key={clinic.id} className="flex gap-3 px-3 py-4 border-b border-gray-100">
                       <div className="mt-1 flex-shrink-0">
-                        <MapPin size={18} style={{ color: 'var(--primary-brown)' }} />
+                        <MapPin size={18} className="text-primary-brown" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold mb-0.5" style={{ color: 'var(--secondary-blue)' }}>{salon.distance}</p>
-                        <p className="text-sm font-medium mb-1">{salon.name}</p>
-                        <p className="text-xs text-gray-500 whitespace-pre-line mb-1">{salon.address}</p>
-                        {salon.email && (
-                          <a href={`mailto:${salon.email}`} className="text-xs underline text-gray-600 block mb-1">{salon.email}</a>
+                        <p className="text-xs font-semibold mb-0.5 text-secondary-blue">{clinic.distance}</p>
+                        <p className="text-sm font-medium mb-1">{clinic.name}</p>
+                        <p className="text-xs text-gray-500 whitespace-pre-line mb-1">{clinic.address}</p>
+                        {clinic.email && (
+                          <a href={`mailto:${clinic.email}`} className="text-xs underline text-gray-600 block mb-1">{clinic.email}</a>
                         )}
-                        <p className="text-xs text-gray-500">{salon.category}</p>
+                        <p className="text-xs text-gray-500">{clinic.category}</p>
                       </div>
                     </div>
                   ))}

@@ -29,7 +29,7 @@ export default function ContactPage() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
-        <div className="min-h-screen bg-[var(--background)] text-[var(--primary-brown)]" style={{ fontFamily: 'var(--font-sans-family)' }}>
+        <div className="min-h-screen bg-background text-primary-brown font-sans">
           <div className="max-w-5xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
             {!showForm ? (
               <>
@@ -62,7 +62,7 @@ export default function ContactPage() {
               <div className="text-center py-20">
                 <h2 className="text-3xl font-light mb-4">Thank you!</h2>
                 <p className="text-slate-600 mb-8">Your request has been submitted. A member of our support team will respond as soon as possible.</p>
-                <button onClick={() => { setShowForm(false); setSubmitted(false); }} className="text-sm underline underline-offset-4" style={{ color: 'var(--primary-brown)' }}>
+                <button onClick={() => { setShowForm(false); setSubmitted(false); }}                     className="text-sm underline underline-offset-4 text-primary-brown">
                   Back to Contact
                 </button>
               </div>
@@ -108,7 +108,7 @@ export default function ContactPage() {
                     Hetafu is committed to protecting your privacy. Any personal information provided to us as part of this service request will be used solely to address and resolve your issue. Please avoid sending us any sensitive information, including images where you or others are identifiable. You have the right to access, correct, or request deletion of your data at any time. For more details, please refer to our{' '}
                     <a href="#" className="underline">Privacy Policy</a>.
                   </p>
-                  <button type="submit" className="w-full py-4 text-white text-sm font-bold uppercase tracking-widest transition hover:bg-[#2f1614]" style={{ backgroundColor: 'var(--primary-brown)' }}>
+                  <button type="submit" className="w-full py-4 text-white text-sm font-bold uppercase tracking-widest transition hover:bg-[#2f1614] bg-primary-brown">
                     SUBMIT
                   </button>
                 </form>

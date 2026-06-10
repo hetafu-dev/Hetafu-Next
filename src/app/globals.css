@@ -19,18 +19,24 @@
 :root {
   --background: #fdf8f4;
   --secondary-blue: #1998B1;
+  --foreground-pink: #dc8598;
   --foreground: #171717;
   --primary-brown: #401e17;
   --font-sans-family: "Futura BT Book", sans-serif;
   --font-signature-family: "Brigend Signature", cursive;
+  --reward-bg: #f0ece6;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary-brown: var(--primary-brown);
+  --color-secondary-blue: var(--secondary-blue);
+  --color-foreground-pink: var(--foreground-pink);
+  --color-reward-bg: var(--reward-bg);
   --font-sans: var(--font-sans-family);
   --font-signature: var(--font-signature-family);
+  --font-serif: 'Cormorant Garamond', serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,4 +50,14 @@ body {
   background: var(--background);
   color: var(--primary-brown);
   font-family: var(--font-sans-family);
+  scroll-behavior: smooth;
+}
+
+.products-snap-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+}
+
+.products-snap-section {
+  scroll-snap-align: start;
 }

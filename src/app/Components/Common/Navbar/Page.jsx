@@ -42,7 +42,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top utility bar */}
-      <div style={{ backgroundColor: "var(--color-primary-brown)" }} className="text-white text-sm">
+      <div className="bg-primary-brown text-white text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-7">
           {/* Country selector */}
           <div className="relative">
@@ -57,7 +57,7 @@ export default function Navbar() {
             </button>
 
             {/* Country dropdown */}
-            {showCountryDropdown && (
+            {/* {showCountryDropdown && (
               <div className="absolute top-full left-0 mt-2 bg-white text-gray-900 rounded-lg shadow-lg z-50 w-72 max-h-96 overflow-y-auto">
                 {Object.entries(countriesByRegion).map(([region, countries]) => (
                   <div key={region}>
@@ -82,14 +82,14 @@ export default function Navbar() {
                   </div>
                 ))}
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Right side icons */}
           <div className="flex gap-6 items-center">
             <a href="/locator" className="flex items-center gap-1">
               <MapPin size={16} />
-              <span className="font-bold">LOCATORS</span>
+              <span className="font-bold">Clinic Locators</span>
             </a>
             <a href="http://dentalnutrition.org/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
               <FaTooth size={16} />
@@ -100,7 +100,7 @@ export default function Navbar() {
       </div>
 
       {/* Main navbar */}
-      <nav className="bg-white border-b border-gray-300" style={{ fontFamily: "var(--font-sans)", backgroundColor: "var(--background)", color: "var(--primary-brown)" }}>
+      <nav className="border-b border-gray-300 bg-background text-primary-brown font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
@@ -129,17 +129,17 @@ export default function Navbar() {
               <a href="/products/cute">CUTE</a>
               <a href="/products/bits">BITS</a>
               <a href="/products/smarts">SMARTS</a>
-              <a href="#">QUIZ</a>
+              <a href="/dosage-calculator">QUIZ</a>
             </div>
 
             {/* Search icon */}
             <div className="p-2 flex items-center gap-6" >
               <button className="cursor-pointer"><Search size={20} /></button>
-              <button className="cursor-pointer"><User size={20} /></button>
+              <Link href="/signin" className="cursor-pointer"><User size={20} /></Link>
               <button onClick={() => setDrawerOpen(true)} className="relative cursor-pointer">
                 <Handbag size={20} />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full text-white text-[10px] flex items-center justify-center" style={{ backgroundColor: 'var(--secondary-blue)' }}>
+                  <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full text-white text-[10px] flex items-center justify-center bg-secondary-blue">
                     {itemCount}
                   </span>
                 )}
@@ -154,7 +154,7 @@ export default function Navbar() {
                 <a href="/products/cute" className="px-2 py-2 rounded-md">CUTE</a>
                 <a href="/products/bits" className="px-2 py-2 rounded-md">BITS</a>
                 <a href="/products/smarts" className="px-2 py-2 rounded-md">SMARTS</a>
-                <a href="#" className="px-2 py-2 rounded-md">QUIZ</a>
+                <a href="/dosage-calculator" className="px-2 py-2 rounded-md">QUIZ</a>
               </div>
             </div>
           )}

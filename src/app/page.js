@@ -1,8 +1,28 @@
+"use client";
 import Navbar from "@/app/Components/Common/Navbar/Page";
 import Footer from "@/app/Components/Common/Footer/Page";
 import BestSellers from "@/app/Components/Common/BestSellers/Page";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect, useRef } from "react";
+
+const carouselSlides = [
+  {
+    src: "/Images/Banners/bannercontent1.png",
+    title: <><span className="font-bold text-4xl md:text-8xl text-primary-brown">H</span><span className="font-bold text-3xl md:text-6xl text-primary-brown">e</span><span className="font-light text-3xl md:text-6xl text-primary-brown opacity-50">alth</span></>,
+    description: "Professional-grade whitening solutions that deliver visible results in just days. Safe for enamel, easy to use, and designed to give you a brighter, more confident smile.",
+  },
+  {
+    src: "/Images/Banners/bannercontent2.png",
+    title: <><span className="font-bold text-4xl md:text-8xl text-primary-brown">T</span><span className="font-bold text-3xl md:text-6xl text-primary-brown">a</span><span className="font-light text-3xl md:text-6xl text-primary-brown opacity-50">ste</span></>,
+    description: "Eco-friendly formulas that transform your oral care routine. Sustainable products that care for your teeth and the planet while delivering exceptional cleaning power.",
+  },
+  {
+    src: "/Images/Banners/bannercontent3.png",
+    title: <><span className="font-bold text-4xl md:text-8xl text-primary-brown">F</span><span className="font-bold text-3xl md:text-6xl text-primary-brown">u</span><span className="font-light text-3xl md:text-6xl text-primary-brown opacity-50">n</span></>,
+    description: "Innovative dental products that make oral care enjoyable for the whole family. Advanced nanotechnology serum that repairs and strengthens your tooth enamel.",
+  },
+];
 
 
 const products = [
@@ -12,7 +32,7 @@ const products = [
     category: "POPS",
     price: 40.00,
     description: "Professional-grade teeth whitening strips that deliver visible results in. Safe for enamel. Safe for enamel and easy to use.",
-    image: "/Images/Products/Dollipops/Dollipop.png",
+    image: "/Images/Products/Dollipops/Dollipopmockup.png",
     link: "/products/pops"
   },
   {
@@ -21,7 +41,7 @@ const products = [
     category: "BITS",
     price: 45.00,
     description: "Revolutionary dissolvable whitening bits that transform your oral care routine. Eco-friendly and perfect for travel.",
-    image: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&q=80",
+    image: "/Images/Products/CUTE/cutemouthwash1.png",
     link: "/products/bits"
   },
   {
@@ -30,7 +50,7 @@ const products = [
     category: "CUTE",
     price: 35.00,
     description: "Gentle, alcohol-free family-friendly mouthwash that keeps breath fresh all day. Kid-safe and made with natural ingredients.",
-    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=80",
+    image: "/Images/Products/CUTE/cutepowder.png",
     link: "/products/cute"
   },
   {
@@ -39,38 +59,130 @@ const products = [
     category: "SMARTS",
     price: 55.00,
     description: "Advanced nanotechnology enamel protection serum that repairs and strengthens weakened tooth enamel. Dentist-formulated.",
-    image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=80",
+    image: "/Images/Products/Smarts/Prime.png",
     link: "/products/smarts"
   }
 ];
 
 export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [activeProduct, setActiveProduct] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((s) => (s + 1) % carouselSlides.length);
+    }, 50000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const prevSlide = () => setCurrentSlide((s) => (s - 1 + carouselSlides.length) % carouselSlides.length);
+  const nextSlide = () => setCurrentSlide((s) => (s + 1) % carouselSlides.length);
+
+  const goToProduct = (index) => {
+    setActiveProduct(index);
+  };
+
+  const activeProductRef = useRef(0);
+  useEffect(() => {
+    activeProductRef.current = activeProduct;
+  }, [activeProduct]);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const windowHeight = window.innerHeight;
+          const section = document.getElementById('products-section');
+          if (!section) return;
+          const sectionTop = section.offsetTop;
+
+          const relativeScroll = scrollY - sectionTop;
+          const activeIndex = Math.max(0, Math.min(
+            products.length - 1,
+            Math.round(relativeScroll / windowHeight)
+          ));
+
+          if (activeIndex !== activeProductRef.current) {
+            setActiveProduct(activeIndex);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#fdf8f4', fontFamily: '"Futura BT Book", sans-serif', color: '#401E17' }}>
+    <div className="flex flex-col min-h-screen bg-background font-sans text-primary-brown">
       <Navbar />
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative h-[80vh] flex items-center justify-start text-left text-white overflow-hidden">
-          <video
-            className="absolute inset-0 w-full h-[80vh]  object-cover"
-            src="https://uk.moroccanoil.com/cdn/shop/videos/c/vp/a5b257bc5fe545f586b8c76788c0006d/a5b257bc5fe545f586b8c76788c0006d.HD-1080p-7.2Mbps-81251974.mp4?v=0"
-            autoPlay
-            loop
-            muted
-            playsInline
-          ></video>
-          <div className="absolute inset-0 bg-black opacity-20"></div> {/* Overlay for better text readability */}
-          <div className="relative z-10 max-w-xl mx-auto md:ml-20 p-8">
-            <h1 className="text-5xl md:text-6xl font-light mb-6" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#fff' }}>
-              Discover the Future of Dental Care
+        {/* Hero Section - Carousel */}
+        <section className="relative h-[90vh] flex items-center justify-start text-left overflow-hidden">
+          <div className="absolute inset-0 w-full h-full">
+            {carouselSlides.map((slide, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <Image
+                  src={slide.src}
+                  alt={`Slide ${index + 1}`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  priority={index === 0}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Carousel Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute cursor-pointer left-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 rounded-full p-2 transition"
+            aria-label="Previous"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute cursor-pointer right-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 rounded-full p-2 transition"
+            aria-label="Next"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+
+          {/* Carousel Dots */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            {carouselSlides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2 h-2 rounded-full transition ${index === currentSlide ? 'bg-black/50' : 'bg-black/20'}`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="relative z-10 max-w-xl mx-auto md:ml-20 p-4 md:p-8">
+            <h1 className="mb-4 md:mb-6 text-primary-brown">
+              {carouselSlides[currentSlide].title}
             </h1>
-            <p className="text-xl mb-10" style={{ color: '#fff' }}>
-              Explore our range of innovative oral care products designed to keep your smile healthy, bright, and beautiful.
+            <p className="text-base md:text-xl mb-6 md:mb-10 text-foreground">
+              {carouselSlides[currentSlide].description}
             </p>
             <Link
               href="#products"
-              className="inline-block px-8 py-4 text-black font-semibold rounded-full transition hover:opacity-90"
-              style={{ backgroundColor: '#fff' }}
+              className="inline-block px-6 md:px-8 py-3 md:py-4 bg-primary-brown text-white font-semibold rounded-full transition hover:opacity-90"
             >
               Explore Our Products
             </Link>
@@ -78,9 +190,9 @@ export default function Home() {
         </section>
 
         {/* Categories Section */}
-        <section className="py-16 px-4">
+        <section className="py-8 md:py-16 px-2 md:px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="flex space-x-8 overflow-x-auto justify-center">
+            <div className="flex space-x-4 md:space-x-8 overflow-x-auto justify-center pb-2">
               {products.map((product) => (
                 <Link href={`/category/${product.category.toLowerCase()}`} key={product.id} className="flex-shrink-0 flex flex-col items-center group">
                   <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
@@ -93,108 +205,139 @@ export default function Home() {
                       className="group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <p className="mt-4 text-lg font-medium" style={{ color: '#401E17' }}>{product.category}</p>
+                  <p className="mt-4 text-lg font-medium text-primary-brown">{product.category}</p>
                 </Link>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Products Grid Section */}
-        <section id="products" className="">
-          <div>
-            <h2 className="text-4xl font-light text-center mb-16" style={{ fontFamily: 'var(--font-signature-family)', color: 'var(--primary-brown)' }}>
+        {/* Products Scroll Section */}
+        <div id="products-section" className="relative" style={{ height: '400vh' }}>
+          <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-2 md:px-4">
+            <h2 className="text-2xl md:text-4xl font-light text-center mb-4 md:mb-8 text-primary-brown">
               Our Products
             </h2>
-            <div className="flex flex-col">
+
+            <div className="relative w-full px-0 md:px-4" style={{ height: '98vh' }}>
               {products.map((product, index) => (
-                <Link
+                <div
                   key={product.id}
-                  href={product.link}
-                  className={`group bg-white overflow-hidden transition-all duration-300 flex flex-col md:flex-row ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
+                  className="absolute inset-0"
+                  style={{
+                    opacity: index === activeProduct ? 1 : 0,
+                    transition: 'opacity 300ms ease-in-out',
+                    pointerEvents: index === activeProduct ? 'auto' : 'none',
+                  }}
                 >
-                  {/* Image Section */}
-                  <div className="relative h-80 w-full md:w-1/2 overflow-hidden">
-                    <div className="absolute inset-0 bg-slate-100 flex items-center justify-center">
-                      <div className="w-full h-full relative">
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          style={{ objectFit: 'contain' }}
-                          className="group-hover:scale-110 transition-transform duration-500"
-                        />
-                      </div>
-                    </div>
-                    <div className="absolute top-4 left-4 px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full" style={{ backgroundColor: 'var(--background)', color: 'var(--primary-brown)' }}>
-                      {product.category}
-                    </div>
-                  </div>
-                  {/* Text Content Section */}
-                  <div className="p-8 w-full md:w-1/2 flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-2xl font-medium mb-3" style={{ color: 'var(--primary-brown)' }}>
-                        {product.name}
-                      </h3>
-                      <p className="text-slate-600 mb-6 leading-relaxed">
-                        {product.description}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-semibold" style={{ color: 'var(--primary-brown)' }}>
-                        ${product.price.toFixed(2)}
-                      </span>
-                      <span className="inline-flex items-center gap-2 font-medium group-hover:gap-3 transition-all" style={{ color: 'var(--primary-brown)' }}>
-                        View Product
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                      </span>
-                    </div>
-                  </div>
-                </Link>
+                  <Link
+                    href={product.link}
+                    className="group flex flex-col md:flex-row overflow-hidden w-full h-full bg-background text-primary-brown"
+                  >
+                    {index % 2 === 0 ? (
+                      <>
+                        {/* Image */}
+                        <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex-shrink-0">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                          />
+                          <div className="absolute top-2 md:top-4 left-2 md:left-4 px-2 md:px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-background text-primary-brown">
+                            {product.category}
+                          </div>
+                        </div>
+                        {/* Content */}
+                        <div className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center px-4 md:px-16 py-6 md:py-12">
+                          <h3 className="text-xl md:text-3xl font-medium mb-2 md:mb-4 text-primary-brown">
+                            {product.name}
+                          </h3>
+                          <p className="text-sm md:text-slate-600 mb-4 md:mb-8 leading-relaxed md:text-lg">
+                            {product.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xl md:text-3xl font-semibold text-primary-brown">
+                              ${product.price.toFixed(2)}
+                            </span>
+                            <span className="inline-flex items-center gap-2 font-medium group-hover:gap-4 transition-all text-sm md:text-base text-primary-brown">
+                              View Product
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Content */}
+                        <div 
+                          className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center px-4 md:px-16 py-6 md:py-12 order-1 md:order-none"
+                          style={{
+                            backgroundImage: index === 1 ? `url(/Images/Products/CUTE/cutemouthwash1left.png)` : 'none',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                          }}
+                        >
+                          <h3 className="text-xl md:text-3xl font-medium mb-2 md:mb-4 text-primary-brown">
+                            {product.name}
+                          </h3>
+                          <p className="text-sm md:text-slate-600 mb-4 md:mb-8 leading-relaxed md:text-lg">
+                            {product.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xl md:text-3xl font-semibold text-primary-brown">
+                              ${product.price.toFixed(2)}
+                            </span>
+                            <span className="inline-flex items-center gap-2 font-medium group-hover:gap-4 transition-all text-sm md:text-base text-primary-brown">
+                              View Product
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                        {/* Image */}
+                        <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex-shrink-0 order-0 md:order-none">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                          />
+                          <div className="absolute top-2 md:top-4 right-2 md:right-4 px-2 md:px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-background text-primary-brown">
+                            {product.category}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </Link>
+                </div>
+              ))}
+            </div>
+
+            {/* Dot indicators */}
+            <div className="flex gap-2 md:gap-3 mt-4 md:6">
+              {products.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    const section = document.getElementById('products-section');
+                    if (section) {
+                      window.scrollTo({
+                        top: section.offsetTop + (i * window.innerHeight),
+                        behavior: 'smooth'
+                      });
+                    }
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${i === activeProduct ? 'bg-primary-brown scale-140' : 'bg-gray-300'}`}
+                />
               ))}
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Features Section */}
-        {/* <section className="py-20 px-4" style={{ backgroundColor: '#401E17' }}>
-          <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-4xl font-light mb-12 text-white" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-              Why Choose Hetafu?
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              <div className="text-white">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Dentist Approved</h3>
-                <p className="text-white/80">All our products are formulated and tested by leading dental professionals.</p>
-              </div>
-              <div className="text-white">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Eco-Friendly</h3>
-                <p className="text-white/80">Sustainable packaging and cruelty-free formulas that are good for you and the planet.</p>
-              </div>
-              <div className="text-white">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Clinically Proven</h3>
-                <p className="text-white/80">Backed by rigorous clinical studies to ensure safety and effectiveness.</p>
-              </div>
-            </div>
-          </div>
-        </section> */}
       </main>
       <BestSellers />
       <Footer />

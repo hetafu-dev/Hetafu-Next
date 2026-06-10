@@ -6,13 +6,47 @@ import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 
-const SUGGESTED = {
-  name: 'Scalp Massage Brush · One Size',
-  price: 16,
-  image: 'https://uk.moroccanoil.com/cdn/shop/files/os1.webp?v=1684219765&width=200',
-};
+// Original products from the website
+const ORIGINAL_PRODUCTS = [
+  {
+    id: 1,
+    name: "Pops Whitening Strips",
+    category: "POPS",
+    price: 40.00,
+    description: "Professional-grade teeth whitening strips that deliver visible results in. Safe for enamel. Safe for enamel and easy to use.",
+    image: "/Images/Products/Dollipops/Dollipopmockup.png",
+    link: "/products/pops"
+  },
+  {
+    id: 2,
+    name: "Dentabits Whitening Bits",
+    category: "BITS",
+    price: 45.00,
+    description: "Revolutionary dissolvable whitening bits that transform your oral care routine. Eco-friendly and perfect for travel.",
+    image: "/Images/Products/CUTE/cutemouthwash1.png",
+    link: "/products/bits"
+  },
+  {
+    id: 3,
+    name: "Cute Mouthwash",
+    category: "CUTE",
+    price: 35.00,
+    description: "Gentle, alcohol-free family-friendly mouthwash that keeps breath fresh all day. Kid-safe and made with natural ingredients.",
+    image: "/Images/Products/CUTE/cutepowder.png",
+    link: "/products/cute"
+  },
+  {
+    id: 4,
+    name: "Denta Smarts Serum",
+    category: "SMARTS",
+    price: 55.00,
+    description: "Advanced nanotechnology enamel protection serum that repairs and strengthens weakened tooth enamel. Dentist-formulated.",
+    image: "/Images/Products/Smarts/Prime.png",
+    link: "/products/smarts"
+  }
+];
 
-const FREE_GIFT_THRESHOLD = 55;
+const FREE_GIFT_THRESHOLD = 599; // Updated for Indian pricing
 
 export default function CartPage() {
   const { items, removeItem, updateQty, subtotal, addItem } = useCart();
@@ -21,12 +55,12 @@ export default function CartPage() {
   const progressPct = Math.min(100, (subtotal / FREE_GIFT_THRESHOLD) * 100);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)', fontFamily: 'var(--font-sans-family)', color: 'var(--primary-brown)' }}>
+    <div className="min-h-screen bg-background font-sans text-primary-brown">
       <div className="max-w-6xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-light">Your Bag</h1>
-          <Link href="/" className="text-xs cursor-pointer font-bold tracking-widest uppercase underline underline-offset-4">
+          <Link href="/products/pops" className="text-xs cursor-pointer font-bold tracking-widest uppercase underline underline-offset-4">
             CONTINUE SHOPPING
           </Link>
         </div>
@@ -35,8 +69,8 @@ export default function CartPage() {
           {/* Left: items */}
           <div className="flex-1 min-w-0">
             {/* Reward progress */}
-            <div className="bg-[#f0ece6] rounded p-5 mb-6">
-              <p className="text-center text-sm mb-2">Congratulations!</p>
+            <div className="bg-reward-bg rounded p-5 mb-6">
+              <p className="text-center text-sm mb-2">Spend ₹599 more to get a free gift!</p>
               <div className="text-center text-sm font-semibold mb-1">{currency}{FREE_GIFT_THRESHOLD}</div>
               <div className="h-2 bg-slate-300 rounded-full overflow-hidden mb-1">
                 <div className="h-full bg-slate-800 rounded-full transition-all" style={{ width: `${progressPct}%` }} />
@@ -92,8 +126,7 @@ export default function CartPage() {
               </p>
               <button
                 onClick={() => router.push('/checkout')}
-                className="w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase"
-                style={{ backgroundColor: 'var(--primary-brown)' }}
+                className="w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase bg-primary-brown"
               >
                 CHECKOUT
               </button>
@@ -102,22 +135,33 @@ export default function CartPage() {
             {/* You may also like */}
             <div>
               <p className="text-xs font-bold tracking-widest uppercase mb-3">You May Also Like</p>
-              <div className="border border-slate-200">
-                <div className="flex gap-3 p-3 items-center">
-                  <img src={SUGGESTED.image} alt={SUGGESTED.name} className="w-20 h-20 object-cover bg-slate-100 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-xs font-medium leading-5">{SUGGESTED.name}</p>
-                    <p className="text-sm font-semibold mt-1">{currency}{SUGGESTED.price}</p>
+              {/* Show first available original product not in cart */}
+              {ORIGINAL_PRODUCTS.filter(p => !items.find(item => item.id === p.id)).slice(0, 1).map((product) => (
+                <div key={product.id} className="border border-slate-200">
+                  <div className="flex gap-3 p-3 items-center">
+                    <img src={product.image} alt={product.name} className="w-20 h-20 object-cover bg-slate-100 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-xs font-medium leading-5">{product.name}</p>
+                      <p className="text-sm font-semibold mt-1">{currency}{product.price.toFixed(2)}</p>
+                    </div>
                   </div>
+                  <button
+                    onClick={() => addItem({ 
+                      id: product.id, 
+                      name: product.name, 
+                      variant: product.category, 
+                      price: product.price, 
+                      originalPrice: null, 
+                      qty: 1, 
+                      promo: null, 
+                      image: product.image 
+                    })}
+                    className="w-full py-3 cursor-pointer text-white text-xs font-bold tracking-widest uppercase bg-primary-brown"
+                  >
+                    ADD TO BAG
+                  </button>
                 </div>
-                <button
-                  onClick={() => addItem({ id: 99, name: SUGGESTED.name, variant: 'One Size', price: SUGGESTED.price, originalPrice: null, qty: 1, promo: null, image: SUGGESTED.image })}
-                  className="w-full py-3 cursor-pointer text-white text-xs font-bold tracking-widest uppercase"
-                  style={{ backgroundColor: 'var(--primary-brown)' }}
-                >
-                  ADD TO BAG
-                </button>
-              </div>
+              ))}
             </div>
           </div>
         </div>

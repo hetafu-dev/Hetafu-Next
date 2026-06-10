@@ -12,7 +12,6 @@ const products = [
     rating: 5,
     price: "₹86",
     image: "/Images/Products/Dollipops/Dollipop.png",
-    overlay: "with notes of\nFIG LEAF, JASMINE,\n& BLONDE WOODS",
   },
   {
     id: 2,
@@ -53,13 +52,13 @@ const products = [
 
 function Stars({ rating }) {
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex items-center gap-0.5 text-secondary-blue">
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
           size={14}
-          fill={i <= Math.floor(rating) ? "#1998B1" : i - 0.5 <= rating ? "#1998B1" : "none"}
-          stroke="#1998B1"
+          fill={i <= Math.floor(rating) ? "currentColor" : i - 0.5 <= rating ? "currentColor" : "none"}
+          stroke="currentColor"
         />
       ))}
     </div>
@@ -77,9 +76,9 @@ export default function BestSellers() {
   const shown = products.slice(start, start + visible);
 
   return (
-    <section className="py-12 px-4" style={{ fontFamily: "var(--font-sans)", color: "var(--primary-brown)" }}>
+    <section className="py-12 px-4 font-sans text-primary-brown">
       <h2
-        className="text-center text-3xl tracking-widest mb-10"
+        className="text-center text-3xl tracking-widing mb-10"
       >
         BEST SELLERS
       </h2>
@@ -92,7 +91,7 @@ export default function BestSellers() {
           className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 disabled:opacity-20"
           aria-label="Previous"
         >
-          <ChevronLeft size={28} color="var(--primary-brown)" />
+          <ChevronLeft size={28} className="text-primary-brown" />
         </button>
 
         {/* Cards */}
@@ -102,20 +101,12 @@ export default function BestSellers() {
               {/* Image */}
               <div className="relative overflow-hidden bg-gray-100 aspect-[3/4]">
                 <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-                {p.overlay && (
-                  <div className="absolute inset-0 flex items-end justify-center pb-8 text-center">
-                    <p className="text-white text-sm font-light whitespace-pre-line leading-relaxed">
-                      {p.overlay}
-                    </p>
-                  </div>
-                )}
               </div>
 
               {/* Info */}
               <div className="pt-3 flex flex-col gap-1 flex-1">
                 <p
-                  className="text-sm font-medium leading-snug"
-                  style={{ color: "var(--secondary-blue)" }}
+                  className="text-sm font-medium leading-snug text-secondary-blue"
                 >
                   {p.name}
                 </p>
@@ -124,7 +115,7 @@ export default function BestSellers() {
                   <span className="text-xs text-gray-500">{p.reviews} reviews</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="font-semibold text-sm" style={{ color: "var(--primary-brown)" }}>
+                  <span className="font-semibold text-sm text-primary-brown">
                     {p.price}
                   </span>
                   {p.priceNote && (
@@ -162,7 +153,7 @@ export default function BestSellers() {
           className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 disabled:opacity-20"
           aria-label="Next"
         >
-          <ChevronRight size={28} color="var(--primary-brown)" />
+          <ChevronRight size={28} className="text-primary-brown" />
         </button>
       </div>
     </section>

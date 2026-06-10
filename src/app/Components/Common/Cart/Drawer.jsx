@@ -12,7 +12,7 @@ export default function CartDrawer() {
 
   if (!drawerOpen) return null;
 
-  const FREE_GIFT_THRESHOLD = 55;
+  const FREE_GIFT_THRESHOLD = 599; // Updated for Indian pricing
   const progressPct = Math.min(100, (subtotal / FREE_GIFT_THRESHOLD) * 100);
 
   return (
@@ -25,8 +25,7 @@ export default function CartDrawer() {
 
       {/* Drawer */}
       <div
-        className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-50 flex flex-col shadow-2xl"
-        style={{ fontFamily: 'var(--font-sans-family)' }}
+        className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-50 flex flex-col shadow-2xl font-sans"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
@@ -38,8 +37,8 @@ export default function CartDrawer() {
         </div>
 
         {/* Reward progress */}
-        <div className="mx-4 my-3 bg-[#f0ece6] rounded p-4">
-          <p className="text-center text-sm mb-2">Congratulations!</p>
+        <div className="mx-4 my-3 bg-reward-bg rounded p-4">
+          <p className="text-center text-sm mb-2">Spend ₹599 more to get a free gift!</p>
           <div className="text-center text-sm font-semibold mb-1">{currency}{FREE_GIFT_THRESHOLD}</div>
           <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
             <div className="h-full bg-slate-800 rounded-full transition-all" style={{ width: `${progressPct}%` }} />
@@ -90,17 +89,21 @@ export default function CartDrawer() {
               setDrawerOpen(false);
               router.push('/checkout');
             }}
-            className="w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase mb-3"
-            style={{ backgroundColor: 'var(--primary-brown)' }}
+            className="w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase mb-3 bg-primary-brown"
           >
             CHECKOUT
           </button>
           <button
-            className="w-full cursor-pointer text-xs font-bold tracking-widest uppercase underline underline-offset-4"
-            style={{ color: 'var(--primary-brown)' }}
+            className="w-full cursor-pointer text-xs font-bold tracking-widest uppercase underline underline-offset-4 text-primary-brown mb-3"
             onClick={() => { setDrawerOpen(false); router.push('/cart'); }}
           >
             VIEW BAG
+          </button>
+          <button
+            className="w-full cursor-pointer text-xs font-bold tracking-widest uppercase underline underline-offset-4 text-primary-brown"
+            onClick={() => { setDrawerOpen(false); router.push('/products/pops'); }}
+          >
+            CONTINUE SHOPPING
           </button>
         </div>
       </div>
