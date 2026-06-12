@@ -125,8 +125,15 @@ export default function CartPage() {
                 Tax included. Shipping calculated at checkout.
               </p>
               <button
-                onClick={() => router.push('/checkout')}
-                className="w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase bg-primary-brown"
+                onClick={() => {
+                  if (items.length === 0) {
+                    alert('Please add items to your cart before proceeding to checkout');
+                    return;
+                  }
+                  router.push('/checkout');
+                }}
+                className={`w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase ${items.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-brown'}`}
+                disabled={items.length === 0}
               >
                 CHECKOUT
               </button>

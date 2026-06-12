@@ -2,15 +2,17 @@
 
 import { useCart } from '@/app/context/CartContext';
 import { useCountry } from '@/app/context/CountryContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 
 export default function CartDrawer() {
   const { items, removeItem, subtotal, itemCount, drawerOpen, setDrawerOpen } = useCart();
   const { currency } = useCountry();
   const router = useRouter();
+  const pathname = usePathname();
 
-  if (!drawerOpen) return null;
+  // Don't show drawer on cart page
+  if (!drawerOpen || pathname === '/cart') return null;
 
   const FREE_GIFT_THRESHOLD = 599; // Updated for Indian pricing
   const progressPct = Math.min(100, (subtotal / FREE_GIFT_THRESHOLD) * 100);
@@ -86,10 +88,15 @@ export default function CartDrawer() {
           </p>
           <button
             onClick={() => {
+              if (items.length === 0) {
+                alert('Please add items to your cart before proceeding to checkout');
+                return;
+              }
               setDrawerOpen(false);
               router.push('/checkout');
             }}
-            className="w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase mb-3 bg-primary-brown"
+            className={`w-full py-4 cursor-pointer text-white text-xs font-bold tracking-widest uppercase mb-3 ${items.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-brown'}`}
+            disabled={items.length === 0}
           >
             CHECKOUT
           </button>

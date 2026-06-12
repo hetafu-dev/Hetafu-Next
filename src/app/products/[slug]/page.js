@@ -331,7 +331,7 @@ function PostcardsSection({ product }) {
 }
 
 function ReviewsSection({ product }) {
-  const allReviews = product.reviewList;
+  const [reviews, setReviews] = useState([...product.reviewList]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('verified');
   const [filterRating, setFilterRating] = useState('all');
@@ -339,11 +339,11 @@ function ReviewsSection({ product }) {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [formData, setFormData] = useState({ rating: 0, title: '', review: '', name: '', email: '', agreeTerms: false });
 
-  const filteredReviews = allReviews.filter(r => filterRating === 'all' ? true : r.rating === parseInt(filterRating));
+  const filteredReviews = reviews.filter(r => filterRating === 'all' ? true : r.rating === parseInt(filterRating));
   const sortedReviews = [...filteredReviews].sort((a, b) => { if (sortBy === 'highest') return b.rating - a.rating; if (sortBy === 'lowest') return a.rating - b.rating; return 0; });
   const totalPages = Math.ceil(sortedReviews.length / REVIEWS_PER_PAGE);
   const paginatedReviews = sortedReviews.slice((currentPage - 1) * REVIEWS_PER_PAGE, currentPage * REVIEWS_PER_PAGE);
-  const overallRating = (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1);
+  const overallRating = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
 
   const handleHelpful = (id, type) => setHelpfulMap(prev => ({ ...prev, [id]: prev[id] === type ? null : type }));
   const handlePageChange = (page) => { setCurrentPage(page); document.getElementById('reviews-section-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
@@ -351,16 +351,36 @@ function ReviewsSection({ product }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.agreeTerms) { alert('Please agree to the Privacy Policy and Terms and Conditions'); return; }
+    
+    // Create new review object
+    const newReview = {
+      id: reviews.length + 1,
+      name: formData.name,
+      initials: formData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
+      avatarColor: '#d4b896', // Default avatar color
+      rating: formData.rating,
+      date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }),
+      title: formData.title,
+      body: formData.review,
+      helpful: 0,
+      notHelpful: 0,
+      verified: true
+    };
+    
+    // Add new review to state
+    setReviews(prev => [newReview, ...prev]);
     alert('Thank you for your review!');
     setIsReviewModalOpen(false);
     setFormData({ rating: 0, title: '', review: '', name: '', email: '', agreeTerms: false });
+    // Reset to first page to show the new review
+    setCurrentPage(1);
   };
 
   return (
         <section id="reviews-section-anchor" className="max-w-[1400px] mx-auto" style={{ position: 'relative', paddingTop: '100px' }}>
       {isReviewModalOpen && (
         <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setIsReviewModalOpen(false)} />
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-md z-40" onClick={() => setIsReviewModalOpen(false)} />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 relative">
               <div className="flex justify-between items-center mb-6">
@@ -407,8 +427,8 @@ function ReviewsSection({ product }) {
         </>
       )}
       <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', marginTop: '-30px' }}>
-        <div style={{ position: 'absolute', top: '-50px', left: '50%', transform: 'translateX(-50%)', zIndex: 1 }}>
-          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/footer_plants.png" alt="decorative plants" style={{ height: '150px', width: 'auto', display: 'block' }} />
+        <div className="hidden md:flex absolute top-[-50px] left-1/2 -translate-x-1/2 z-[1]">
+          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/footer_plants.png" alt="decorative plants" className="h-[150px] w-auto block" />
         </div>
         <svg className="w-full" viewBox="0 0 1400 80" preserveAspectRatio="none" style={{ display: 'block', position: 'relative', zIndex: 2, height: '100px' }}>
           <defs>
@@ -419,12 +439,12 @@ function ReviewsSection({ product }) {
           </defs>
           <path d="M0,40 Q350,15 700,40 T1400,40 L1400,80 L0,80 Z" fill="url(#waveGradient)" stroke="none"/>
         </svg>
-        <div style={{ position: 'absolute', top: '-70px', left: '50%', transform: 'translateX(-50%)', zIndex: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/tiger_head.png" alt="tiger head" style={{ width: '280px', height: 'auto', marginBottom: '-30px' }} />
+        <div className="hidden md:flex absolute top-[-70px] left-1/2 -translate-x-1/2 z-[1.5] flex-col items-center">
+          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/tiger_head.png" alt="tiger head" className="w-[280px] h-auto mb-[-30px]" />
         </div>
-        <div style={{ position: 'absolute', top: '26px', left: '50%', transform: 'translateX(-50%)', zIndex: 4, display: 'flex', gap: '90px' }}>
-          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/left_leg.png" alt="tiger left paw" style={{ width: '75px', height: 'auto' }} />
-          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/right_leg.png" alt="tiger right paw" style={{ width: '75px', height: 'auto' }} />
+        <div className="hidden md:flex absolute top-[26px] left-1/2 -translate-x-1/2 z-10 gap-[90px]">
+          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/left_leg.png" alt="tiger left paw" className="w-[75px] h-auto" />
+          <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/right_leg.png" alt="tiger right paw" className="w-[75px] h-auto" />
         </div>
       </div>
       <div className="px-4 md:px-10 py-12 md:py-20">
