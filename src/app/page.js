@@ -71,7 +71,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((s) => (s + 1) % carouselSlides.length);
-    }, 50000);
+    }, 4000);
     return () => clearInterval(timer);
   }, []);
 

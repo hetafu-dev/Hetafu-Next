@@ -196,7 +196,7 @@ function StarRow({ rating, size = 14 }) {
 
 function DecadeSection({ product }) {
   return (
-    <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-12 md:py-20 bg-[#fdf8f4]" style={{ fontFamily: 'var(--font-sans)', color: 'var(--primary-brown)' }}>
+    <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-12 md:py-20 bg-[#fdf8f4] font-sans text-primary-brown">
       {/* Original desktop layout preserved, only mobile responsiveness added */}
       <div className="hidden lg:grid grid-cols-2" style={{ gridTemplateRows: 'auto auto' }}>
         <div className="relative">
@@ -204,7 +204,7 @@ function DecadeSection({ product }) {
         </div>
         <div className="flex flex-col justify-center pl-30">
           <h2 className="text-5xl font-light mb-2" style={{ fontFamily: '"Futura BT Book", sans-serif', letterSpacing: '-0.02em' }}>{product.sectionTitle[0]}</h2>
-          <p className="text-5xl italic font-light mb-8" style={{ fontFamily: 'var(--font-signature)', color: '#1998B1', letterSpacing: '-0.02em' }}>{product.sectionTitle[1]}</p>
+          <p className="text-5xl italic font-light mb-8 font-signature text-secondary-blue tracking-tight">{product.sectionTitle[1]}</p>
           <div className="w-12 h-0.5 bg-[#d4c5b2] mb-8"></div>
           <p className="text-sm leading-relaxed text-[#554433] mb-8 max-w-md" style={{ lineHeight: '1.7' }}>{product.sectionBody}</p>
           <p className="text-xs font-semibold tracking-widest uppercase text-[#401E17] mb-4" style={{ letterSpacing: '0.12em' }}>Be Transported</p>
@@ -215,7 +215,7 @@ function DecadeSection({ product }) {
               <img src={product.notes[0].image} alt={product.notes[0].label} className="w-full aspect-square object-cover" />
             </div>
             <div className="pt-8">
-              <p className="text-center mb-2" style={{ fontFamily: 'var(--font-signature)', fontSize: '2.7rem', color: 'var(--secondary-blue)' }}>{product.notes[0].label}</p>
+              <p className="text-center mb-2 font-signature text-[2.7rem] text-secondary-blue">{product.notes[0].label}</p>
               {product.notes[0].description.split(' · ').map((line, i) => (
                 <p key={i} className="text-center leading-relaxed m-0" style={{ fontSize: '13px' }}>{line}</p>
               ))}
@@ -226,7 +226,7 @@ function DecadeSection({ product }) {
               <img src={product.notes[2].image} alt={product.notes[2].label} className="w-full aspect-square object-cover" />
             </div>
             <div className="pt-2">
-              <p className="text-center mb-2" style={{ fontFamily: 'var(--font-signature)', fontSize: '2.7rem', color: 'var(--secondary-blue)' }}>{product.notes[2].label}</p>
+              <p className="text-center mb-2 font-signature text-[2.7rem] text-secondary-blue">{product.notes[2].label}</p>
               {product.notes[2].description.split(' · ').map((line, i) => (
                 <p key={i} className="text-center leading-relaxed m-0" style={{ fontSize: '13px' }}>{line}</p>
               ))}
@@ -237,7 +237,7 @@ function DecadeSection({ product }) {
               <img src={product.notes[1].image} alt={product.notes[1].label} className="w-full aspect-square object-cover" />
             </div>
             <div className="pt-2">
-              <p className="text-center mb-2" style={{ fontFamily: 'var(--font-signature)', fontSize: '2.7rem', color: 'var(--secondary-blue)' }}>{product.notes[1].label}</p>
+              <p className="text-center mb-2 font-signature text-[2.7rem] text-secondary-blue">{product.notes[1].label}</p>
               {product.notes[1].description.split(' · ').map((line, i) => (
                 <p key={i} className="text-center leading-relaxed m-0" style={{ fontSize: '13px' }}>{line}</p>
               ))}
@@ -247,7 +247,7 @@ function DecadeSection({ product }) {
         <div className="flex items-start relative justify-end">
           <div className="bg-white shadow-md absolute hover:shadow-lg transition-all" style={{ width: '550px', left: '220px', transform: 'rotate(10deg)', padding: '14px' }}>
             <img src={product.postcardImage} alt={product.name} className="w-full h-[500px] object-cover rounded-sm" />
-            <p className="text-center mt-4 pr-1" style={{ fontFamily: 'var(--font-signature)', fontSize: '3.4rem' }}>key benefits</p>
+            <p className="text-center mt-4 pr-1 font-signature text-[3.4rem]">key benefits</p>
           </div>
         </div>
       </div>
@@ -258,7 +258,7 @@ function DecadeSection({ product }) {
         </div>
         <div className="flex flex-col justify-center px-4">
           <h2 className="text-3xl font-light mb-2" style={{ fontFamily: '"Futura BT Book", sans-serif', letterSpacing: '-0.02em' }}>{product.sectionTitle[0]}</h2>
-          <p className="text-3xl italic font-light mb-8" style={{ fontFamily: 'var(--font-signature)', color: '#1998B1', letterSpacing: '-0.02em' }}>{product.sectionTitle[1]}</p>
+          <p className="text-3xl italic font-light mb-8 font-signature text-secondary-blue tracking-tight">{product.sectionTitle[1]}</p>
           <div className="w-12 h-0.5 bg-[#d4c5b2] mb-8"></div>
           <p className="text-sm leading-relaxed text-[#554433] mb-8 max-w-md" style={{ lineHeight: '1.7' }}>{product.sectionBody}</p>
           <p className="text-xs font-semibold tracking-widest uppercase text-[#401E17] mb-4" style={{ letterSpacing: '0.12em' }}>Be Transported</p>
@@ -269,7 +269,7 @@ function DecadeSection({ product }) {
                 <img src={product.notes[0].image} alt={product.notes[0].label} className="w-full aspect-square object-cover" />
               </div>
               <div className="pt-8">
-                <p className="text-center mb-2" style={{ fontFamily: 'var(--font-signature)', fontSize: '2rem', color: 'var(--secondary-blue)' }}>{product.notes[0].label}</p>
+                <p className="text-center mb-2 font-signature text-[2rem] text-secondary-blue">{product.notes[0].label}</p>
                 {product.notes[0].description.split(' · ').map((line, i) => (
                   <p key={i} className="text-center leading-relaxed m-0" style={{ fontSize: '12px' }}>{line}</p>
                 ))}
@@ -280,7 +280,7 @@ function DecadeSection({ product }) {
                 <img src={product.notes[2].image} alt={product.notes[2].label} className="w-full aspect-square object-cover" />
               </div>
               <div className="pt-2">
-                <p className="text-center mb-2" style={{ fontFamily: 'var(--font-signature)', fontSize: '1.8rem', color: 'var(--secondary-blue)' }}>{product.notes[2].label}</p>
+                <p className="text-center mb-2 font-signature text-[1.8rem] text-secondary-blue">{product.notes[2].label}</p>
                 {product.notes[2].description.split(' · ').map((line, i) => (
                   <p key={i} className="text-center leading-relaxed m-0" style={{ fontSize: '11px' }}>{line}</p>
                 ))}
@@ -291,7 +291,7 @@ function DecadeSection({ product }) {
                 <img src={product.notes[1].image} alt={product.notes[1].label} className="w-full aspect-square object-cover" />
               </div>
               <div className="pt-2">
-                <p className="text-center mb-2" style={{ fontFamily: 'var(--font-signature)', fontSize: '1.8rem', color: 'var(--secondary-blue)' }}>{product.notes[1].label}</p>
+                <p className="text-center mb-2 font-signature text-[1.8rem] text-secondary-blue">{product.notes[1].label}</p>
                 {product.notes[1].description.split(' · ').map((line, i) => (
                   <p key={i} className="text-center leading-relaxed m-0" style={{ fontSize: '11px' }}>{line}</p>
                 ))}
@@ -301,7 +301,7 @@ function DecadeSection({ product }) {
         <div className="flex items-start relative justify-center" style={{ minHeight: '450px' }}>
           <div className="bg-white shadow-md absolute hover:shadow-lg transition-all" style={{ width: '90%', transform: 'rotate(5deg)', padding: '14px' }}>
             <img src={product.postcardImage} alt={product.name} className="w-full h-auto object-cover rounded-sm" />
-            <p className="text-center mt-4 pr-1" style={{ fontFamily: 'var(--font-signature)', fontSize: '2.5rem' }}>key benefits</p>
+            <p className="text-center mt-4 pr-1 font-signature text-[2.5rem]">key benefits</p>
           </div>
         </div>
       </div>
@@ -318,7 +318,7 @@ function PostcardsSection({ product }) {
         </div>
         <div className="flex flex-col px-4 lg:pl-5 order-1 lg:order-none">
           <h2 className="text-3xl md:text-5xl font-light text-[#401E17] leading-tight mb-1 tracking-tight">{product.postcardTitle[0]}</h2>
-          <p className="text-3xl md:text-5xl italic font-light text-[#1998B1] mb-6 tracking-tight" style={{ fontFamily: 'var(--font-signature)' }}>{product.postcardTitle[1]}</p>
+          <p className="text-3xl md:text-5xl italic font-light text-secondary-blue mb-6 tracking-tight font-signature">{product.postcardTitle[1]}</p>
           <div className="w-12 h-0.5 bg-[#1998B1] mb-7"></div>
           <p className="text-sm leading-[1.9] text-[#554433] font-light max-w-sm mb-8">{product.postcardBody}</p>
           <blockquote className="border-l-[3px] border-[#1998B1] pl-5 max-w-md">
@@ -400,7 +400,7 @@ function ReviewsSection({ product }) {
                   <input type="checkbox" id="agreeTerms" name="agreeTerms" checked={formData.agreeTerms} onChange={handleInputChange} required className="mt-1" />
                   <label htmlFor="agreeTerms" className="text-sm text-[#401E17]">By submitting this review, I agree to the <a href="#" className="text-[#1998B1] underline">Privacy Policy</a> and <a href="#" className="text-[#1998B1] underline">Terms and Conditions</a> *</label>
                 </div>
-                <button type="submit" className="w-full py-3 bg-[var(--primary-brown)] text-white font-semibold uppercase tracking-wider rounded hover:bg-[#5a2e24] transition-all">Send</button>
+                <button type="submit" className="w-full py-3 bg-primary-brown text-white font-semibold uppercase tracking-wider rounded hover:bg-[#5a2e24] transition-all">Send</button>
               </form>
             </div>
           </div>
@@ -445,7 +445,7 @@ function ReviewsSection({ product }) {
               <p className="text-xs text-[#887766] tracking-widest uppercase mt-1">Based on {product.reviewCount} reviews</p>
             </div>
           </div>
-          <button onClick={() => setIsReviewModalOpen(true)} className="inline-flex cursor-pointer items-center gap-2 px-5 py-2.5 bg-[var(--primary-brown)] text-white border-none rounded text-xs font-semibold tracking-wider uppercase transition-all hover:bg-[#5a2e24]">
+          <button onClick={() => setIsReviewModalOpen(true)} className="inline-flex cursor-pointer items-center gap-2 px-5 py-2.5 bg-primary-brown text-white border-none rounded text-xs font-semibold tracking-wider uppercase transition-all hover:bg-[#5a2e24]">
             <Edit3 size={13} /> Write a Review
           </button>
         </div>
@@ -528,8 +528,8 @@ export default function ProductPage({ params }) {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1400px] mx-auto px-4 py-6 md:px-8 md:py-8" style={{ fontFamily: 'var(--font-sans)', backgroundColor: 'var(--background-color)', color: 'var(--primary-brown)' }}>
-          <div className="flex items-center gap-2 mb-3 text-sm uppercase tracking-wider" style={{ color: 'var(--primary-brown)' }}>
+        <div className="max-w-[1400px] mx-auto px-4 py-6 md:px-8 md:py-8 font-sans bg-background text-primary-brown">
+          <div className="flex items-center gap-2 mb-3 text-sm uppercase tracking-wider text-primary-brown">
             <Link href="/" className="no-underline font-bold transition-colors hover:text-amber-700">HOME</Link>
             <span className="mx-1">&gt;</span>
             <span className="font-bold">{product.name.toUpperCase()} {product.category.toUpperCase()}</span>
@@ -561,7 +561,7 @@ export default function ProductPage({ params }) {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h1 className="text-4xl md:text-[clamp(1.5rem,4vw,2.5rem)] font-bold italic tracking-wide m-0" style={{ color: 'var(--secondary-blue)', fontFamily: 'var(--font-signature)' }}>{product.name}</h1>
+              <h1 className="text-4xl md:text-[clamp(1.5rem,4vw,2.5rem)] font-bold italic tracking-wide m-0 text-secondary-blue font-signature">{product.name}</h1>
               <p className="text-base m-0 capitalize" style={{ color: '#554433' }}>{product.category}</p>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex items-baseline gap-4">
@@ -577,18 +577,18 @@ export default function ProductPage({ params }) {
               <p className="leading-relaxed m-0 text-base">{product.description}</p>
               <div className="flex flex-wrap gap-3 mt-6">
                 {product.variants.map((variant) => (
-                  <button key={variant} onClick={() => setSelectedVariant(variant)} className="px-4 py-2 rounded text-sm font-medium transition-all cursor-pointer" style={{ color: selectedVariant === variant ? 'var(--primary-brown)' : '#401E17', border: '2px solid', borderColor: selectedVariant === variant ? 'var(--secondary-blue)' : 'transparent' }}>{variant}</button>
+                  <button key={variant} onClick={() => setSelectedVariant(variant)} className="px-4 py-2 rounded text-sm font-medium transition-all cursor-pointer border-2" style={{ color: selectedVariant === variant ? 'var(--primary-brown)' : '#401E17', borderColor: selectedVariant === variant ? 'var(--secondary-blue)' : 'transparent' }}>{variant}</button>
                 ))}
               </div>
               <div className="flex flex-col gap-2 mt-8">
                 <label className="text-sm font-bold tracking-wider">QUANTITY</label>
                   <div className="flex flex-col sm:flex-row gap-3 w-full">
-                  <div className="flex border-1 rounded overflow-hidden shrink-0" style={{ borderColor: 'var(--secondary-blue)', height: '56px', minWidth: '140px', width: '100%', maxWidth: '180px' }}>
-                    <button className="w-10 p-2 border-none cursor-pointer text-xl transition-colors hover:bg-amber-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0" style={{ backgroundColor: '#fff', color: '#401E17' }} onClick={() => quantity > 1 && setQuantity(quantity - 1)} disabled={quantity === 1}>−</button>
-                    <input type="text" value={quantity} readOnly className="flex-1 border-none border-x text-center text-base focus:outline-none min-w-0" style={{ borderColor: 'var(--secondary-blue)', color: '#401E17', cursor: 'default' }} />
-                    <button className="w-10 p-2 border-none cursor-pointer text-xl transition-colors hover:bg-amber-50 flex items-center justify-center shrink-0" style={{ backgroundColor: '#fff', color: '#401E17' }} onClick={() => setQuantity(quantity + 1)}>+</button>
+                  <div className="flex border border-secondary-blue rounded overflow-hidden shrink-0 h-14 min-w-[140px] w-full max-w-[180px]">
+                    <button className="w-10 p-2 border-none cursor-pointer text-xl transition-colors hover:bg-amber-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 bg-white text-primary-brown" onClick={() => quantity > 1 && setQuantity(quantity - 1)} disabled={quantity === 1}>−</button>
+                      <input type="text" value={quantity} readOnly className="flex-1 border-none border-x border-secondary-blue text-center text-base focus:outline-none min-w-0 text-primary-brown cursor-default" />
+                      <button className="w-10 p-2 border-none cursor-pointer text-xl transition-colors hover:bg-amber-50 flex items-center justify-center shrink-0 bg-white text-primary-brown" onClick={() => setQuantity(quantity + 1)}>+</button>
                   </div>
-                  <button className="flex-1 p-4 border-1 rounded text-base font-bold uppercase tracking-wider cursor-pointer transition-colors w-full sm:w-auto" style={{ height: '56px', borderColor: 'var(--secondary-blue)', color: 'var(--primary-brown)' }} onClick={handleAddToBag}>ADD TO BAG</button>
+                  <button className="flex-1 p-4 border border-secondary-blue rounded text-base font-bold uppercase tracking-wider cursor-pointer transition-colors w-full sm:w-auto h-14 text-primary-brown hover:bg-secondary-blue/5" onClick={handleAddToBag}>ADD TO BAG</button>
                 </div>
               </div>
               <div className="mt-8 pt-8">
@@ -612,7 +612,7 @@ export default function ProductPage({ params }) {
         </div>
 
         <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-12 md:py-16">
-          <h1 className="text-3xl md:text-[clamp(2.5rem,4vw,3.5rem)] font-bold tracking-wide text-center m-0 mb-12" style={{ color: 'var(--secondary-blue)', fontFamily: 'var(--font-signature)' }}>faq</h1>
+          <h1 className="text-3xl md:text-[clamp(2.5rem,4vw,3.5rem)] font-bold tracking-wide text-center m-0 mb-12 text-secondary-blue font-signature">faq</h1>
           <div>
             {FAQ_ITEMS.map((faq) => (
               <div key={faq.key} className="border-b" style={{ borderColor: '#d4c5b2' }}>

@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
               </p>
               
               <p className="text-sm leading-7 text-slate-600 mb-6">
-                This Policy describes how Hetafu collects, uses, and shares your personal data in connection with our products and services. For the purposes of applicable data protection law, the controller of your personal data is Hetafu. If you have any questions about this Policy or wish to exercise your rights, you may contact us at dpo@hetafu.com
+                This Policy describes how Hetafu collects, uses, and shares your personal data in connection with our products and services. For the purposes of applicable data protection law, the controller of your personal data is Hetafu. If you have any questions about this Policy or wish to exercise your rights, you may contact us at <a href="mailto:reachthebest@hetafu.com" className="text-blue-500">reachthebest@hetafu.com</a>
               </p>
               
               <p className="text-sm leading-7 text-slate-600 mb-6">
@@ -118,7 +118,7 @@ export default function PrivacyPolicyPage() {
               
               <h2 className="text-2xl font-medium text-slate-950 mb-4">CONTACT US</h2>
               <p className="text-sm leading-7 text-slate-600">
-                If you have questions about this Privacy Policy, please contact us at dpo@hetafu.com.
+                If you have questions about this Privacy Policy, please contact us at <a href="mailto:reachthebest@hetafu.com" className="text-blue-500">reachthebest@hetafu.com</a>.
               </p>
             </div>
           </div>

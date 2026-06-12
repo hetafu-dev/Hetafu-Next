@@ -85,7 +85,7 @@ export default function TermsOfServicePage() {
               
               <h2 className="text-2xl font-medium text-slate-950 mb-4">Contact Us</h2>
               <p className="text-sm leading-7 text-slate-600">
-                You can reach our customer service by e-mailing contactus@hetafu.com.
+                You can reach our customer service by e-mailing <a href="mailto:reachthebest@hetafu.com" className="text-blue-500">reachthebest@hetafu.com</a>.
               </p>
             </div>
           </div>

@@ -58,7 +58,7 @@ export default function DeliveryInformationPage() {
               </p>
               
               <p className="text-sm leading-7 text-slate-600 mb-6">
-                For questions, please contact customer service via email: contactus@hetafu.com or call our toll-free number: 1800-XXX-XXXX
+                For questions, please contact customer service via email: <a href="mailto:reachthebest@hetafu.com" className="text-blue-500">reachthebest@hetafu.com</a> or call our toll-free number: 1800-XXX-XXXX
               </p>
             </div>
           </div>
