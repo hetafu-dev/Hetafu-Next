@@ -412,7 +412,7 @@ export default function DosageCalculator() {
               </p>
                 <button
                   onClick={() => { setView("quiz"); setStep(0); }}
-                  className="px-10 py-4 cursor-pointer rounded-full text-white font-bold text-lg tracking-wide transition-opacity hover:opacity-90 bg-secondary-blue"
+                  className="px-10 py-4 cursor-pointer rounded-full text-white font-bold text-lg tracking-wide transition-opacity hover:opacity-90 bg-primary-brown"
                 >
                 START QUIZ
               </button>

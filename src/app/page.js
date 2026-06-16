@@ -194,7 +194,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="flex space-x-4 md:space-x-8 overflow-x-auto justify-center pb-2">
               {products.map((product) => (
-                <Link href={`/category/${product.category.toLowerCase()}`} key={product.id} className="flex-shrink-0 flex flex-col items-center group">
+                <Link href={product.link} key={product.id} className="flex-shrink-0 flex flex-col items-center group">
                   <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
                     <Image
                       src={product.image}

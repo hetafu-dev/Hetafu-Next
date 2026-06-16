@@ -11,11 +11,13 @@ export default function SignInPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    firstName: '',
-    lastName: ''
+    fullName: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showCreatePassword, setShowCreatePassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -39,7 +41,7 @@ export default function SignInPage() {
       setSuccess('Login successful!');
     } else {
       // Handle account creation
-      if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
+      if (!formData.email || !formData.password || !formData.fullName) {
         setError('Please fill in all required fields');
         return;
       }
@@ -58,11 +60,28 @@ export default function SignInPage() {
         email: '',
         password: '',
         confirmPassword: '',
-        firstName: '',
-        lastName: ''
+        fullName: ''
       });
     }
   };
+
+  const EyeIcon = ({ visible }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {visible ? (
+        <>
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </>
+      ) : (
+        <>
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+          <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+          <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+          <line x1="1" y1="1" x2="23" y2="23" />
+        </>
+      )}
+    </svg>
+  );
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -70,24 +89,9 @@ export default function SignInPage() {
       <main className="flex-1">
         <div style={{ backgroundColor: 'var(--background)', fontFamily: 'var(--font-sans-family)' }} className="min-h-screen py-20">
           <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-5xl font-light text-center mb-8 text-slate-950">
+            <h1 className="text-5xl font-light text-center mb-8 text-primary-brown">
               {isLogin ? 'Sign In' : 'Create Account'}
             </h1>
-            
-            <div className="flex mb-8 border-b border-gray-200">
-              <button
-                onClick={() => setIsLogin(true)}
-                className={`flex-1 py-3 text-center font-bold uppercase tracking-wider transition-colors ${isLogin ? 'border-b-2 border-secondary-blue text-slate-950' : 'text-slate-500'}`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => setIsLogin(false)}
-                className={`flex-1 py-3 text-center font-bold uppercase tracking-wider transition-colors ${!isLogin ? 'border-b-2 border-secondary-blue text-slate-950' : 'text-slate-500'}`}
-              >
-                Create Account
-              </button>
-            </div>
 
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
@@ -102,40 +106,24 @@ export default function SignInPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {!isLogin && (
-                <>
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-slate-700 mb-2">
-                      First Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-blue"
-                      placeholder="John"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-slate-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-blue"
-                      placeholder="Doe"
-                    />
-                  </div>
-                </>
+                <div>
+                  <label htmlFor="fullName" className="block text-sm font-medium text-primary-brown mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-blue"
+                    placeholder="John Doe"
+                  />
+                </div>
               )}
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-primary-brown mb-2">
                   Email Address *
                 </label>
                 <input
@@ -150,34 +138,54 @@ export default function SignInPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-primary-brown mb-2">
                   Password *
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-blue"
-                  placeholder="••••••••"
-                />
+                <div className="relative">
+                  <input
+                    type={isLogin ? (showLoginPassword ? 'text' : 'password') : (showCreatePassword ? 'text' : 'password')}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-blue pr-12"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => isLogin ? setShowLoginPassword(!showLoginPassword) : setShowCreatePassword(!showCreatePassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    aria-label={isLogin ? (showLoginPassword ? 'Hide password' : 'Show password') : (showCreatePassword ? 'Hide password' : 'Show password')}
+                  >
+                    <EyeIcon visible={isLogin ? showLoginPassword : showCreatePassword} />
+                  </button>
+                </div>
               </div>
 
               {!isLogin && (
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-primary-brown mb-2">
                     Confirm Password *
                   </label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-blue"
-                    placeholder="••••••••"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-blue pr-12"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    >
+                      <EyeIcon visible={showConfirmPassword} />
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -189,17 +197,15 @@ export default function SignInPage() {
               </button>
             </form>
 
-            {isLogin && (
-              <p className="mt-6 text-center text-sm text-slate-600">
-                Don't have an account?{' '}
-                <button
-                  onClick={() => setIsLogin(false)}
-                  className="font-bold text-secondary-blue hover:underline"
-                >
-                  Create one here
-                </button>
-              </p>
-            )}
+            <p className="mt-6 text-center text-sm text-primary-brown">
+              {isLogin ? "Don't have an account? " : "Already have an account? "}
+              <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="font-bold text-primary-brown hover:underline"
+              >
+                {isLogin ? 'Create one here' : 'Sign in here'}
+              </button>
+            </p>
           </div>
         </div>
         <BestSellers />

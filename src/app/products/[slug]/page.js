@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -65,8 +65,8 @@ const ALL_PRODUCTS = {
     variants: ['Mint', 'Cinnamon'],
     variantLabel: 'Flavour',
     images: [
-      '/Images/Products/CUTE/cutebits.png',
-      '/Images/Products/CUTE/cutepowder.png',
+      'https://uk.moroccanoil.com/cdn/shop/files/FRAGRANCE_EDP_100ml_2025UPDATE.jpg?v=1740380007&width=1946',
+      'https://uk.moroccanoil.com/cdn/shop/files/FRAGRANCE_EDP_100ml_2025UPDATE.jpg?v=1740380007&width=1946',
     ],
     accordion: {
       details: 'Dentabits are compact, dissolvable oral care tablets packed with enamel-safe whitening minerals and breath-freshening actives.',
@@ -132,6 +132,166 @@ const ALL_PRODUCTS = {
       { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 5, date: '01/25/24', title: 'FRESH BREATH ALL DAY', body: 'I use this twice a day and my breath stays fresh literally all day. Highly recommend!', helpful: 2, notHelpful: 0, verified: true },
     ],
   },
+  'cute-powder': {
+    id: 7,
+    name: 'Powder',
+    category: 'CUTE',
+    price: 35.00,
+    rating: 4.6,
+    reviewCount: 189,
+    description: 'Introducing Cute - our gentle, alcohol-free formula that leaves your breath fresh and your mouth feeling clean all day long. Infused with natural mint and xylitol, this kid-friendly formula is perfect for the whole family, with zero harsh chemicals and a deliciously sweet mint flavour.',
+    variants: ['Default'],
+    variantLabel: 'Type',
+    images: [
+      '/Images/Products/CUTE/cutepowder.png',
+    ],
+    accordion: {
+      details: 'Cute is our alcohol-free oral care formula designed for the whole family. Gentle on sensitive gums, tough on bad breath.',
+      ingredients: 'AQUA (WATER), XYLITOL, ALOE BARBADENSIS LEAF JUICE, GLYCERIN, SPEARMINT OIL, SODIUM BENZOATE, CITRIC ACID, STEVIA REBAUDIANA LEAF EXTRACT.',
+      'how-to-use': ['Measure 10ml and swish for 30 seconds', 'Spit and do not rinse with water', 'Use after brushing morning and night', 'Safe for children aged 6 and above'],
+    },
+    sectionImage: '/Images/Products/CUTE/cutepowder.png',
+    sectionTitle: ['Gentle on everyone', 'in the family'],
+    sectionBody: 'Our alcohol-free formula was developed with families in mind. No harsh chemicals, no burning sensation - just fresh, clean breath that lasts all day. Perfect for kids and adults with sensitive gums.',
+    postcardImage: '/Images/Products/CUTE/cutepowder.png',
+    postcardTitle: ['Made For', 'every smile'],
+    postcardBody: 'When we created Cute, we wanted a product that brought families together. Our formula has become a staple in households across the world, making oral care simple and enjoyable for everyone.',
+    postcardQuote: '"It transformed our morning routine - even the kids ask to use it." — Happy Mom, Chicago',
+    notes: [
+      { label: 'natural mint', description: 'refreshing · cooling · invigorating', image: '/Images/Products/CUTE/cutepowder.png' },
+      { label: 'xylitol', description: 'tooth-friendly · natural sweetener', image: '/Images/Products/CUTE/cutepowder.png' },
+      { label: 'aloe vera', description: 'soothing · gentle · healing', image: '/Images/Products/CUTE/cutepowder.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Jennifer K.', initials: 'JK', avatarColor: '#d4b896', rating: 5, date: '05/22/24', title: 'KIDS LOVE IT!', body: 'Finally a formula my kids actually want to use! The cute packaging and mild mint flavour make their morning routine so much easier.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 2, name: 'Maria S.', initials: 'MS', avatarColor: '#b8c9a3', rating: 5, date: '04/18/24', title: 'GENTLE ON SENSITIVE GUMS', body: "I've always struggled with sensitive gums, but this alcohol-free formula is amazing. No burning sensation, just fresh breath.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 3, name: 'Robert T.', initials: 'RT', avatarColor: '#c9b0b0', rating: 4, date: '03/30/24', title: 'GOOD VALUE', body: "Great value for money and the natural ingredients make me feel good about what I'm giving my family.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 4, name: 'Sarah L.', initials: 'SL', avatarColor: '#a8bfd4', rating: 5, date: '02/14/24', title: 'ECO-FRIENDLY PACKAGING', body: "Love that it's good for the planet too. The product works great!", helpful: 3, notHelpful: 0, verified: true },
+      { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 5, date: '01/25/24', title: 'FRESH BREATH ALL DAY', body: 'I use this twice a day and my breath stays fresh literally all day. Highly recommend!', helpful: 2, notHelpful: 0, verified: true },
+    ],
+  },
+  'cute-tablets': {
+    id: 8,
+    name: 'Tablets',
+    category: 'CUTE',
+    price: 35.00,
+    rating: 4.6,
+    reviewCount: 189,
+    description: 'Introducing Cute - our gentle, alcohol-free formula that leaves your breath fresh and your mouth feeling clean all day long. Infused with natural mint and xylitol, this kid-friendly formula is perfect for the whole family, with zero harsh chemicals and a deliciously sweet mint flavour.',
+    variants: ['Default'],
+    variantLabel: 'Type',
+    images: [
+      '/Images/Products/CUTE/cutetablets.png',
+    ],
+    accordion: {
+      details: 'Cute is our alcohol-free oral care formula designed for the whole family. Gentle on sensitive gums, tough on bad breath.',
+      ingredients: 'AQUA (WATER), XYLITOL, ALOE BARBADENSIS LEAF JUICE, GLYCERIN, SPEARMINT OIL, SODIUM BENZOATE, CITRIC ACID, STEVIA REBAUDIANA LEAF EXTRACT.',
+      'how-to-use': ['Measure 10ml and swish for 30 seconds', 'Spit and do not rinse with water', 'Use after brushing morning and night', 'Safe for children aged 6 and above'],
+    },
+    sectionImage: '/Images/Products/CUTE/cutetablets.png',
+    sectionTitle: ['Gentle on everyone', 'in the family'],
+    sectionBody: 'Our alcohol-free formula was developed with families in mind. No harsh chemicals, no burning sensation - just fresh, clean breath that lasts all day. Perfect for kids and adults with sensitive gums.',
+    postcardImage: '/Images/Products/CUTE/cutetablets.png',
+    postcardTitle: ['Made For', 'every smile'],
+    postcardBody: 'When we created Cute, we wanted a product that brought families together. Our formula has become a staple in households across the world, making oral care simple and enjoyable for everyone.',
+    postcardQuote: '"It transformed our morning routine - even the kids ask to use it." — Happy Mom, Chicago',
+    notes: [
+      { label: 'natural mint', description: 'refreshing · cooling · invigorating', image: '/Images/Products/CUTE/cutetablets.png' },
+      { label: 'xylitol', description: 'tooth-friendly · natural sweetener', image: '/Images/Products/CUTE/cutetablets.png' },
+      { label: 'aloe vera', description: 'soothing · gentle · healing', image: '/Images/Products/CUTE/cutetablets.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Jennifer K.', initials: 'JK', avatarColor: '#d4b896', rating: 5, date: '05/22/24', title: 'KIDS LOVE IT!', body: 'Finally a formula my kids actually want to use! The cute packaging and mild mint flavour make their morning routine so much easier.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 2, name: 'Maria S.', initials: 'MS', avatarColor: '#b8c9a3', rating: 5, date: '04/18/24', title: 'GENTLE ON SENSITIVE GUMS', body: "I've always struggled with sensitive gums, but this alcohol-free formula is amazing. No burning sensation, just fresh breath.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 3, name: 'Robert T.', initials: 'RT', avatarColor: '#c9b0b0', rating: 4, date: '03/30/24', title: 'GOOD VALUE', body: "Great value for money and the natural ingredients make me feel good about what I'm giving my family.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 4, name: 'Sarah L.', initials: 'SL', avatarColor: '#a8bfd4', rating: 5, date: '02/14/24', title: 'ECO-FRIENDLY PACKAGING', body: "Love that it's good for the planet too. The product works great!", helpful: 3, notHelpful: 0, verified: true },
+      { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 5, date: '01/25/24', title: 'FRESH BREATH ALL DAY', body: 'I use this twice a day and my breath stays fresh literally all day. Highly recommend!', helpful: 2, notHelpful: 0, verified: true },
+    ],
+  },
+  'pops-green-apple': {
+    id: 5,
+    name: 'Green Apple',
+    category: 'POPS',
+    price: 75.00,
+    rating: 4.7,
+    reviewCount: 347,
+    description: 'Our professional-grade teeth whitening strips deliver professional-level results from the comfort of home. These advanced strips use a safe, enamel-friendly formula that effectively removes stains from coffee, wine, and tobacco, revealing a brighter, whiter smile in just 2 weeks.',
+    variants: ['Default'],
+    variantLabel: 'Flavour',
+    images: [
+      '/Images/Products/Dollipops/Dollipop.png',
+      '/Images/Products/Dollipops/Dollipop1.png',
+      '/Images/Products/Dollipops/Dollipop2.png',
+      '/Images/Products/Dollipops/Dollipop3.png',
+      '/Images/Products/Dollipops/Dollipop4.png',
+    ],
+    accordion: {
+      details: 'This delightful fragrance brings together vibrant fruity notes of raspberry and pear, blended with creamy vanilla and a hint of caramel.',
+      ingredients: 'ALCOHOL DENAT., PARFUM (FRAGRANCE), AQUA (WATER), BENZYL SALICYLATE, LIMONENE, COUMARIN, LINALOOL, BENZYL BENZOATE, CITRAL, GERANIOL.',
+      'how-to-use': ['Spray on pulse points: wrists, neck, and behind the ears', 'Apply to freshly moisturized skin for longer lasting scent', 'Keep away from direct sunlight and heat', 'Store in a cool, dry place'],
+    },
+    sectionImage: '/Images/Products/Dollipops/Dollipopsection2.png',
+    sectionTitle: ['A Decade', 'in the making'],
+    sectionBody: 'Our Mediterranean-inspired signature scent has inspired requests for a perfume since the beginning. After years of development and countless iterations, our iconic fragrance is now available in an eau de parfum.',
+    postcardImage: '/Images/Products/Dollipops/Dollipopsection3.png',
+    postcardTitle: ['Postcards From', 'puglia'],
+    postcardBody: 'When the time came to bring Dollipops to life, Puglia, Italy was chosen as the perfect backdrop. With its wildflower cliffs and sparkling turquoise seas, it\'s a true manifestation of the wild Mediterranean vistas that inspired the fragrance.',
+    postcardQuote: '"It kind of transported me back home—just feeling fresh and being in summer," said campaign star Adria Arjona.',
+    notes: [
+      { label: 'top', description: 'sweet violet · blooming jasmine · soft citrus', image: '/Images/Products/Dollipops/DIng1.png' },
+      { label: 'mid', description: 'black pepper · velvet woods · clove vanilla', image: '/Images/Products/Dollipops/DIng2.png' },
+      { label: 'base', description: 'silky sandalwood · shimmery musk · spicy amber', image: '/Images/Products/Dollipops/DIng3.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Dorothy M.', initials: 'DM', avatarColor: '#d4b896', rating: 5, date: '06/11/24', title: 'LOVE IT', body: 'These whitening strips are amazing! I noticed a difference after just a few uses. My teeth are noticeably whiter and the application process is so easy.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 2, name: 'Sally T.', initials: 'ST', avatarColor: '#b8c9a3', rating: 4, date: '06/01/24', title: 'HAPPY', body: 'Ordered these whitening strips for my daughter, she loves them! We were both impressed with the results after 2 weeks of use.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 3, name: 'Laura W.', initials: 'LW', avatarColor: '#c9b0b0', rating: 5, date: '03/29/24', title: 'LOVE THE RESULTS', body: "I've tried many whitening products and these are by far the best. They work gently without causing any sensitivity.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 4, name: 'Ashleigh C.', initials: 'AC', avatarColor: '#a8bfd4', rating: 5, date: '03/23/24', title: 'THE BEST', body: 'My favorite whitening product of all time 💕 absolutely love the results I always get compliments on how white my smile is.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 5, name: 'Dominique L.', initials: 'DL', avatarColor: '#d4c4a8', rating: 4, date: '03/13/24', title: 'GREAT PRODUCT', body: "I love that these strips are easy to use and actually deliver on their promises. My teeth are noticeably whiter.", helpful: 0, notHelpful: 0, verified: true },
+    ],
+  },
+  'pops-mixed-berry': {
+    id: 6,
+    name: 'Mixed Berry',
+    category: 'POPS',
+    price: 75.00,
+    rating: 4.7,
+    reviewCount: 347,
+    description: 'Our professional-grade teeth whitening strips deliver professional-level results from the comfort of home. These advanced strips use a safe, enamel-friendly formula that effectively removes stains from coffee, wine, and tobacco, revealing a brighter, whiter smile in just 2 weeks.',
+    variants: ['Default'],
+    variantLabel: 'Flavour',
+    images: [
+      '/Images/Products/Dollipops/Mixedberry.png',
+      '/Images/Products/Dollipops/Mixedberry1.png',
+      '/Images/Products/Dollipops/Mixedberry2.png',
+      '/Images/Products/Dollipops/Mixedberry3.png',
+      '/Images/Products/Dollipops/Mixedberry4.png',
+    ],
+    accordion: {
+      details: 'This delightful fragrance brings together vibrant fruity notes of raspberry and pear, blended with creamy vanilla and a hint of caramel.',
+      ingredients: 'ALCOHOL DENAT., PARFUM (FRAGRANCE), AQUA (WATER), BENZYL SALICYLATE, LIMONENE, COUMARIN, LINALOOL, BENZYL BENZOATE, CITRAL, GERANIOL.',
+      'how-to-use': ['Spray on pulse points: wrists, neck, and behind the ears', 'Apply to freshly moisturized skin for longer lasting scent', 'Keep away from direct sunlight and heat', 'Store in a cool, dry place'],
+    },
+    sectionImage: '/Images/Products/Dollipops/Dollipopsection2.png',
+    sectionTitle: ['A Decade', 'in the making'],
+    sectionBody: 'Our Mediterranean-inspired signature scent has inspired requests for a perfume since the beginning. After years of development and countless iterations, our iconic fragrance is now available in an eau de parfum.',
+    postcardImage: '/Images/Products/Dollipops/Dollipopsection3.png',
+    postcardTitle: ['Postcards From', 'puglia'],
+    postcardBody: 'When the time came to bring Dollipops to life, Puglia, Italy was chosen as the perfect backdrop. With its wildflower cliffs and sparkling turquoise seas, it\'s a true manifestation of the wild Mediterranean vistas that inspired the fragrance.',
+    postcardQuote: '"It kind of transported me back home—just feeling fresh and being in summer," said campaign star Adria Arjona.',
+    notes: [
+      { label: 'top', description: 'sweet violet · blooming jasmine · soft citrus', image: '/Images/Products/Dollipops/DIng1.png' },
+      { label: 'mid', description: 'black pepper · velvet woods · clove vanilla', image: '/Images/Products/Dollipops/DIng2.png' },
+      { label: 'base', description: 'silky sandalwood · shimmery musk · spicy amber', image: '/Images/Products/Dollipops/DIng3.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Dorothy M.', initials: 'DM', avatarColor: '#d4b896', rating: 5, date: '06/11/24', title: 'LOVE IT', body: 'These whitening strips are amazing! I noticed a difference after just a few uses. My teeth are noticeably whiter and the application process is so easy.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 2, name: 'Sally T.', initials: 'ST', avatarColor: '#b8c9a3', rating: 4, date: '06/01/24', title: 'HAPPY', body: 'Ordered these whitening strips for my daughter, she loves them! We were both impressed with the results after 2 weeks of use.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 3, name: 'Laura W.', initials: 'LW', avatarColor: '#c9b0b0', rating: 5, date: '03/29/24', title: 'LOVE THE RESULTS', body: "I've tried many whitening products and these are by far the best. They work gently without causing any sensitivity.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 4, name: 'Ashleigh C.', initials: 'AC', avatarColor: '#a8bfd4', rating: 5, date: '03/23/24', title: 'THE BEST', body: 'My favorite whitening product of all time 💕 absolutely love the results I always get compliments on how white my smile is.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 5, name: 'Dominique L.', initials: 'DL', avatarColor: '#d4c4a8', rating: 4, date: '03/13/24', title: 'GREAT PRODUCT', body: "I love that these strips are easy to use and actually deliver on their promises. My teeth are noticeably whiter.", helpful: 0, notHelpful: 0, verified: true },
+    ],
+  },
   smarts: {
     id: 4,
     name: 'Denta Smarts',
@@ -168,6 +328,200 @@ const ALL_PRODUCTS = {
       { id: 3, name: 'Robert T.', initials: 'RT', avatarColor: '#c9b0b0', rating: 5, date: '03/20/24', title: 'MY DENTIST WAS IMPRESSED', body: 'During my last checkup, my dentist asked what I was doing differently - early cavity signs had reversed.', helpful: 12, notHelpful: 0, verified: true },
       { id: 4, name: 'Sarah L.', initials: 'SL', avatarColor: '#a8bfd4', rating: 5, date: '02/10/24', title: 'CLINICALLY PROVEN', body: "After 6 months of use, I'm a believer. My enamel feels stronger than ever.", helpful: 9, notHelpful: 0, verified: true },
       { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 4, date: '01/05/24', title: 'EFFECTIVE, BUT PRICY', body: "This product definitely works - my dentist noticed the difference immediately. It pays for itself in reduced dental bills.", helpful: 5, notHelpful: 1, verified: true },
+    ],
+  },
+  'smarts-prime': {
+    id: 9,
+    name: 'Prime Smarts',
+    category: 'SMARTS',
+    price: 55.00,
+    rating: 4.9,
+    reviewCount: 312,
+    description: 'Introducing Denta Smarts - our intelligent enamel protection serum that uses advanced nanotechnology to repair and strengthen weakened tooth enamel. Formulated with dentists and backed by clinical studies, this powerful daily treatment reverses early signs of decay, reduces sensitivity, and creates a protective barrier that lasts up to 12 hours.',
+    variants: ['Default'],
+    variantLabel: 'Type',
+    images: [
+      '/Images/Products/Smarts/Prime.png',
+    ],
+    accordion: {
+      details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',
+      ingredients: 'AQUA (WATER), NANO-HYDROXYAPATITE, XYLITOL, GLYCERIN, SODIUM FLUORIDE, POTASSIUM NITRATE, CARRAGEENAN, SODIUM BENZOATE, SPEARMINT OIL.',
+      'how-to-use': ['Apply a small amount to a clean toothbrush', 'Brush gently for 2 minutes', 'Spit and leave residue for 5 minutes before rinsing', 'Use twice daily morning and night'],
+    },
+    sectionImage: '/Images/Products/Smarts/Prime.png',
+    sectionTitle: ['Science you can', 'trust for your smile'],
+    sectionBody: 'Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.',
+    postcardImage: '/Images/Products/Smarts/Prime.png',
+    postcardTitle: ['Stories From', 'our users'],
+    postcardBody: 'Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.',
+    postcardQuote: '"My dentist couldn\'t believe the improvement in my enamel health in just 6 months." — Sarah M., Verified User',
+    notes: [
+      { label: 'nano-hydroxyapatite', description: 'mineral restoration · enamel rebuilding', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'fluoride-free', description: 'safe · natural · effective', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'xylitol enriched', description: 'cavity prevention · pH balancing', image: '/Images/Products/Smarts/Prime.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Dr. James K.', initials: 'JK', avatarColor: '#d4b896', rating: 5, date: '05/15/24', title: 'DENTIST APPROVED!', body: 'As a practicing dentist, I can confidently say this product is revolutionary. My patients show measurable improvement in enamel strength after just 3 months.', helpful: 24, notHelpful: 0, verified: true },
+      { id: 2, name: 'Lisa M.', initials: 'LM', avatarColor: '#b8c9a3', rating: 5, date: '04/28/24', title: 'SENSITIVITY GONE!', body: "I've suffered from severe tooth sensitivity for years. After using Denta Smarts for 6 weeks, my sensitivity is completely gone. Life changing!", helpful: 18, notHelpful: 0, verified: true },
+      { id: 3, name: 'Robert T.', initials: 'RT', avatarColor: '#c9b0b0', rating: 5, date: '03/20/24', title: 'MY DENTIST WAS IMPRESSED', body: 'During my last checkup, my dentist asked what I was doing differently - early cavity signs had reversed.', helpful: 12, notHelpful: 0, verified: true },
+      { id: 4, name: 'Sarah L.', initials: 'SL', avatarColor: '#a8bfd4', rating: 5, date: '02/10/24', title: 'CLINICALLY PROVEN', body: "After 6 months of use, I'm a believer. My enamel feels stronger than ever.", helpful: 9, notHelpful: 0, verified: true },
+      { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 4, date: '01/05/24', title: 'EFFECTIVE, BUT PRICY', body: "This product definitely works - my dentist noticed the difference immediately. It pays for itself in reduced dental bills.", helpful: 5, notHelpful: 1, verified: true },
+    ],
+  },
+  'smarts-junior': {
+    id: 10,
+    name: 'Junior Smarts',
+    category: 'SMARTS',
+    price: 55.00,
+    rating: 4.9,
+    reviewCount: 312,
+    description: 'Introducing Denta Smarts - our intelligent enamel protection serum that uses advanced nanotechnology to repair and strengthen weakened tooth enamel. Formulated with dentists and backed by clinical studies, this powerful daily treatment reverses early signs of decay, reduces sensitivity, and creates a protective barrier that lasts up to 12 hours.',
+    variants: ['Default'],
+    variantLabel: 'Type',
+    images: [
+      '/Images/Products/Smarts/Prime.png',
+    ],
+    accordion: {
+      details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',
+      ingredients: 'AQUA (WATER), NANO-HYDROXYAPATITE, XYLITOL, GLYCERIN, SODIUM FLUORIDE, POTASSIUM NITRATE, CARRAGEENAN, SODIUM BENZOATE, SPEARMINT OIL.',
+      'how-to-use': ['Apply a small amount to a clean toothbrush', 'Brush gently for 2 minutes', 'Spit and leave residue for 5 minutes before rinsing', 'Use twice daily morning and night'],
+    },
+    sectionImage: '/Images/Products/Smarts/Prime.png',
+    sectionTitle: ['Science you can', 'trust for your smile'],
+    sectionBody: 'Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.',
+    postcardImage: '/Images/Products/Smarts/Prime.png',
+    postcardTitle: ['Stories From', 'our users'],
+    postcardBody: 'Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.',
+    postcardQuote: '"My dentist couldn\'t believe the improvement in my enamel health in just 6 months." — Sarah M., Verified User',
+    notes: [
+      { label: 'nano-hydroxyapatite', description: 'mineral restoration · enamel rebuilding', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'fluoride-free', description: 'safe · natural · effective', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'xylitol enriched', description: 'cavity prevention · pH balancing', image: '/Images/Products/Smarts/Prime.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Dr. James K.', initials: 'JK', avatarColor: '#d4b896', rating: 5, date: '05/15/24', title: 'DENTIST APPROVED!', body: 'As a practicing dentist, I can confidently say this product is revolutionary. My patients show measurable improvement in enamel strength after just 3 months.', helpful: 24, notHelpful: 0, verified: true },
+      { id: 2, name: 'Lisa M.', initials: 'LM', avatarColor: '#b8c9a3', rating: 5, date: '04/28/24', title: 'SENSITIVITY GONE!', body: "I've suffered from severe tooth sensitivity for years. After using Denta Smarts for 6 weeks, my sensitivity is completely gone. Life changing!", helpful: 18, notHelpful: 0, verified: true },
+      { id: 3, name: 'Robert T.', initials: 'RT', avatarColor: '#c9b0b0', rating: 5, date: '03/20/24', title: 'MY DENTIST WAS IMPRESSED', body: 'During my last checkup, my dentist asked what I was doing differently - early cavity signs had reversed.', helpful: 12, notHelpful: 0, verified: true },
+      { id: 4, name: 'Sarah L.', initials: 'SL', avatarColor: '#a8bfd4', rating: 5, date: '02/10/24', title: 'CLINICALLY PROVEN', body: "After 6 months of use, I'm a believer. My enamel feels stronger than ever.", helpful: 9, notHelpful: 0, verified: true },
+      { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 4, date: '01/05/24', title: 'EFFECTIVE, BUT PRICY', body: "This product definitely works - my dentist noticed the difference immediately. It pays for itself in reduced dental bills.", helpful: 5, notHelpful: 1, verified: true },
+    ],
+  },
+  'smarts-dia': {
+    id: 11,
+    name: 'Dia Smarts',
+    category: 'SMARTS',
+    price: 55.00,
+    rating: 4.9,
+    reviewCount: 312,
+    description: 'Introducing Denta Smarts - our intelligent enamel protection serum that uses advanced nanotechnology to repair and strengthen weakened tooth enamel. Formulated with dentists and backed by clinical studies, this powerful daily treatment reverses early signs of decay, reduces sensitivity, and creates a protective barrier that lasts up to 12 hours.',
+    variants: ['Default'],
+    variantLabel: 'Type',
+    images: [
+      '/Images/Products/Smarts/Prime.png',
+    ],
+    accordion: {
+      details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',
+      ingredients: 'AQUA (WATER), NANO-HYDROXYAPATITE, XYLITOL, GLYCERIN, SODIUM FLUORIDE, POTASSIUM NITRATE, CARRAGEENAN, SODIUM BENZOATE, SPEARMINT OIL.',
+      'how-to-use': ['Apply a small amount to a clean toothbrush', 'Brush gently for 2 minutes', 'Spit and leave residue for 5 minutes before rinsing', 'Use twice daily morning and night'],
+    },
+    sectionImage: '/Images/Products/Smarts/Prime.png',
+    sectionTitle: ['Science you can', 'trust for your smile'],
+    sectionBody: 'Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.',
+    postcardImage: '/Images/Products/Smarts/Prime.png',
+    postcardTitle: ['Stories From', 'our users'],
+    postcardBody: 'Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.',
+    postcardQuote: '"My dentist couldn\'t believe the improvement in my enamel health in just 6 months." — Sarah M., Verified User',
+    notes: [
+      { label: 'nano-hydroxyapatite', description: 'mineral restoration · enamel rebuilding', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'fluoride-free', description: 'safe · natural · effective', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'xylitol enriched', description: 'cavity prevention · pH balancing', image: '/Images/Products/Smarts/Prime.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Dr. James K.', initials: 'JK', avatarColor: '#d4b896', rating: 5, date: '05/15/24', title: 'DENTIST APPROVED!', body: 'As a practicing dentist, I can confidently say this product is revolutionary. My patients show measurable improvement in enamel strength after just 3 months.', helpful: 24, notHelpful: 0, verified: true },
+      { id: 2, name: 'Lisa M.', initials: 'LM', avatarColor: '#b8c9a3', rating: 5, date: '04/28/24', title: 'SENSITIVITY GONE!', body: "I've suffered from severe tooth sensitivity for years. After using Denta Smarts for 6 weeks, my sensitivity is completely gone. Life changing!", helpful: 18, notHelpful: 0, verified: true },
+      { id: 3, name: 'Robert T.', initials: 'RT', avatarColor: '#c9b0b0', rating: 5, date: '03/20/24', title: 'MY DENTIST WAS IMPRESSED', body: 'During my last checkup, my dentist asked what I was doing differently - early cavity signs had reversed.', helpful: 12, notHelpful: 0, verified: true },
+      { id: 4, name: 'Sarah L.', initials: 'SL', avatarColor: '#a8bfd4', rating: 5, date: '02/10/24', title: 'CLINICALLY PROVEN', body: "After 6 months of use, I'm a believer. My enamel feels stronger than ever.", helpful: 9, notHelpful: 0, verified: true },
+      { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 4, date: '01/05/24', title: 'EFFECTIVE, BUT PRICY', body: "This product definitely works - my dentist noticed the difference immediately. It pays for itself in reduced dental bills.", helpful: 5, notHelpful: 1, verified: true },
+    ],
+  },
+  'smarts-pink': {
+    id: 12,
+    name: 'Pink Smarts',
+    category: 'SMARTS',
+    price: 55.00,
+    rating: 4.9,
+    reviewCount: 312,
+    description: 'Introducing Denta Smarts - our intelligent enamel protection serum that uses advanced nanotechnology to repair and strengthen weakened tooth enamel. Formulated with dentists and backed by clinical studies, this powerful daily treatment reverses early signs of decay, reduces sensitivity, and creates a protective barrier that lasts up to 12 hours.',
+    variants: ['Default'],
+    variantLabel: 'Type',
+    images: [
+      '/Images/Products/Smarts/Prime.png',
+    ],
+    accordion: {
+      details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',
+      ingredients: 'AQUA (WATER), NANO-HYDROXYAPATITE, XYLITOL, GLYCERIN, SODIUM FLUORIDE, POTASSIUM NITRATE, CARRAGEENAN, SODIUM BENZOATE, SPEARMINT OIL.',
+      'how-to-use': ['Apply a small amount to a clean toothbrush', 'Brush gently for 2 minutes', 'Spit and leave residue for 5 minutes before rinsing', 'Use twice daily morning and night'],
+    },
+    sectionImage: '/Images/Products/Smarts/Prime.png',
+    sectionTitle: ['Science you can', 'trust for your smile'],
+    sectionBody: 'Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.',
+    postcardImage: '/Images/Products/Smarts/Prime.png',
+    postcardTitle: ['Stories From', 'our users'],
+    postcardBody: 'Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.',
+    postcardQuote: '"My dentist couldn\'t believe the improvement in my enamel health in just 6 months." — Sarah M., Verified User',
+    notes: [
+      { label: 'nano-hydroxyapatite', description: 'mineral restoration · enamel rebuilding', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'fluoride-free', description: 'safe · natural · effective', image: '/Images/Products/Smarts/Prime.png' },
+      { label: 'xylitol enriched', description: 'cavity prevention · pH balancing', image: '/Images/Products/Smarts/Prime.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Dr. James K.', initials: 'JK', avatarColor: '#d4b896', rating: 5, date: '05/15/24', title: 'DENTIST APPROVED!', body: 'As a practicing dentist, I can confidently say this product is revolutionary. My patients show measurable improvement in enamel strength after just 3 months.', helpful: 24, notHelpful: 0, verified: true },
+      { id: 2, name: 'Lisa M.', initials: 'LM', avatarColor: '#b8c9a3', rating: 5, date: '04/28/24', title: 'SENSITIVITY GONE!', body: "I've suffered from severe tooth sensitivity for years. After using Denta Smarts for 6 weeks, my sensitivity is completely gone. Life changing!", helpful: 18, notHelpful: 0, verified: true },
+      { id: 3, name: 'Robert T.', initials: 'RT', avatarColor: '#c9b0b0', rating: 5, date: '03/20/24', title: 'MY DENTIST WAS IMPRESSED', body: 'During my last checkup, my dentist asked what I was doing differently - early cavity signs had reversed.', helpful: 12, notHelpful: 0, verified: true },
+      { id: 4, name: 'Sarah L.', initials: 'SL', avatarColor: '#a8bfd4', rating: 5, date: '02/10/24', title: 'CLINICALLY PROVEN', body: "After 6 months of use, I'm a believer. My enamel feels stronger than ever.", helpful: 9, notHelpful: 0, verified: true },
+      { id: 5, name: 'Amanda P.', initials: 'AP', avatarColor: '#d4c4a8', rating: 4, date: '01/05/24', title: 'EFFECTIVE, BUT PRICY', body: "This product definitely works - my dentist noticed the difference immediately. It pays for itself in reduced dental bills.", helpful: 5, notHelpful: 1, verified: true },
+    ],
+  },
+  'bits-dentabits': {
+    id: 13,
+    name: 'Dentabits',
+    category: 'BITS',
+    price: 45.00,
+    rating: 4.8,
+    reviewCount: 256,
+    description: 'Introducing Dentabits - our revolutionary whitening bits that transform your oral care routine. These eco-friendly, dissolvable bits pack a powerful punch of natural enamel-safe ingredients that remove surface stains while freshening breath. Perfect for travel and daily use.',
+    variants: ['Mint', 'Cinnamon'],
+    variantLabel: 'Flavour',
+    images: [
+      '/Images/Products/Bits/Dentabits.png',
+      '/Images/Products/Bits/Dentabits1.png',
+      '/Images/Products/Bits/Dentabits2.png',
+      '/Images/Products/Bits/Dentabits3.png',
+      '/Images/Products/Bits/Dentabits4.png',
+    ],
+    accordion: {
+      details: 'Dentabits are compact, dissolvable oral care tablets packed with enamel-safe whitening minerals and breath-freshening actives.',
+      ingredients: 'XYLITOL, SODIUM BICARBONATE, CALCIUM CARBONATE, MAGNESIUM STEARATE, SPEARMINT OIL, PEPPERMINT OIL, STEVIA LEAF EXTRACT.',
+      'how-to-use': ['Pop one bit in your mouth and let it dissolve', 'Brush teeth as normal for 2 minutes', 'Rinse thoroughly', 'Use twice daily for best results'],
+    },
+    sectionImage: '/Images/Products/Bits/Dentabits.png',
+    sectionTitle: ['Years of Research', 'in every bit'],
+    sectionBody: 'After years of research and development, we created Dentabits to revolutionize oral care. Our dissolvable whitening bits combine natural ingredients with advanced technology to deliver professional-level results from the comfort of your home.',
+    postcardImage: '/Images/Products/Bits/Dentabits.png',
+    postcardTitle: ['Inspired By', 'nature'],
+    postcardBody: 'Dentabits was born from a desire to make oral care sustainable and effective. Every ingredient is sourced responsibly, and our zero-plastic packaging means you can care for your smile while caring for the planet.',
+    postcardQuote: '"Dentabits represents the future of oral care - effective, convenient, and environmentally responsible." — Dr. Amanda Chen',
+    notes: [
+      { label: 'natural', description: 'fluoride free · eco-friendly · cruelty free', image: '/Images/Products/Bits/Dentabits.png' },
+      { label: 'whitening', description: 'polishing minerals · enamel safe · stain removal', image: '/Images/Products/Bits/Dentabits.png' },
+      { label: 'fresh', description: 'long lasting · minty cool · alcohol free', image: '/Images/Products/Bits/Dentabits.png' },
+    ],
+    reviewList: [
+      { id: 1, name: 'Sarah J.', initials: 'SJ', avatarColor: '#d4b896', rating: 5, date: '05/15/24', title: 'AMAZING RESULTS', body: "I've been using Dentabits for two weeks and my teeth are noticeably whiter. The bits are so convenient for travel.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 2, name: 'Mike T.', initials: 'MT', avatarColor: '#b8c9a3', rating: 5, date: '04/28/24', title: 'CONVENIENT & EFFECTIVE', body: 'As someone who travels frequently, these bits are a game-changer. No more bulky toothpaste tubes.', helpful: 0, notHelpful: 0, verified: true },
+      { id: 3, name: 'Emma W.', initials: 'EW', avatarColor: '#c9b0b0', rating: 4, date: '03/20/24', title: 'LOVE THE ECO-FRIENDLY ASPECT', body: "Finally, a toothpaste alternative that's good for the planet! The dissolvable bits eliminate plastic waste.", helpful: 0, notHelpful: 0, verified: true },
+      { id: 4, name: 'Lisa C.', initials: 'LC', avatarColor: '#a8bfd4', rating: 5, date: '02/15/24', title: 'MY NEW FAVORITE', body: "Dentabits has completely converted me. My dentist even commented on how much cleaner my teeth look!", helpful: 0, notHelpful: 0, verified: true },
+      { id: 5, name: 'David L.', initials: 'DL', avatarColor: '#d4c4a8', rating: 5, date: '01/30/24', title: 'WORTH EVERY PENNY', body: 'The whitening effects are real. After a month of use, coffee and wine stains have significantly reduced.', helpful: 0, notHelpful: 0, verified: true },
     ],
   },
 };
@@ -526,7 +880,14 @@ function ReviewsSection({ product }) {
 }
 
 export default function ProductPage({ params }) {
-  const product = ALL_PRODUCTS[params.slug];
+  let slug;
+  if (params instanceof Promise) {
+    const resolvedParams = use(params);
+    slug = resolvedParams.slug;
+  } else {
+    slug = params.slug;
+  }
+  const product = ALL_PRODUCTS[slug];
   if (!product) return notFound();
 
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
@@ -534,14 +895,21 @@ export default function ProductPage({ params }) {
   const [mainImage, setMainImage] = useState(product.images[0]);
   const [thumbStart, setThumbStart] = useState(0);
   const [openAccordion, setOpenAccordion] = useState('dental-nutrition');
+  const [isAdding, setIsAdding] = useState(false);
 
   const VISIBLE = 5;
 
-  const { addItem } = useCart();
+  const { addItemNoDrawer, setDrawerOpen } = useCart();
   const { currency } = useCountry();
 
   const handleAddToBag = () => {
-    addItem({ id: product.id, name: product.name, variant: selectedVariant, price: product.price, originalPrice: null, qty: quantity, promo: null, image: product.images[0] });
+    setIsAdding(true);
+    addItemNoDrawer({ id: product.id, name: product.name, variant: selectedVariant, price: product.price, originalPrice: null, qty: quantity, promo: null, image: product.images[0] });
+    // Show loader for 800ms, then open drawer
+    setTimeout(() => {
+      setIsAdding(false);
+      setDrawerOpen(true);
+    }, 800);
   };
 
   return (
@@ -608,7 +976,19 @@ export default function ProductPage({ params }) {
                       <input type="text" value={quantity} readOnly className="flex-1 border-none border-x border-secondary-blue text-center text-base focus:outline-none min-w-0 text-primary-brown cursor-default" />
                       <button className="w-10 p-2 border-none cursor-pointer text-xl transition-colors hover:bg-amber-50 flex items-center justify-center shrink-0 bg-white text-primary-brown" onClick={() => setQuantity(quantity + 1)}>+</button>
                   </div>
-                  <button className="flex-1 p-4 border border-secondary-blue rounded text-base font-bold uppercase tracking-wider cursor-pointer transition-colors w-full sm:w-auto h-14 text-primary-brown hover:bg-secondary-blue/5" onClick={handleAddToBag}>ADD TO BAG</button>
+                  <button className="flex-1 p-4 border border-secondary-blue rounded text-base font-bold uppercase tracking-wider cursor-pointer transition-colors w-full sm:w-auto h-14 text-primary-brown hover:bg-secondary-blue/5 flex items-center justify-center gap-2" onClick={handleAddToBag} disabled={isAdding}>
+                    {isAdding ? (
+                      <>
+                        <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeDasharray="30" strokeLinejoin="round" className="opacity-30"/>
+                          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>ADDING...</span>
+                      </>
+                    ) : (
+                      'ADD TO BAG'
+                    )}
+                  </button>
                 </div>
               </div>
               <div className="mt-8 pt-8">

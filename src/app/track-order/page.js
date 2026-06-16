@@ -21,7 +21,7 @@ export default function TrackOrderPage() {
       trackingNumber: trackingNumber,
       status: 'In Transit',
       estimatedDelivery: '2-3 business days',
-      carrier: 'DPD'
+      carrier: 'DTDC'
     });
     setError('');
   };
@@ -79,12 +79,12 @@ export default function TrackOrderPage() {
                     </div>
                   </div>
                   <a
-                    href="https://www.dpd.co.uk"
+                    href="https://www.dtdc.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block mt-6 px-6 py-3 border-2 border-secondary-blue text-secondary-blue font-bold uppercase tracking-wider rounded-lg hover:bg-secondary-blue hover:text-white transition-colors"
                   >
-                    Track on DPD Website
+                    Track on DTDC Website
                   </a>
                 </div>
               )}
@@ -94,9 +94,10 @@ export default function TrackOrderPage() {
                 If you're having trouble tracking your order, please contact our customer service team:
               </p>
               <ul className="text-sm leading-7 text-slate-600 list-disc pl-6">
-                <li>Email: contactus@moroccanoil.com</li>
+                <li>Email: <a href="mailto:reachthebest@hetafu.com" className="text-blue-500">reachthebest@hetafu.com</a></li>
+                <li>Phone: <a href="tel:+919876543210" className="text-blue-500">+91 98765 43210</a> (Mon-Sat, 9:00 AM - 6:00 PM IST)</li>
                 <li>Check your order confirmation email for your tracking number</li>
-                <li>Track your order directly on <a href="https://www.dpd.co.uk" target="_blank" rel="noopener noreferrer" className="underline">DPD's website</a></li>
+                <li>Track your order directly on <a href="https://www.dtdc.com" target="_blank" rel="noopener noreferrer" className="underline">DTDC's website</a></li>
               </ul>
             </div>
           </div>

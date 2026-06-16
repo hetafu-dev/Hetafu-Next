@@ -61,3 +61,12 @@ body {
 .products-snap-section {
   scroll-snap-align: start;
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

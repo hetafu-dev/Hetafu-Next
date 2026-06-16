@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Search, Handbag, User, Menu, X } from "lucide-react";
+import { MapPin, Search, Handbag, User, Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { IN, JP, US, CA, MX, BR, AT, BE, DK, DE, ES, FI, FR, GR, GB, IT } from "country-flag-icons/react/3x2";
 import { FaTooth } from "react-icons/fa6";
@@ -10,46 +10,91 @@ import { useCart } from "@/app/context/CartContext";
 import { useCountry } from "@/app/context/CountryContext";
 
 // All products data for search
-const ALL_PRODUCTS = {
-  pops: {
+const ALL_PRODUCTS = [
+  {
     id: 1,
-    name: 'Dollipops',
-    category: 'POPS',
-    price: 75.00,
-    slug: 'pops',
-    image: '/Images/Products/Dollipops/Dollipop.png',
-    description: 'Our professional-grade teeth whitening strips deliver professional-level results from the comfort of home.',
-  },
-  bits: {
-    id: 2,
-    name: 'Dentabits',
-    category: 'BITS',
-    price: 45.00,
-    slug: 'bits',
-    image: '/Images/Products/CUTE/cutebits.png',
-    description: 'Revolutionary dissolvable whitening bits that transform your oral care routine.',
-  },
-  cute: {
-    id: 3,
-    name: 'Cute Mouthwash',
-    category: 'CUTE',
-    price: 35.00,
-    slug: 'cute',
-    image: '/Images/Products/CUTE/cutemouthwash1.png',
-    description: 'Gentle, alcohol-free family-friendly mouthwash that keeps breath fresh all day.',
-  },
-  smarts: {
-    id: 4,
-    name: 'Denta Smarts',
+    name: 'Prime Smarts',
     category: 'SMARTS',
     price: 55.00,
-    slug: 'smarts',
+    slug: 'smarts-prime',
     image: '/Images/Products/Smarts/Prime.png',
     description: 'Advanced nanotechnology enamel protection serum that repairs and strengthens weakened tooth enamel.',
   },
-};
+  {
+    id: 2,
+    name: 'Junior Smarts',
+    category: 'SMARTS',
+    price: 55.00,
+    slug: 'smarts-junior',
+    image: '/Images/Products/Smarts/Prime.png',
+    description: 'Advanced nanotechnology enamel protection serum designed for younger users.',
+  },
+  {
+    id: 3,
+    name: 'Dia Smarts',
+    category: 'SMARTS',
+    price: 55.00,
+    slug: 'smarts-dia',
+    image: '/Images/Products/Smarts/Prime.png',
+    description: 'Advanced nanotechnology enamel protection serum for daily use.',
+  },
+  {
+    id: 4,
+    name: 'Pink Smarts',
+    category: 'SMARTS',
+    price: 55.00,
+    slug: 'smarts-pink',
+    image: '/Images/Products/Smarts/Prime.png',
+    description: 'Advanced nanotechnology enamel protection serum with a gentle pink formula.',
+  },
+  {
+    id: 5,
+    name: 'Dentabits',
+    category: 'BITS',
+    price: 45.00,
+    slug: 'bits-dentabits',
+    image: '/Images/Products/Bits/Bits.png',
+    description: 'Revolutionary dissolvable whitening bits that transform your oral care routine.',
+  },
+  {
+    id: 6,
+    name: 'Powder',
+    category: 'CUTE',
+    price: 35.00,
+    slug: 'cute-powder',
+    image: '/Images/Products/CUTE/cutepowder.png',
+    description: 'Gentle, alcohol-free family-friendly mouthwash powder that keeps breath fresh all day.',
+  },
+  {
+    id: 7,
+    name: 'Tablets',
+    category: 'CUTE',
+    price: 35.00,
+    slug: 'cute-tablets',
+    image: '/Images/Products/CUTE/cutetablets.png',
+    description: 'Convenient dissolvable whitening tablets for on-the-go oral care.',
+  },
+  {
+    id: 8,
+    name: 'Green Apple',
+    category: 'POPS',
+    price: 75.00,
+    slug: 'pops-green-apple',
+    image: '/Images/Products/Dollipops/Dollipop.png',
+    description: 'Our professional-grade teeth whitening strips in refreshing green apple flavor.',
+  },
+  {
+    id: 9,
+    name: 'Mixed Berry',
+    category: 'POPS',
+    price: 75.00,
+    slug: 'pops-mixed-berry',
+    image: '/Images/Products/Dollipops/Dollipop.png',
+    description: 'Our professional-grade teeth whitening strips in delicious mixed berry flavor.',
+  },
+];
 
-const productsList = Object.values(ALL_PRODUCTS);
+const productsList = ALL_PRODUCTS;
 
 const flagMap = {
   IN: IN,
@@ -80,7 +125,11 @@ export default function Navbar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [countrySearch, setCountrySearch] = useState("");
+  const [expandedRegions, setExpandedRegions] = useState({ ASIA: true, AMERICA: true, EUROPE: true });
   const searchInputRef = useRef(null);
+  const countrySearchRef = useRef(null);
+  const countryDropdownRef = useRef(null);
   const { itemCount, setDrawerOpen } = useCart();
   const { selectedCountry, setSelectedCountry, countriesByRegion } = useCountry();
 
@@ -116,11 +165,27 @@ export default function Navbar() {
       if (e.key === 'Escape') {
         setSearchOpen(false);
         setSearchQuery("");
+        setShowCountryDropdown(false);
+        setCountrySearch("");
       }
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, []);
+
+  // Close country dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(event.target)) {
+        setShowCountryDropdown(false);
+        setCountrySearch("");
+      }
+    };
+    if (showCountryDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showCountryDropdown]);
 
   return (
     <>
@@ -128,42 +193,113 @@ export default function Navbar() {
       <div className="bg-primary-brown text-white text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-7">
           {/* Country selector */}
-          <div className="relative">
+          <div className="relative" ref={countryDropdownRef}>
             <button
               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <div className="w-5 h-4 rounded-full overflow-hidden">
+              <div className="w-5 h-4 rounded-full overflow-hidden shadow-sm">
                 <FlagIcon code={selectedCountry.countryCode} />
               </div>
-              <span className="font-bold">{selectedCountry.name}</span>
+              <span className="font-bold tracking-wide">{selectedCountry.name}</span>
+              {showCountryDropdown ? (
+                <ChevronUp size={14} className="text-white/80" />
+              ) : (
+                <ChevronDown size={14} className="text-white/80" />
+              )}
             </button>
 
             {/* Country dropdown */}
             {showCountryDropdown && (
-              <div className="absolute top-full left-0 mt-2 bg-white text-gray-900 rounded-lg shadow-lg z-50 w-72 max-h-96 overflow-y-auto">
-                {Object.entries(countriesByRegion).map(([region, countries]) => (
-                  <div key={region}>
-                    <div className="px-4 py-3 font-bold text-sm border-b text-gray-900 bg-gray-50 sticky top-0">
-                      {region}
-                    </div>
-                    {countries.map((country) => (
-                      <button
-                        key={country.code}
-                        onClick={() => {
-                          setSelectedCountry(country);
-                          setShowCountryDropdown(false);
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 border-b text-left"
-                      >
-                        <div className="w-6 h-4 rounded-full overflow-hidden">
-                          <FlagIcon code={country.countryCode} />
-                        </div>
-                        <span className="flex-1">{country.name}</span>
-                      </button>
-                    ))}
+              <div className="absolute top-full left-0 mt-3 bg-white text-gray-900 rounded-xl shadow-2xl z-50 w-80 overflow-hidden border border-gray-100">
+                {/* Search input */}
+                <div className="p-3 border-b border-gray-100 bg-gray-50/50">
+                  <div className="relative">
+                    <Search size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <input
+                      ref={countrySearchRef}
+                      type="text"
+                      value={countrySearch}
+                      onChange={(e) => setCountrySearch(e.target.value)}
+                      placeholder="Search country..."
+                      className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-secondary-blue focus:ring-1 focus:ring-secondary-blue/20 transition-all"
+                    />
                   </div>
-                ))}
+                </div>
+
+                {/* Country list */}
+                <div className="max-h-80 overflow-y-auto">
+                  {Object.entries(countriesByRegion).map(([region, countries]) => {
+                    const filteredCountries = countries.filter((country) =>
+                      country.name.toLowerCase().includes(countrySearch.toLowerCase())
+                    );
+                    if (filteredCountries.length === 0) return null;
+
+                    const isExpanded = expandedRegions[region] ?? true;
+
+                    return (
+                      <div key={region} className="border-b border-gray-100 last:border-b-0">
+                        <button
+                          onClick={() =>
+                            setExpandedRegions((prev) => ({
+                              ...prev,
+                              [region]: !prev[region],
+                            }))
+                          }
+                          className="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50/80 hover:bg-gray-100 transition-colors"
+                        >
+                          <span className="text-xs font-bold tracking-wider text-gray-600 uppercase">
+                            {region}
+                          </span>
+                          {isExpanded ? (
+                            <ChevronUp size={14} className="text-gray-400" />
+                          ) : (
+                            <ChevronDown size={14} className="text-gray-400" />
+                          )}
+                        </button>
+
+                        {isExpanded && (
+                          <div className="bg-white">
+                            {filteredCountries.map((country) => (
+                              <button
+                                key={country.code}
+                                onClick={() => {
+                                  setSelectedCountry(country);
+                                  setShowCountryDropdown(false);
+                                  setCountrySearch("");
+                                }}
+                                className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
+                                  selectedCountry.code === country.code
+                                    ? "bg-secondary-blue/10 text-secondary-blue"
+                                    : "hover:bg-gray-50 text-gray-700"
+                                }`}
+                              >
+                                <div className="w-6 h-4 rounded-full overflow-hidden shadow-sm flex-shrink-0">
+                                  <FlagIcon code={country.countryCode} />
+                                </div>
+                                <span className="flex-1 text-sm font-medium">{country.name}</span>
+                                {selectedCountry.code === country.code && (
+                                  <div className="w-1.5 h-1.5 rounded-full bg-secondary-blue" />
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {countrySearch && Object.values(countriesByRegion).every((countries) =>
+                    !countries.some((country) =>
+                      country.name.toLowerCase().includes(countrySearch.toLowerCase())
+                    )
+                  ) && (
+                    <div className="px-4 py-6 text-center">
+                      <p className="text-gray-400 text-sm">No countries found</p>
+                      <p className="text-gray-300 text-xs mt-1">Try a different search term</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -217,11 +353,11 @@ export default function Navbar() {
 
             {/* Search icon */}
             <div className="p-2 flex items-center gap-6 relative" >
-              <button onClick={() => setSearchOpen(true)} className="cursor-pointer"><Search size={20} /></button>
+              <button onClick={() => setSearchOpen(!searchOpen)} className="cursor-pointer"><Search size={20} /></button>
               
               {/* Search Dropdown - Positioned relative to this container */}
               {searchOpen && (
-                <div className="absolute right-0 top-full mt-3 w-96 bg-white border border-gray-200 shadow-2xl rounded-xl z-50 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+                <div className="absolute right-0 top-full mt-3 w-96 bg-background border border-gray-200 shadow-2xl rounded-xl z-50 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
                   {/* Search Input */}
                   <div className="p-4 border-b border-gray-100">
                     <div className="relative">
@@ -232,7 +368,7 @@ export default function Navbar() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search products..."
-                        className="w-full pl-10 pr-10 py-3 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:bg-white focus:border-secondary-blue transition-all duration-300"
+                        className="w-full pl-10 pr-10 py-3 text-sm bg-background border border-gray-200 rounded-lg focus:outline-none focus:bg-background focus:border-secondary-blue transition-all duration-300"
                       />
                       <button
                         onClick={() => {
@@ -266,9 +402,9 @@ export default function Navbar() {
                                   setSearchOpen(false);
                                   setSearchQuery("");
                                 }}
-                                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-200"
+                                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition-colors duration-200"
                               >
-                                <div className="w-14 h-14 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                                <div className="w-14 h-14 bg-gray-200 rounded overflow-hidden flex-shrink-0">
                                   <Image
                                     src={product.image}
                                     alt={product.name}
@@ -290,7 +426,7 @@ export default function Navbar() {
                     ) : (
                       // Show quick list when no search yet
                       <div className="py-2">
-                        <p className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Quick Access</p>
+                        <p className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Bestsellers</p>
                         {productsList.map((product) => (
                           <Link
                             key={product.id}
@@ -299,9 +435,9 @@ export default function Navbar() {
                               setSearchOpen(false);
                               setSearchQuery("");
                             }}
-                            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-200"
+                            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition-colors duration-200"
                           >
-                            <div className="w-14 h-14 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                            <div className="w-14 h-14 bg-gray-200 rounded overflow-hidden flex-shrink-0">
                               <Image
                                 src={product.image}
                                 alt={product.name}

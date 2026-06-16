@@ -29,11 +29,19 @@ export function CartProvider({ children }) {
     setDrawerOpen(true);
   };
 
+  const addItemNoDrawer = (item) => {
+    setItems((prev) => {
+      const exists = prev.find((i) => i.id === item.id);
+      if (exists) return prev.map((i) => i.id === item.id && i.qty !== null ? { ...i, qty: i.qty + 1 } : i);
+      return [...prev, { ...item, qty: 1 }];
+    });
+  };
+
   const subtotal = items.reduce((sum, i) => sum + i.price * (i.qty ?? 1), 0);
   const itemCount = items.reduce((sum, i) => sum + (i.qty ?? 1), 0);
 
   return (
-    <CartContext.Provider value={{ items, removeItem, updateQty, addItem, subtotal, itemCount, drawerOpen, setDrawerOpen }}>
+    <CartContext.Provider value={{ items, removeItem, updateQty, addItem, addItemNoDrawer, subtotal, itemCount, drawerOpen, setDrawerOpen }}>
       {children}
     </CartContext.Provider>
   );

@@ -1,54 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 
-const products = [
-  {
-    id: 1,
-    name: "Dollipop",
-    reviews: 31,
-    rating: 5,
-    price: "₹86",
-    image: "/Images/Products/Dollipops/Dollipop.png",
-  },
-  {
-    id: 2,
-    name: "Denta Smarts",
-    reviews: 1997,
-    rating: 4.5,
-    price: "₹76",
-    priceNote: "₹126.67/100ml",
-    sizes: ["60ML", "10ML"],
-    image: "/Images/Products/Smarts/Prime.png",
-  },
-  {
-    id: 3,
-    name: "Cute Mouthwash Powder",
-    reviews: 25,
-    rating: 4.5,
-    price: "₹38",
-    image: "/Images/Products/CUTE/cutepowder.png",
-  },
-  {
-    id: 4,
-    name: "CUTE Bits",
-    reviews: 701,
-    rating: 5,
-    price: "₹18.50",
-    priceNote: "₹7.40/100ml",
-    image: "/Images/Products/CUTE/cutebits.png",
-  },
-  {
-    id: 5,
-    name: "Dentabits",
-    reviews: 142,
-    rating: 4,
-    price: "₹45",
-    image: "/Images/Products/Bits/Bits.png",
-  },
+const baseProducts = [
+  { id: 1, name: 'Prime Smarts', slug: 'smarts-prime', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 2, name: 'Junior Smarts', slug: 'smarts-junior', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 3, name: 'Dia Smarts', slug: 'smarts-dia', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 4, name: 'Pink Smarts', slug: 'smarts-pink', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 5, name: 'Dentabits', slug: 'bits-dentabits', image: '/Images/Products/Bits/Dentabits.png', price: 45.00, rating: 4.8, reviews: 256 },
+  { id: 6, name: 'Powder', slug: 'cute-powder', image: '/Images/Products/CUTE/cutepowder.png', price: 35.00, rating: 4.6, reviews: 189 },
+  { id: 7, name: 'Tablets', slug: 'cute-tablets', image: '/Images/Products/CUTE/cutetablets.png', price: 35.00, rating: 4.6, reviews: 189 },
+  { id: 8, name: 'Green Apple', slug: 'pops-green-apple', image: '/Images/Products/Dollipops/Dollipop.png', price: 75.00, rating: 4.7, reviews: 347 },
+  { id: 9, name: 'Mixed Berry', slug: 'pops-mixed-berry', image: '/Images/Products/Dollipops/Mixedberry.png', price: 75.00, rating: 4.7, reviews: 347 },
 ];
+
+const shuffleArray = (arr) => {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 
 function Stars({ rating }) {
   return (
@@ -66,77 +41,70 @@ function Stars({ rating }) {
 }
 
 export default function BestSellers() {
-  const [start, setStart] = useState(0);
   const { addItem } = useCart();
-  const visible = 4;
+  const scrollRef = useRef(null);
+  const [products, setProducts] = useState(baseProducts);
 
-  const prev = () => setStart((s) => Math.max(0, s - 1));
-  const next = () => setStart((s) => Math.min(products.length - visible, s + 1));
+  useEffect(() => {
+    setProducts(shuffleArray(baseProducts));
+  }, []);
 
-  const shown = products.slice(start, start + visible);
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 300;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <section className="py-12 px-4 font-sans text-primary-brown">
-      <h2
-        className="text-center text-3xl tracking-widing mb-10"
-      >
+      <h2 className="text-center text-3xl tracking-widing mb-10">
         BEST SELLERS
       </h2>
 
       <div className="relative max-w-7xl mx-auto">
         {/* Prev arrow */}
         <button
-          onClick={prev}
-          disabled={start === 0}
-          className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 disabled:opacity-20"
+          onClick={() => scroll('left')}
+          className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 hover:opacity-100 transition-opacity"
           aria-label="Previous"
         >
           <ChevronLeft size={28} className="text-primary-brown" />
         </button>
 
-        {/* Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {shown.map((p) => (
-            <div key={p.id} className="flex flex-col">
+        {/* Carousel */}
+        <div
+          ref={scrollRef}
+          className="flex gap-4 overflow-x-auto scroll-smooth pb-4 hide-scrollbar"
+          style={{ scrollBehavior: 'smooth', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {products.map((p) => (
+            <div key={p.id} className="flex flex-col flex-shrink-0" style={{ width: 'calc(25% - 12px)' }}>
               {/* Image */}
-              <div className="relative overflow-hidden bg-gray-100 aspect-[3/4]">
+              <div className="relative overflow-hidden bg-gray-100 aspect-[3/4] mb-3">
                 <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
               </div>
 
               {/* Info */}
-              <div className="pt-3 flex flex-col gap-1 flex-1">
-                <p
-                  className="text-sm font-medium leading-snug text-secondary-blue"
-                >
+              <div className="flex flex-col gap-3 flex-1">
+                <p className="text-md font-bold leading-snug text-primary-brown">
                   {p.name}
                 </p>
                 <div className="flex items-center gap-2">
                   <Stars rating={p.rating} />
-                  <span className="text-xs text-gray-500">{p.reviews} reviews</span>
+                  <span className="text-xs text-gray-500 leading-relaxed">{p.reviews} reviews</span>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="font-semibold text-sm text-primary-brown">
-                    {p.price}
-                  </span>
-                  {p.priceNote && (
-                    <span className="text-xs text-gray-500">{p.priceNote}</span>
-                  )}
-                </div>
-                <p className="text-xs text-gray-400">Including VAT, excluding <span className="underline cursor-pointer">shipping</span></p>
-                {p.sizes && (
-                  <div className="flex gap-2 mt-1">
-                    {p.sizes.map((s) => (
-                      <span key={s} className="text-xs border-b border-current cursor-pointer" style={{ color: "var(--primary-brown)" }}>
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <p className="font-semibold text-sm text-primary-brown mt-1 leading-relaxed">
+                  £{p.price.toFixed(2)}
+                </p>
               </div>
 
               {/* Button */}
               <button
-                onClick={() => addItem({ id: p.id, name: p.name, variant: p.sizes?.[0] ?? 'Standard', price: parseFloat(p.price.replace('₹', '')), originalPrice: null, qty: 1, promo: null, image: p.image })}
+                onClick={() => addItem({ id: p.id, name: p.name, variant: 'Standard', price: p.price, originalPrice: null, qty: 1, promo: null, image: p.image })}
                 className="mt-3 w-full py-3 text-white text-xs tracking-widest font-semibold"
                 style={{ backgroundColor: "var(--primary-brown)" }}
               >
@@ -148,9 +116,8 @@ export default function BestSellers() {
 
         {/* Next arrow */}
         <button
-          onClick={next}
-          disabled={start >= products.length - visible}
-          className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 disabled:opacity-20"
+          onClick={() => scroll('right')}
+          className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 hover:opacity-100 transition-opacity"
           aria-label="Next"
         >
           <ChevronRight size={28} className="text-primary-brown" />
