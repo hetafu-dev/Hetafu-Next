@@ -127,11 +127,18 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [countrySearch, setCountrySearch] = useState("");
   const [expandedRegions, setExpandedRegions] = useState({ ASIA: true, AMERICA: true, EUROPE: true });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const searchInputRef = useRef(null);
   const countrySearchRef = useRef(null);
   const countryDropdownRef = useRef(null);
   const { itemCount, setDrawerOpen } = useCart();
   const { selectedCountry, setSelectedCountry, countriesByRegion } = useCountry();
+
+  // Check if user is logged in
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    setIsLoggedIn(!!user);
+  }, []);
 
   // Filter products based on search query
   const filteredProducts = productsList.filter(product => {
@@ -459,7 +466,7 @@ export default function Navbar() {
                 </div>
               )}
 
-              <Link href="/signin" className="cursor-pointer"><User size={20} /></Link>
+              <Link href={isLoggedIn ? "/account" : "/account/login"} className="cursor-pointer"><User size={20} /></Link>
               <button onClick={() => setDrawerOpen(true)} className="relative cursor-pointer">
                 <Handbag size={20} />
                 {itemCount > 0 && (
