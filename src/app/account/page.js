@@ -20,16 +20,20 @@ export default function AccountPage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
+        const storedUser = localStorage?.getItem('user');
+        const token = localStorage?.getItem('access_token');
+        
+        // If no user or token, redirect to login
+        if (!storedUser || !token) {
+          console.warn('⚠️ No user or token found - redirecting to login');
           router.push('/account/login');
           return;
         }
+        
         setUser(JSON.parse(storedUser));
         
-        // Fetch address count and default address
-        const token = localStorage.getItem('access_token');
-        if (token && !hasInitialized) {
+        // Verify token is still valid by making a test API call
+        if (!hasInitialized) {
           apiClient.setToken(token);
           try {
             const response = await apiClient.get('/customer/addresses');
@@ -39,7 +43,18 @@ export default function AccountPage() {
             const defaultAddr = response.addresses?.find(addr => addr.is_default);
             setDefaultAddress(defaultAddr || null);
           } catch (error) {
-            console.log('Could not fetch addresses');
+            console.error('❌ Failed to fetch addresses:', error.message);
+            // If it's an auth error, clear storage and redirect to login
+            if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+              console.warn('🔐 Token invalid - redirecting to login');
+              localStorage?.removeItem('user');
+              localStorage?.removeItem('access_token');
+              localStorage?.removeItem('refresh_token');
+              apiClient.setToken(null);
+              apiClient.setRefreshToken(null);
+              router.push('/account/login');
+              return;
+            }
           }
         }
       } catch (error) {
@@ -55,11 +70,27 @@ export default function AccountPage() {
     }
   }, [router, hasInitialized]);
 
+  // Listen for token expiration events
+  useEffect(() => {
+    const handleTokenExpired = () => {
+      console.warn('🔐 Token expired - redirecting to login');
+      setUser(null);
+      setLoading(true);
+      router.push('/account/login');
+    };
+    
+    window?.addEventListener('auth:expired', handleTokenExpired);
+    return () => {
+      window?.removeEventListener('auth:expired', handleTokenExpired);
+    };
+  }, [router]);
+
   const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
+    localStorage?.removeItem('access_token');
+    localStorage?.removeItem('refresh_token');
+    localStorage?.removeItem('user');
     apiClient.setToken(null);
+    apiClient.setRefreshToken(null);
     router.push('/account/login');
   };
 

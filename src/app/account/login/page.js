@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from "@/app/Components/Common/Navbar/Page";
@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [csrfToken, setCSRFToken] = useState(null);
   
   // Forgot password states
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -21,6 +22,21 @@ export default function LoginPage() {
   const [forgotData, setForgotData] = useState({ email: '', otp: '', newPassword: '', confirmPassword: '' });
   const [forgotErrors, setForgotErrors] = useState({});
   const [forgotLoading, setForgotLoading] = useState(false);
+
+  // Fetch CSRF token on component mount
+  useEffect(() => {
+    const fetchCSRFToken = async () => {
+      try {
+        console.log('🔐 Fetching CSRF token for login...');
+        const token = await apiClient.fetchCSRFToken();
+        setCSRFToken(token);
+      } catch (error) {
+        console.error('❌ Failed to fetch CSRF token:', error);
+      }
+    };
+
+    fetchCSRFToken();
+  }, []);
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -220,17 +236,28 @@ export default function LoginPage() {
       return;
     }
 
+    // Check if CSRF token is available
+    if (!csrfToken) {
+      setMessage({
+        type: 'error',
+        text: 'Security token not available. Please refresh the page and try again.'
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await apiClient.post('/customer/login', {
         email: formData.email.trim(),
-        password: formData.password
+        password: formData.password,
+        csrf_token: csrfToken  // Include CSRF token
       });
 
       if (response.tokens?.access_token) {
         localStorage.setItem('access_token', response.tokens.access_token);
         if (response.tokens.refresh_token) {
           localStorage.setItem('refresh_token', response.tokens.refresh_token);
+          apiClient.setRefreshToken(response.tokens.refresh_token);
         }
         localStorage.setItem('user', JSON.stringify(response.user));
         apiClient.setToken(response.tokens.access_token);
@@ -239,24 +266,69 @@ export default function LoginPage() {
         setTimeout(() => router.push('/account'), 1500);
       }
     } catch (error) {
+      console.error('Login error:', error);
       let errorText = 'Login failed. Please try again.';
       
       if (error.message) {
-        if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        // Error format can be: "HTTP 422: String should have at least 12 characters"
+        // or: "String should have at least 12 characters"
+        
+        // Handle CSRF errors (403)
+        if (error.message.includes('403') || error.message.includes('CSRF') || error.message.includes('security token')) {
+          errorText = 'Security validation failed. Please refresh the page and try again.';
+          setMessage({ type: 'error', text: errorText });
+        }
+        // Handle rate limiting (429)
+        else if (error.message.includes('429') || error.message.includes('Too many requests')) {
+          const retryMatch = error.message.match(/(\d+)\s*seconds/);
+          const retrySeconds = retryMatch ? retryMatch[1] : '60';
+          errorText = `Too many login attempts. Please try again in ${retrySeconds} seconds.`;
+          setMessage({ type: 'error', text: errorText });
+        } 
+        // Handle validation errors (422)
+        else if (error.message.includes('String should have at least 12 characters')) {
+          errorText = 'Password must be at least 12 characters with uppercase, lowercase, number, and special character.';
+          setErrors({ password: errorText });
+          setMessage({ type: '', text: '' });
+        } else if (error.message.includes('ensure this value has at least 12 characters') || error.message.includes('min_length')) {
+          errorText = 'Password must be at least 12 characters.';
+          setErrors({ password: errorText });
+          setMessage({ type: '', text: '' });
+        } else if (error.message.includes('422') || error.message.includes('Unprocessable')) {
+          if (error.message.includes('password')) {
+            errorText = 'Password must be at least 12 characters with uppercase, lowercase, number, and special character.';
+            setErrors({ password: errorText });
+            setMessage({ type: '', text: '' });
+          } else if (error.message.includes('email')) {
+            errorText = 'Invalid email format.';
+            setErrors({ email: errorText });
+            setMessage({ type: '', text: '' });
+          } else {
+            errorText = 'Please check your input and try again.';
+            setMessage({ type: 'error', text: errorText });
+          }
+        } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
           errorText = 'Invalid email or password. Please check and try again.';
+          setMessage({ type: 'error', text: errorText });
         } else if (error.message.includes('404')) {
           errorText = 'Email address not found. Please check and try again or create a new account.';
+          setMessage({ type: 'error', text: errorText });
         } else if (error.message.includes('Connection')) {
           errorText = 'Connection error. Please check your internet and try again.';
+          setMessage({ type: 'error', text: errorText });
         } else if (error.message.includes('inactive') || error.message.includes('Inactive')) {
           errorText = 'Your account is inactive. Please contact support.';
+          setMessage({ type: 'error', text: errorText });
+        } else if (error.message.includes('locked') || error.message.includes('Account')) {
+          errorText = error.message; // Show the specific lockout or account message
+          setMessage({ type: 'error', text: errorText });
         }
       }
       
-      setMessage({ 
-        type: 'error', 
-        text: errorText
-      });
+      // If no field errors were set, show message error
+      if (Object.keys(errors).length === 0) {
+        setMessage({ type: 'error', text: errorText });
+      }
     } finally {
       setLoading(false);
     }

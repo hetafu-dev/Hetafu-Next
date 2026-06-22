@@ -43,13 +43,26 @@ export default function AddressesPage() {
         last_name: user.last_name || '',
       }));
     }
+    
+    // Listen for token expiration
+    const handleTokenExpired = () => {
+      console.warn('🔐 Token expired - redirecting to login');
+      router.push('/account/login');
+    };
+    window?.addEventListener('auth:expired', handleTokenExpired);
+    
     fetchAddresses();
-  }, []);
+    
+    return () => {
+      window?.removeEventListener('auth:expired', handleTokenExpired);
+    };
+  }, [router]);
 
   const fetchAddresses = async () => {
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage?.getItem('access_token');
       if (!token) {
+        console.warn('⚠️ No token found - redirecting to login');
         router.push('/account/login');
         return;
       }
@@ -57,7 +70,18 @@ export default function AddressesPage() {
       const response = await apiClient.get('/customer/addresses');
       setAddresses(response.addresses || []);
     } catch (error) {
-      console.error('Error fetching addresses:', error);
+      console.error('❌ Error fetching addresses:', error.message);
+      // If it's an auth error, redirect to login
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        console.warn('🔐 Token invalid - redirecting to login');
+        localStorage?.removeItem('user');
+        localStorage?.removeItem('access_token');
+        localStorage?.removeItem('refresh_token');
+        apiClient.setToken(null);
+        apiClient.setRefreshToken(null);
+        router.push('/account/login');
+        return;
+      }
     } finally {
       setLoading(false);
     }
@@ -75,7 +99,11 @@ export default function AddressesPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage?.getItem('access_token');
+      if (!token) {
+        router.push('/account/login');
+        return;
+      }
       apiClient.setToken(token);
       
       // Prepare data without id field
@@ -117,7 +145,10 @@ export default function AddressesPage() {
       setShowForm(false);
       await fetchAddresses();
     } catch (error) {
-      console.error('Error saving address:', error);
+      console.error('❌ Error saving address:', error.message);
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        router.push('/account/login');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -135,12 +166,19 @@ export default function AddressesPage() {
   const handleDeleteAddress = async (id) => {
     if (!confirm('Are you sure you want to delete this address?')) return;
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage?.getItem('access_token');
+      if (!token) {
+        router.push('/account/login');
+        return;
+      }
       apiClient.setToken(token);
       await apiClient.delete(`/customer/addresses/${id}`);
       await fetchAddresses();
     } catch (error) {
-      console.error('Error deleting address:', error);
+      console.error('❌ Error deleting address:', error.message);
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        router.push('/account/login');
+      }
     }
   };
 

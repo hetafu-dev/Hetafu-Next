@@ -20,6 +20,22 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [csrfToken, setCSRFToken] = useState(null);
+
+  // Fetch CSRF token on component mount
+  useEffect(() => {
+    const fetchCSRFToken = async () => {
+      try {
+        console.log('🔐 Fetching CSRF token for registration...');
+        const token = await apiClient.fetchCSRFToken();
+        setCSRFToken(token);
+      } catch (error) {
+        console.error('❌ Failed to fetch CSRF token:', error);
+      }
+    };
+
+    fetchCSRFToken();
+  }, []);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -60,19 +76,30 @@ export default function RegisterPage() {
       return;
     }
 
+    // Check if CSRF token is available
+    if (!csrfToken) {
+      setMessage({
+        type: 'error',
+        text: 'Security token not available. Please refresh the page and try again.'
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await apiClient.post('/customer/register', {
         email: formData.email,
         password: formData.password,
         first_name: formData.firstName,
-        last_name: formData.lastName
+        last_name: formData.lastName,
+        csrf_token: csrfToken  // Include CSRF token
       });
 
       if (response.tokens?.access_token) {
         localStorage.setItem('access_token', response.tokens.access_token);
         if (response.tokens.refresh_token) {
           localStorage.setItem('refresh_token', response.tokens.refresh_token);
+          apiClient.setRefreshToken(response.tokens.refresh_token);
         }
         localStorage.setItem('user', JSON.stringify(response.user));
         apiClient.setToken(response.tokens.access_token);
@@ -81,9 +108,32 @@ export default function RegisterPage() {
         setTimeout(() => router.push('/account'), 1500);
       }
     } catch (error) {
+      console.error('Registration error:', error);
+      let errorText = error.message || 'Registration failed. Please try again.';
+      
+      // Better error message parsing
+      // Error format can be: "HTTP 422: String should have at least 12 characters"
+      // or: "String should have at least 12 characters"
+      
+      if (errorText.includes('String should have at least 12 characters')) {
+        errorText = 'Password must be at least 12 characters with uppercase, lowercase, number, and special character.';
+      } else if (errorText.includes('ensure this value has at least 12 characters') || errorText.includes('min_length')) {
+        errorText = 'Password must be at least 12 characters.';
+      } else if (errorText.includes('password')) {
+        errorText = 'Password must be at least 12 characters with uppercase, lowercase, number, and special character.';
+      } else if (errorText.includes('422') || errorText.includes('Unprocessable')) {
+        errorText = 'Please check your input. Password must be at least 12 characters with uppercase, lowercase, number, and special character.';
+      } else if (errorText.includes('email')) {
+        errorText = 'Email is invalid or already registered.';
+      } else if (errorText.includes('already')) {
+        errorText = 'Email is already registered. Please login or use a different email.';
+      } else if (errorText.includes('403') || errorText.includes('CSRF')) {
+        errorText = 'Security validation failed. Please refresh the page and try again.';
+      }
+      
       setMessage({ 
         type: 'error', 
-        text: error.message || 'Registration failed. Please try again.' 
+        text: errorText
       });
     } finally {
       setLoading(false);
@@ -161,7 +211,7 @@ export default function RegisterPage() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Min 8 characters"
+                placeholder="Min 12 characters"
                 className={`w-full bg-transparent border-b-2 text-sm text-primary-brown placeholder-gray-400 focus:outline-none py-2 transition ${
                   errors.password ? 'border-red-500' : 'border-primary-brown focus:border-secondary-blue'
                 }`}

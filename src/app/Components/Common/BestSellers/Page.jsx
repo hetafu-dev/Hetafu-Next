@@ -5,10 +5,10 @@ import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 
 const baseProducts = [
-  { id: 1, name: 'Prime Smarts', slug: 'smarts-prime', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
-  { id: 2, name: 'Junior Smarts', slug: 'smarts-junior', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
-  { id: 3, name: 'Dia Smarts', slug: 'smarts-dia', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
-  { id: 4, name: 'Pink Smarts', slug: 'smarts-pink', image: '/Images/Products/Smarts/Prime.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 1, name: 'Prime Smarts', slug: 'smarts-prime', image: '/Images/Products/Smarts/prime.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 2, name: 'Junior Smarts', slug: 'smarts-junior', image: '/Images/Products/Smarts/junior.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 3, name: 'Dia Smarts', slug: 'smarts-dia', image: '/Images/Products/Smarts/dia.png', price: 55.00, rating: 4.9, reviews: 312 },
+  { id: 4, name: 'Pink Smarts', slug: 'smarts-pink', image: '/Images/Products/Smarts/pink.png', price: 55.00, rating: 4.9, reviews: 312 },
   { id: 5, name: 'Dentabits', slug: 'bits-dentabits', image: '/Images/Products/Bits/Dentabits.png', price: 45.00, rating: 4.8, reviews: 256 },
   { id: 6, name: 'Powder', slug: 'cute-powder', image: '/Images/Products/CUTE/cutepowder.png', price: 35.00, rating: 4.6, reviews: 189 },
   { id: 7, name: 'Tablets', slug: 'cute-tablets', image: '/Images/Products/CUTE/cutetablets.png', price: 35.00, rating: 4.6, reviews: 189 },

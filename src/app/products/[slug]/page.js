@@ -144,6 +144,10 @@ const ALL_PRODUCTS = {
     variantLabel: 'Type',
     images: [
       '/Images/Products/CUTE/cutepowder.png',
+      '/Images/Products/CUTE/cutepowder1.png',
+      '/Images/Products/CUTE/cutepowder2.png',
+      '/Images/Products/CUTE/cutepowder3.png',
+      '/Images/Products/CUTE/cutepowder4.png',
     ],
     accordion: {
       details: 'Cute is our alcohol-free oral care formula designed for the whole family. Gentle on sensitive gums, tough on bad breath.',
@@ -182,6 +186,10 @@ const ALL_PRODUCTS = {
     variantLabel: 'Type',
     images: [
       '/Images/Products/CUTE/cutetablets.png',
+      '/Images/Products/CUTE/cutetablets1.png',
+      '/Images/Products/CUTE/cutetablets2.png',
+      '/Images/Products/CUTE/cutetablets3.png',
+      '/Images/Products/CUTE/cutetablets4.png',
     ],
     accordion: {
       details: 'Cute is our alcohol-free oral care formula designed for the whole family. Gentle on sensitive gums, tough on bad breath.',
@@ -341,7 +349,11 @@ const ALL_PRODUCTS = {
     variants: ['Default'],
     variantLabel: 'Type',
     images: [
-      '/Images/Products/Smarts/Prime.png',
+      '/Images/Products/Smarts/prime.png',
+      '/Images/Products/Smarts/prime1.png',
+      '/Images/Products/Smarts/prime2.png',
+      '/Images/Products/Smarts/prime3.png',
+      '/Images/Products/Smarts/prime4.png',
     ],
     accordion: {
       details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',
@@ -379,7 +391,11 @@ const ALL_PRODUCTS = {
     variants: ['Default'],
     variantLabel: 'Type',
     images: [
-      '/Images/Products/Smarts/Prime.png',
+      '/Images/Products/Smarts/junior.png',
+      '/Images/Products/Smarts/junior1.png',
+      '/Images/Products/Smarts/junior2.png',
+      '/Images/Products/Smarts/junior3.png',
+      '/Images/Products/Smarts/junior4.png',
     ],
     accordion: {
       details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',
@@ -417,7 +433,11 @@ const ALL_PRODUCTS = {
     variants: ['Default'],
     variantLabel: 'Type',
     images: [
-      '/Images/Products/Smarts/Prime.png',
+      '/Images/Products/Smarts/dia.png',
+      '/Images/Products/Smarts/dia1.png',
+      '/Images/Products/Smarts/dia2.png',
+      '/Images/Products/Smarts/dia3.png',
+      '/Images/Products/Smarts/dia4.png',
     ],
     accordion: {
       details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',
@@ -455,7 +475,11 @@ const ALL_PRODUCTS = {
     variants: ['Default'],
     variantLabel: 'Type',
     images: [
-      '/Images/Products/Smarts/Prime.png',
+      '/Images/Products/Smarts/pink.png',
+      '/Images/Products/Smarts/pink1.png',
+      '/Images/Products/Smarts/pink2.png',
+      '/Images/Products/Smarts/pink3.png',
+      '/Images/Products/Smarts/pink4.png',
     ],
     accordion: {
       details: 'Denta Smarts uses nano-hydroxyapatite technology to actively remineralise and repair tooth enamel at the microscopic level.',

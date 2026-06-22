@@ -59,7 +59,7 @@ const products = [
     category: "SMARTS",
     price: 55.00,
     description: "Advanced nanotechnology enamel protection serum that repairs and strengthens weakened tooth enamel. Dentist-formulated.",
-    image: "/Images/Products/Smarts/Prime.png",
+    image: "/Images/Products/Smarts/prime.png",
     link: "/products/smarts"
   }
 ];
@@ -201,8 +201,7 @@ export default function Home() {
                       alt={product.category}
                       width={96}
                       height={96}
-                      objectFit="contain"
-                      className="group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <p className="mt-4 text-lg font-medium text-primary-brown">{product.category}</p>
