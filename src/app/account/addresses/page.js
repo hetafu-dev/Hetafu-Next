@@ -8,6 +8,7 @@ import Footer from "@/app/Components/Common/Footer/Page";
 import BestSellers from "@/app/Components/Common/BestSellers/Page";
 import { ChevronDown, Edit, Trash2 } from 'lucide-react';
 import { apiClient } from '@/services/apiClient';
+import { getStoredUser, clearAuthStorage } from '@/utils/authStorage';
 
 const COUNTRIES = [
   { name: 'United Kingdom', provinces: ['British Forces', 'England', 'Scotland', 'Wales', 'Northern Ireland'] },
@@ -35,8 +36,8 @@ export default function AddressesPage() {
   });
 
   useEffect(() => {
-    const user = JSON.parse(localStorage?.getItem('user') || '{}');
-    if (user.first_name || user.last_name) {
+    const user = getStoredUser();
+    if (user?.first_name || user?.last_name) {
       setFormData(prev => ({
         ...prev,
         first_name: user.first_name || '',
@@ -60,25 +61,12 @@ export default function AddressesPage() {
 
   const fetchAddresses = async () => {
     try {
-      const token = localStorage?.getItem('access_token');
-      if (!token) {
-        console.warn('⚠️ No token found - redirecting to login');
-        router.push('/account/login');
-        return;
-      }
-      apiClient.setToken(token);
       const response = await apiClient.get('/customer/addresses');
       setAddresses(response.addresses || []);
     } catch (error) {
       console.error('❌ Error fetching addresses:', error.message);
-      // If it's an auth error, redirect to login
       if (error.message.includes('401') || error.message.includes('Unauthorized')) {
-        console.warn('🔐 Token invalid - redirecting to login');
-        localStorage?.removeItem('user');
-        localStorage?.removeItem('access_token');
-        localStorage?.removeItem('refresh_token');
-        apiClient.setToken(null);
-        apiClient.setRefreshToken(null);
+        clearAuthStorage();
         router.push('/account/login');
         return;
       }
@@ -89,6 +77,23 @@ export default function AddressesPage() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    if (name === 'postal_code') {
+      setFormData(prev => ({
+        ...prev,
+        postal_code: value.replace(/\D/g, '').slice(0, 6),
+      }));
+      return;
+    }
+
+    if (name === 'phone') {
+      setFormData(prev => ({
+        ...prev,
+        phone: value.replace(/\D/g, '').slice(0, 10),
+      }));
+      return;
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -99,14 +104,6 @@ export default function AddressesPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const token = localStorage?.getItem('access_token');
-      if (!token) {
-        router.push('/account/login');
-        return;
-      }
-      apiClient.setToken(token);
-      
-      // Prepare data without id field
       const addressData = {
         first_name: formData.first_name,
         last_name: formData.last_name,
@@ -128,7 +125,7 @@ export default function AddressesPage() {
         await apiClient.post('/customer/addresses', addressData);
       }
       
-      const user = JSON.parse(localStorage?.getItem('user') || '{}');
+      const user = getStoredUser();
       setFormData({
         first_name: user.first_name || '',
         last_name: user.last_name || '',
@@ -158,7 +155,11 @@ export default function AddressesPage() {
   const provinces = selectedCountry?.provinces || [];
 
   const handleEditAddress = (address) => {
-    setFormData(address);
+    setFormData({
+      ...address,
+      postal_code: String(address.postal_code || '').replace(/\D/g, '').slice(0, 6),
+      phone: String(address.phone || '').replace(/\D/g, '').slice(0, 10),
+    });
     setEditingId(address.id);
     setShowForm(true);
   };
@@ -166,12 +167,6 @@ export default function AddressesPage() {
   const handleDeleteAddress = async (id) => {
     if (!confirm('Are you sure you want to delete this address?')) return;
     try {
-      const token = localStorage?.getItem('access_token');
-      if (!token) {
-        router.push('/account/login');
-        return;
-      }
-      apiClient.setToken(token);
       await apiClient.delete(`/customer/addresses/${id}`);
       await fetchAddresses();
     } catch (error) {
@@ -183,7 +178,7 @@ export default function AddressesPage() {
   };
 
   const handleCancelEdit = () => {
-    const user = JSON.parse(localStorage?.getItem('user') || '{}');
+    const user = getStoredUser();
     setFormData({
       first_name: user.first_name || '',
       last_name: user.last_name || '',
@@ -310,7 +305,7 @@ export default function AddressesPage() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-xs font-bold tracking-widest uppercase text-primary-brown mb-2">Address 1 <span className="text-red-500">*</span></label>
+                <label className="block text-xs font-bold tracking-widest uppercase text-primary-brown mb-2">Address 1 </label>
                 <input
                   type="text"
                   name="address1"
@@ -390,7 +385,10 @@ export default function AddressesPage() {
                   name="postal_code"
                   value={formData.postal_code}
                   onChange={handleInputChange}
-                  placeholder="Postal/ZIP code"
+                  placeholder="6-digit PIN code"
+                  inputMode="numeric"
+                  maxLength={6}
+                  pattern="[0-9]{6}"
                   className="w-full border-b-2 border-primary-brown bg-transparent py-2 text-sm focus:outline-none"
                   required
                 />
@@ -403,7 +401,10 @@ export default function AddressesPage() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  placeholder="Phone"
+                  placeholder="10-digit phone number"
+                  inputMode="numeric"
+                  maxLength={10}
+                  pattern="[0-9]{10}"
                   className="w-full border-b-2 border-primary-brown bg-transparent py-2 text-sm focus:outline-none"
                   required
                 />

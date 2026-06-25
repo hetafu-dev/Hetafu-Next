@@ -1,15 +1,40 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronDown, ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, Edit3 } from 'lucide-react';
+import { ChevronDown, ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import { useCountry } from '@/app/context/CountryContext';
 import Navbar from '@/app/Components/Common/Navbar/Page';
 import Footer from '@/app/Components/Common/Footer/Page';
 import BestSellers from '@/app/Components/Common/BestSellers/Page';
+import YouMayAlsoLike from '@/app/Components/Common/YouMayAlsoLike/Page';
+import dynamic from 'next/dynamic';
+import ProductImage from '@/app/Components/Products/ProductImage';
+import { slugToCategoryKey, CATEGORY_CONFIG } from '@/constants/categoryConfig';
+import { fetchProductBySlug } from '@/services/productService';
+import { fetchProductReviews } from '@/services/reviewService';
+import { resolveProductImages, getImageFallback } from '@/utils/productImages';
+import {
+  resolvePackPrice,
+  getDefaultPackId,
+  getPackOption,
+  getPackOptionsForVariant,
+} from '@/utils/packOptions';
+import { isMongoObjectId } from '@/utils/cartUtils';
+
+const CategoryProductDetailPage = dynamic(
+  () => import('@/app/Components/Products/CategoryProductDetailPage'),
+  {
+    loading: () => (
+      <div className="flex flex-col min-h-screen items-center justify-center text-primary-brown min-h-[50vh]">
+        Loading product...
+      </div>
+    ),
+  },
+);
 
 const ALL_PRODUCTS = {
   pops: {
@@ -62,8 +87,8 @@ const ALL_PRODUCTS = {
     rating: 4.8,
     reviewCount: 256,
     description: 'Introducing Dentabits - our revolutionary whitening bits that transform your oral care routine. These eco-friendly, dissolvable bits pack a powerful punch of natural enamel-safe ingredients that remove surface stains while freshening breath. Perfect for travel and daily use.',
-    variants: ['Mint', 'Cinnamon'],
-    variantLabel: 'Flavour',
+    variants: ['Default'],
+    variantLabel: 'Pack',
     images: [
       'https://uk.moroccanoil.com/cdn/shop/files/FRAGRANCE_EDP_100ml_2025UPDATE.jpg?v=1740380007&width=1946',
       'https://uk.moroccanoil.com/cdn/shop/files/FRAGRANCE_EDP_100ml_2025UPDATE.jpg?v=1740380007&width=1946',
@@ -514,8 +539,8 @@ const ALL_PRODUCTS = {
     rating: 4.8,
     reviewCount: 256,
     description: 'Introducing Dentabits - our revolutionary whitening bits that transform your oral care routine. These eco-friendly, dissolvable bits pack a powerful punch of natural enamel-safe ingredients that remove surface stains while freshening breath. Perfect for travel and daily use.',
-    variants: ['Mint', 'Cinnamon'],
-    variantLabel: 'Flavour',
+    variants: ['Default'],
+    variantLabel: 'Pack',
     images: [
       '/Images/Products/Bits/Dentabits.png',
       '/Images/Products/Bits/Dentabits1.png',
@@ -560,6 +585,52 @@ const FAQ_ITEMS = [
 
 const REVIEWS_PER_PAGE = 5;
 
+/** Fill marketing-section fields when product comes from the API without static page data. */
+function ensureProductDisplayFields(product) {
+  if (!product) return product;
+
+  const apiImages = (product.images?.length ? product.images : [product.image_url, product.sectionImage, product.postcardImage].filter(Boolean));
+  const fallbackImages = product.fallbackImages?.length
+    ? product.fallbackImages
+    : apiImages.filter((url) => typeof url === 'string' && url.startsWith('/Images/'));
+  const defaultFallback = fallbackImages[0] || '/Images/Products/Dollipops/Dollipop.png';
+  const resolvedImages = resolveProductImages(apiImages, fallbackImages.length ? fallbackImages : [defaultFallback]);
+
+  const makeNote = (index, label) => ({
+    label,
+    description: product.description?.slice(0, 80) || 'quality · care · freshness',
+    image: resolvedImages[index % Math.max(resolvedImages.length, 1)] || defaultFallback,
+  });
+
+  const notes = product.notes?.length >= 3
+    ? product.notes
+    : [makeNote(0, 'natural'), makeNote(1, 'fresh'), makeNote(2, 'care')];
+
+  return {
+    ...product,
+    images: resolvedImages.length ? resolvedImages : [defaultFallback],
+    fallbackImages: fallbackImages.length ? fallbackImages : resolvedImages,
+    variants: product.variants?.length ? product.variants : [product.name],
+    variantLabel: product.variantLabel || 'Variant',
+    notes,
+    sectionImage: product.sectionImage || defaultFallback,
+    sectionTitle: product.sectionTitle?.length >= 2 ? product.sectionTitle : [product.name || 'Our', 'Product'],
+    sectionBody: product.sectionBody || product.description || '',
+    postcardImage: product.postcardImage || defaultFallback,
+    postcardTitle: product.postcardTitle?.length >= 2 ? product.postcardTitle : ['Discover', product.name || ''],
+    postcardBody: product.postcardBody || product.description || '',
+    postcardQuote: product.postcardQuote || '',
+    reviewList: product.reviewList || [],
+    rating: product.rating ?? 4.8,
+    reviewCount: product.reviewCount ?? 0,
+    accordion: product.accordion || {
+      details: product.description || '',
+      ingredients: '',
+      'how-to-use': [],
+    },
+  };
+}
+
 function StarRow({ rating, size = 14 }) {
   return (
     <span style={{ display: 'inline-flex', gap: 2 }}>
@@ -573,6 +644,8 @@ function StarRow({ rating, size = 14 }) {
 }
 
 function DecadeSection({ product }) {
+  if (!product.notes?.[0]?.image) return null;
+
   return (
     <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-12 md:py-20 bg-[#fdf8f4] font-sans text-primary-brown">
       {/* Original desktop layout preserved, only mobile responsiveness added */}
@@ -688,6 +761,8 @@ function DecadeSection({ product }) {
 }
 
 function PostcardsSection({ product }) {
+  if (!product.postcardImage) return null;
+
   return (
     <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-12 md:py-20 bg-[#fdf8f4] text-[#401E17]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-15 items-center">
@@ -708,102 +783,97 @@ function PostcardsSection({ product }) {
   );
 }
 
-function ReviewsSection({ product }) {
-  const [reviews, setReviews] = useState([...product.reviewList]);
+function ReviewsSection({ product, onStatsChange }) {
+  const productId = product?.id;
+  const usesApiReviews = isMongoObjectId(productId);
+
+  const [reviews, setReviews] = useState(usesApiReviews ? [] : [...(product.reviewList || [])]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState('verified');
   const [filterRating, setFilterRating] = useState('all');
   const [helpfulMap, setHelpfulMap] = useState({});
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ rating: 0, title: '', review: '', name: '', email: '', agreeTerms: false });
+  const [averageRating, setAverageRating] = useState(product.rating ?? 0);
+  const [reviewCount, setReviewCount] = useState(product.reviewCount ?? 0);
+  const [loadingReviews, setLoadingReviews] = useState(usesApiReviews);
 
-  const filteredReviews = reviews.filter(r => filterRating === 'all' ? true : r.rating === parseInt(filterRating));
-  const sortedReviews = [...filteredReviews].sort((a, b) => { if (sortBy === 'highest') return b.rating - a.rating; if (sortBy === 'lowest') return a.rating - b.rating; return 0; });
-  const totalPages = Math.ceil(sortedReviews.length / REVIEWS_PER_PAGE);
-  const paginatedReviews = sortedReviews.slice((currentPage - 1) * REVIEWS_PER_PAGE, currentPage * REVIEWS_PER_PAGE);
-  const overallRating = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
+  useEffect(() => {
+    if (!usesApiReviews) {
+      setReviews([...(product.reviewList || [])]);
+      setAverageRating(product.rating ?? 4.8);
+      setReviewCount(product.reviewCount ?? product.reviewList?.length ?? 0);
+      return undefined;
+    }
 
-  const handleHelpful = (id, type) => setHelpfulMap(prev => ({ ...prev, [id]: prev[id] === type ? null : type }));
-  const handlePageChange = (page) => { setCurrentPage(page); document.getElementById('reviews-section-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
-  const handleInputChange = (e) => { const { name, value, type, checked } = e.target; setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value })); };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.agreeTerms) { alert('Please agree to the Privacy Policy and Terms and Conditions'); return; }
-    
-    // Create new review object
-    const newReview = {
-      id: reviews.length + 1,
-      name: formData.name,
-      initials: formData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
-      avatarColor: '#d4b896', // Default avatar color
-      rating: formData.rating,
-      date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }),
-      title: formData.title,
-      body: formData.review,
-      helpful: 0,
-      notHelpful: 0,
-      verified: true
+    let cancelled = false;
+
+    async function loadReviews() {
+      setLoadingReviews(true);
+      try {
+        const data = await fetchProductReviews(productId, {
+          page: currentPage,
+          limit: REVIEWS_PER_PAGE,
+          sortBy,
+          rating: filterRating,
+        });
+        if (cancelled) return;
+        setReviews(data.items || []);
+        setTotalPages(data.pages || 1);
+        setAverageRating(data.average_rating || 0);
+        setReviewCount(data.review_count || 0);
+      } catch {
+        if (!cancelled) {
+          setReviews([]);
+          setTotalPages(1);
+          setAverageRating(0);
+          setReviewCount(0);
+        }
+      } finally {
+        if (!cancelled) setLoadingReviews(false);
+      }
+    }
+
+    loadReviews();
+    return () => {
+      cancelled = true;
     };
-    
-    // Add new review to state
-    setReviews(prev => [newReview, ...prev]);
-    alert('Thank you for your review!');
-    setIsReviewModalOpen(false);
-    setFormData({ rating: 0, title: '', review: '', name: '', email: '', agreeTerms: false });
-    // Reset to first page to show the new review
-    setCurrentPage(1);
+  }, [usesApiReviews, productId, currentPage, sortBy, filterRating]);
+
+  useEffect(() => {
+    if (!usesApiReviews || !onStatsChange || loadingReviews) return;
+    onStatsChange({ averageRating, reviewCount });
+  }, [usesApiReviews, onStatsChange, averageRating, reviewCount, loadingReviews]);
+
+  const overallRating = usesApiReviews
+    ? (reviewCount > 0 ? Number(averageRating).toFixed(1) : '0.0')
+    : (reviews.length
+      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+      : (product.rating ?? 4.8).toFixed(1));
+  const displayReviewCount = usesApiReviews ? reviewCount : (product.reviewCount ?? reviews.length);
+
+  let displayedReviews = reviews;
+  let displayedTotalPages = totalPages;
+  if (!usesApiReviews) {
+    const filtered = reviews.filter((r) => (filterRating === 'all' ? true : r.rating === parseInt(filterRating, 10)));
+    const sorted = [...filtered].sort((a, b) => {
+      if (sortBy === 'highest') return b.rating - a.rating;
+      if (sortBy === 'lowest') return a.rating - b.rating;
+      return 0;
+    });
+    displayedTotalPages = Math.max(1, Math.ceil(sorted.length / REVIEWS_PER_PAGE));
+    displayedReviews = sorted.slice((currentPage - 1) * REVIEWS_PER_PAGE, currentPage * REVIEWS_PER_PAGE);
+  }
+
+  const handleHelpful = (id, type) => setHelpfulMap((prev) => ({ ...prev, [id]: prev[id] === type ? null : type }));
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    document.getElementById('reviews-section-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+
+  const showPagination = !loadingReviews && displayedTotalPages > 1;
 
   return (
         <section id="reviews-section-anchor" className="max-w-[1400px] mx-auto" style={{ position: 'relative', paddingTop: '100px' }}>
-      {isReviewModalOpen && (
-        <>
-          <div className="fixed inset-0 bg-black/30 backdrop-blur-md z-40" onClick={() => setIsReviewModalOpen(false)} />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 relative">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-[#401E17]">Share your experience</h2>
-                <button onClick={() => setIsReviewModalOpen(false)} className="text-gray-500 hover:text-gray-700">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-              </div>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-[#401E17] mb-2">Rate your experience *</label>
-                  <div className="flex gap-2">
-                    {[1,2,3,4,5].map(star => (
-                      <button key={star} type="button" onClick={() => setFormData(prev => ({ ...prev, rating: star }))}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill={star <= formData.rating ? '#1998B1' : '#e8ddd0'}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-[#401E17] mb-2">A short title for your review *</label>
-                  <input type="text" id="title" name="title" value={formData.title} onChange={handleInputChange} required className="w-full px-4 py-2 border border-[#d4c5b2] rounded focus:outline-none focus:ring-2 focus:ring-[#1998B1]" />
-                </div>
-                <div>
-                  <label htmlFor="review" className="block text-sm font-medium text-[#401E17] mb-2">Write your review *</label>
-                  <textarea id="review" name="review" value={formData.review} onChange={handleInputChange} required rows="4" className="w-full px-4 py-2 border border-[#d4c5b2] rounded focus:outline-none focus:ring-2 focus:ring-[#1998B1]" />
-                </div>
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-[#401E17] mb-2">Your name *</label>
-                  <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-2 border border-[#d4c5b2] rounded focus:outline-none focus:ring-2 focus:ring-[#1998B1]" />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-[#401E17] mb-2">Your email address *</label>
-                  <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-2 border border-[#d4c5b2] rounded focus:outline-none focus:ring-2 focus:ring-[#1998B1]" />
-                </div>
-                <div className="flex items-start gap-2">
-                  <input type="checkbox" id="agreeTerms" name="agreeTerms" checked={formData.agreeTerms} onChange={handleInputChange} required className="mt-1" />
-                  <label htmlFor="agreeTerms" className="text-sm text-[#401E17]">By submitting this review, I agree to the <a href="#" className="text-[#1998B1] underline">Privacy Policy</a> and <a href="#" className="text-[#1998B1] underline">Terms and Conditions</a> *</label>
-                </div>
-                <button type="submit" className="w-full py-3 bg-primary-brown text-white font-semibold uppercase tracking-wider rounded hover:bg-[#5a2e24] transition-all">Send</button>
-              </form>
-            </div>
-          </div>
-        </>
-      )}
       <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', marginTop: '-30px' }}>
         <div className="hidden md:flex absolute top-[-50px] left-1/2 -translate-x-1/2 z-[1]">
           <img src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/footer_plants.png" alt="decorative plants" className="h-[150px] w-auto block" />
@@ -840,15 +910,12 @@ function ReviewsSection({ product }) {
             <span className="text-3xl md:text-4xl lg:text-5xl font-light text-[#401E17] leading-tight">{overallRating}</span>
             <div>
               <StarRow rating={Math.round(parseFloat(overallRating))} size={18} />
-              <p className="text-xs text-[#887766] tracking-widest uppercase mt-1">Based on {product.reviewCount} reviews</p>
+              <p className="text-xs text-[#887766] tracking-widest uppercase mt-1">Based on {displayReviewCount} reviews</p>
             </div>
           </div>
-          <button onClick={() => setIsReviewModalOpen(true)} className="inline-flex cursor-pointer items-center gap-2 px-5 py-2.5 bg-primary-brown text-white border-none rounded text-xs font-semibold tracking-wider uppercase transition-all hover:bg-[#5a2e24]">
-            <Edit3 size={13} /> Write a Review
-          </button>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 mb-8 pb-6 border-b border-[#e8ddd0]">
-          <select className="appearance-none bg-white border border-[#d4c5b2] rounded px-3.5 py-2 text-xs tracking-widest uppercase text-[#401E17] cursor-pointer" value={filterRating} onChange={e => { setFilterRating(e.target.value); setCurrentPage(1); }}>
+          <select className="appearance-none bg-white border border-[#d4c5b2] rounded px-3.5 py-2 text-xs tracking-widest uppercase text-[#401E17] cursor-pointer" value={filterRating} onChange={e => { setFilterRating(e.target.value); setCurrentPage(1); }} disabled={!usesApiReviews && reviews.length === 0}>
             <option value="all">All Ratings</option>
             {[5,4,3,2,1].map(s => <option key={s} value={s}>{s} Stars</option>)}
           </select>
@@ -861,8 +928,13 @@ function ReviewsSection({ product }) {
             </select>
           </div>
         </div>
+        {loadingReviews ? (
+          <p className="text-center text-sm text-[#887766] py-12">Loading reviews...</p>
+        ) : displayedReviews.length === 0 ? (
+          <p className="text-center text-sm text-[#887766] py-12">No reviews yet.</p>
+        ) : (
         <div className="mx-auto max-w-6xl" key={`${currentPage}-${sortBy}-${filterRating}`}>
-          {paginatedReviews.map((review, idx) => (
+          {displayedReviews.map((review, idx) => (
             <div key={review.id}>
               <div className="review-card-anim py-7 grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4 md:gap-6">
                 <div className="flex flex-col gap-2.5">
@@ -879,23 +951,29 @@ function ReviewsSection({ product }) {
                   <h4 className="m-0 mb-2.5 text-sm font-bold text-[#401E17] tracking-wider uppercase">{review.title}</h4>
                   <p className="m-0 mb-5 text-sm leading-[1.8] text-[#554433] font-light">{review.body}</p>
                   <div className="flex flex-wrap items-center gap-4">
-                    {review.verified && <span className="text-xs text-[#a08862] tracking-wider uppercase flex items-center gap-1"><svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="#a08862" strokeWidth={2.5}><polyline points="20 6 9 17 4 12"/></svg>Was this helpful?</span>}
+                    {review.verified && <span className="text-xs text-[#a08862] tracking-wider uppercase flex items-center gap-1"><svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="#a08862" strokeWidth={2.5}><polyline points="20 6 9 17 4 12"/></svg>Verified purchase</span>}
                     <button className={`inline-flex items-center gap-1.5 border rounded px-2.5 py-1 text-xs tracking-wider uppercase transition-all ${helpfulMap[review.id] === 'up' ? 'bg-[#401E17] text-[#fdf8f4] border-[#401E17]' : 'border-[#e8ddd0] text-[#887766] hover:border-[#a08862]'}`} onClick={() => handleHelpful(review.id, 'up')}><ThumbsUp size={10} />{review.helpful + (helpfulMap[review.id] === 'up' ? 1 : 0)}</button>
                     <button className={`inline-flex items-center gap-1.5 border rounded px-2.5 py-1 text-xs tracking-wider uppercase transition-all ${helpfulMap[review.id] === 'down' ? 'bg-[#401E17] text-[#fdf8f4] border-[#401E17]' : 'border-[#e8ddd0] text-[#887766] hover:border-[#a08862]'}`} onClick={() => handleHelpful(review.id, 'down')}><ThumbsDown size={10} />{review.notHelpful + (helpfulMap[review.id] === 'down' ? 1 : 0)}</button>
                   </div>
                 </div>
               </div>
-              {idx < paginatedReviews.length - 1 && <hr className="border-none border-t border-[#f0e8df]" />}
+              {idx < displayedReviews.length - 1 && <hr className="border-none border-t border-[#f0e8df]" />}
             </div>
           ))}
         </div>
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-1.5 mt-12 pt-8 border-t border-[#e8ddd0]">
-            <button className="w-8.5 h-8.5 inline-flex cursor-pointer items-center justify-center text-xs font-medium transition-all hover:bg-[#401E17] hover:text-[#fdf8f4] disabled:opacity-35 disabled:cursor-default" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft size={14} /></button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-              <button key={page} className={`w-8.5 h-8.5 cursor-pointer inline-flex items-center justify-center text-xs font-medium transition-all ${currentPage === page ? 'bg-[#401E17] text-[#fdf8f4]' : 'border border-[#d4c5b2] hover:bg-[#401E17] hover:text-[#fdf8f4]'}`} onClick={() => handlePageChange(page)}>{page}</button>
-            ))}
-            <button className="w-8.5 h-8.5 cursor-pointer inline-flex items-center justify-center text-xs font-medium transition-all hover:bg-[#401E17] hover:text-[#fdf8f4] disabled:opacity-35 disabled:cursor-default" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}><ChevronRight size={14} /></button>
+        )}
+        {showPagination && (
+          <div className="flex flex-col items-center gap-3 mt-12 pt-8 border-t border-[#e8ddd0]">
+            <p className="text-xs text-[#887766] tracking-widest uppercase">
+              Page {currentPage} of {displayedTotalPages}
+            </p>
+            <div className="flex items-center justify-center gap-1.5">
+              <button type="button" className="w-8.5 h-8.5 inline-flex cursor-pointer items-center justify-center text-xs font-medium transition-all hover:bg-[#401E17] hover:text-[#fdf8f4] disabled:opacity-35 disabled:cursor-default" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft size={14} /></button>
+              {Array.from({ length: displayedTotalPages }, (_, i) => i + 1).map(page => (
+                <button key={page} type="button" className={`w-8.5 h-8.5 cursor-pointer inline-flex items-center justify-center text-xs font-medium transition-all ${currentPage === page ? 'bg-[#401E17] text-[#fdf8f4]' : 'border border-[#d4c5b2] hover:bg-[#401E17] hover:text-[#fdf8f4]'}`} onClick={() => handlePageChange(page)}>{page}</button>
+              ))}
+              <button type="button" className="w-8.5 h-8.5 cursor-pointer inline-flex items-center justify-center text-xs font-medium transition-all hover:bg-[#401E17] hover:text-[#fdf8f4] disabled:opacity-35 disabled:cursor-default" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === displayedTotalPages}><ChevronRight size={14} /></button>
+            </div>
           </div>
         )}
       </div>
@@ -911,24 +989,222 @@ export default function ProductPage({ params }) {
   } else {
     slug = params.slug;
   }
-  const product = ALL_PRODUCTS[slug];
-  if (!product) return notFound();
 
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const categoryKey = slugToCategoryKey(slug);
+  if (categoryKey) {
+    return <CategoryProductDetailPage categoryKey={categoryKey} />;
+  }
+
+  return <ProductDetail slug={slug} />;
+}
+
+function ProductDetail({ slug }) {
+  const staticProduct = ALL_PRODUCTS[slug];
+  const [product, setProduct] = useState(staticProduct);
+  const [apiLoaded, setApiLoaded] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadFromApi() {
+      try {
+        const apiProduct = await fetchProductBySlug(slug);
+        if (cancelled) return;
+
+        setProduct((prev) => {
+          const base = prev || {
+            id: apiProduct.id,
+            name: apiProduct.name,
+            category: apiProduct.category,
+            price: apiProduct.discount_price ?? apiProduct.price,
+            rating: 4.8,
+            reviewCount: 0,
+            description: apiProduct.description || '',
+            variants: [apiProduct.name],
+            variantLabel: 'Variant',
+            images: apiProduct.images?.length ? apiProduct.images : [apiProduct.image_url].filter(Boolean),
+            accordion: {
+              details: apiProduct.description || '',
+              ingredients: '',
+              'how-to-use': [],
+            },
+            sectionImage: apiProduct.image_url,
+            sectionTitle: [apiProduct.name, ''],
+            sectionBody: apiProduct.description || '',
+            postcardImage: apiProduct.image_url,
+            postcardTitle: ['', ''],
+            postcardBody: '',
+            postcardQuote: '',
+            notes: [],
+            reviewList: [],
+          };
+
+          return ensureProductDisplayFields({
+            ...base,
+            id: apiProduct.id,
+            name: apiProduct.name,
+            category: apiProduct.category || base.category,
+            price: apiProduct.discount_price ?? apiProduct.price ?? base.price,
+            description: apiProduct.description || base.description,
+            images: resolveProductImages(
+              apiProduct.images?.length ? apiProduct.images : [apiProduct.image_url].filter(Boolean),
+              base.images || base.fallbackImages,
+            ),
+            fallbackImages: base.images || base.fallbackImages || [],
+            sectionImage: apiProduct.images?.[0] || apiProduct.image_url || base.sectionImage,
+            postcardImage: apiProduct.images?.[0] || apiProduct.image_url || base.postcardImage,
+            notes: base.notes?.length >= 3 ? base.notes : undefined,
+          });
+        });
+      } catch {
+        // Keep static fallback when API product is unavailable
+      } finally {
+        if (!cancelled) {
+          setApiLoaded(true);
+        }
+      }
+    }
+
+    loadFromApi();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  if (!product && apiLoaded) return notFound();
+  if (!product) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center text-primary-brown">Loading product...</main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return <ProductDetailView product={ensureProductDisplayFields(product)} slug={slug} />;
+}
+
+function ProductDetailView({ product: rawProduct, variantCatalog = null, defaultVariant = null }) {
+  const baseProduct = ensureProductDisplayFields(rawProduct);
+  const [selectedVariant, setSelectedVariant] = useState(defaultVariant || baseProduct.variants[0]);
+  const [selectedPackId, setSelectedPackId] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [mainImage, setMainImage] = useState(product.images[0]);
   const [thumbStart, setThumbStart] = useState(0);
   const [openAccordion, setOpenAccordion] = useState('dental-nutrition');
   const [isAdding, setIsAdding] = useState(false);
+
+  const categoryConfig = CATEGORY_CONFIG[baseProduct.category] || null;
+  const variantDefForPack =
+    categoryConfig?.variants?.find((v) => v.label === selectedVariant) ||
+    (selectedVariant === 'Default'
+      ? categoryConfig?.variants?.find((v) => v.label === baseProduct.name)
+      : null) ||
+    (categoryConfig?.variants?.length === 1 ? categoryConfig.variants[0] : null);
+
+  const activeVariantData = variantCatalog?.[selectedVariant] || null;
+  const product = ensureProductDisplayFields(
+    activeVariantData
+      ? {
+          ...baseProduct,
+          ...activeVariantData,
+          name: activeVariantData.apiName || activeVariantData.name || baseProduct.name,
+          displayName: baseProduct.displayName || baseProduct.name,
+          category: baseProduct.category,
+          variants: baseProduct.variants,
+          variantLabel: baseProduct.variantLabel,
+          packOptions: activeVariantData.packOptions ?? baseProduct.packOptions,
+          price: activeVariantData.price ?? baseProduct.price,
+          description: activeVariantData.description ?? baseProduct.description,
+          images: activeVariantData.images?.length ? activeVariantData.images : baseProduct.images,
+          fallbackImages: activeVariantData.fallbackImages || baseProduct.fallbackImages,
+        }
+      : baseProduct,
+  );
+
+  const packOptionsConfig =
+    product.packOptions ||
+    activeVariantData?.packOptions ||
+    getPackOptionsForVariant(variantDefForPack, categoryConfig);
+
+  const effectivePackId = selectedPackId ?? getDefaultPackId(packOptionsConfig);
+
+  useEffect(() => {
+    setSelectedPackId(getDefaultPackId(packOptionsConfig));
+  }, [selectedVariant, baseProduct.category]);
+
+  const selectedPackOption = getPackOption(packOptionsConfig, effectivePackId);
+  const unitPrice = resolvePackPrice(product.price, selectedPackOption);
+  const displayPrice = unitPrice * quantity;
+  const showVariantSelector = (product.variants?.length ?? 0) > 1;
+  const showPackSelector =
+    (packOptionsConfig?.options?.length ?? 0) > 1 || packOptionsConfig?.alwaysShow;
+  const packLabel = packOptionsConfig?.label || 'Pack size';
+
+  const [mainImage, setMainImage] = useState(product.images[0]);
+
+  useEffect(() => {
+    setMainImage(product.images?.[0] || null);
+    setThumbStart(0);
+  }, [selectedVariant, product.images?.[0]]);
+
+  const imageFallback = (url) => {
+    const idx = product.images?.indexOf(url);
+    return getImageFallback(product.fallbackImages, idx >= 0 ? idx : 0);
+  };
 
   const VISIBLE = 5;
 
   const { addItemNoDrawer, setDrawerOpen } = useCart();
   const { currency } = useCountry();
 
+  const reviewProductId = isMongoObjectId(product?.id) ? product.id : null;
+  const [liveReviewStats, setLiveReviewStats] = useState(null);
+  const [loadingReviewStats, setLoadingReviewStats] = useState(Boolean(reviewProductId));
+
+  const handleReviewStatsChange = useCallback(({ averageRating, reviewCount }) => {
+    setLiveReviewStats({ averageRating, reviewCount });
+    setLoadingReviewStats(false);
+  }, []);
+
+  useEffect(() => {
+    setLoadingReviewStats(Boolean(reviewProductId));
+    setLiveReviewStats(null);
+  }, [reviewProductId]);
+
+  const heroRatingLabel = reviewProductId
+    ? (loadingReviewStats
+      ? null
+      : (liveReviewStats?.reviewCount > 0
+        ? Number(liveReviewStats.averageRating).toFixed(1)
+        : '0.0'))
+    : Number(product.rating ?? 4.8).toFixed(1);
+  const heroReviewCount = reviewProductId
+    ? (loadingReviewStats ? null : (liveReviewStats?.reviewCount ?? 0))
+    : (product.reviewCount ?? 0);
+
   const handleAddToBag = () => {
     setIsAdding(true);
-    addItemNoDrawer({ id: product.id, name: product.name, variant: selectedVariant, price: product.price, originalPrice: null, qty: quantity, promo: null, image: product.images[0] });
+    const baseCartId = activeVariantData?.id ?? product.id;
+    const packSuffix = selectedPackOption?.id ? `-${selectedPackOption.id}` : '';
+    const cartId = `${baseCartId}${packSuffix}`;
+    const variantParts = [
+      ...(product.variants.length > 1 ? [selectedVariant] : []),
+      selectedPackOption?.label,
+    ].filter(Boolean);
+    const cartVariant = variantParts.join(' · ');
+    addItemNoDrawer({
+      id: cartId,
+      productId: isMongoObjectId(baseCartId) ? baseCartId : null,
+      packId: selectedPackOption?.id || null,
+      name: product.name,
+      variant: cartVariant,
+      price: unitPrice,
+      originalPrice: null,
+      qty: quantity,
+      promo: null,
+      image: product.images[0],
+    });
     // Show loader for 800ms, then open drawer
     setTimeout(() => {
       setIsAdding(false);
@@ -944,54 +1220,83 @@ export default function ProductPage({ params }) {
           <div className="flex items-center gap-2 mb-3 text-sm uppercase tracking-wider text-primary-brown">
             <Link href="/" className="no-underline font-bold transition-colors hover:text-amber-700">HOME</Link>
             <span className="mx-1">&gt;</span>
-            <span className="font-bold">{product.name.toUpperCase()} {product.category.toUpperCase()}</span>
+            <span className="font-bold">{product.name.toUpperCase()}</span>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 mt-8 md:mt-12" style={{ alignItems: 'start' }}>
-            <div className="flex flex-col lg:flex-row gap-3">
+            <div className="flex flex-col lg:flex-row gap-3 lg:items-start">
               {/* Thumbnails hidden on mobile, only visible on lg screens and above */}
               <div className="hidden lg:flex flex-col items-center gap-2 flex-shrink-0" style={{ width: '98px' }}>
                 <button onClick={() => setThumbStart(s => Math.max(0, s - 1))} disabled={thumbStart === 0} className="w-full py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-30">↑</button>
                 {product.images.slice(thumbStart, thumbStart + VISIBLE).map((thumbnail, index) => (
                   <div key={thumbStart + index} onClick={() => setMainImage(thumbnail)} className={`flex-shrink-0 cursor-pointer overflow-hidden border-2 bg-amber-50 transition-all hover:border-amber-600 ${mainImage === thumbnail ? 'border-amber-700' : 'border-gray-200'}`}>
-                    <Image src={thumbnail} alt={`${product.name} ${thumbStart + index + 1}`} width={88} height={100} unoptimized className="w-full h-full object-cover" />
+                    <ProductImage src={thumbnail} fallbackSrc={imageFallback(thumbnail)} alt={`${product.name} ${thumbStart + index + 1}`} width={88} height={100} className="w-full h-full object-contain" />
                   </div>
                 ))}
                 <button onClick={() => setThumbStart(s => Math.min(product.images.length - VISIBLE, s + 1))} disabled={thumbStart + VISIBLE >= product.images.length} className="w-full py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-30">↓</button>
               </div>
               {/* Main product image - fully responsive for all screens */}
-              <div className="w-full bg-amber-50 lg:flex-1 lg:min-w-0">
-                <Image 
-                  src={mainImage} 
-                  alt={product.name} 
-                  width={423} 
-                  height={580} 
-                  priority 
-                  unoptimized 
-                  className="w-full h-full object-cover"
+              <div className="w-full bg-amber-50 lg:flex-1 lg:min-w-0 overflow-hidden">
+                <ProductImage
+                  src={mainImage}
+                  fallbackSrc={imageFallback(mainImage)}
+                  alt={product.name}
+                  width={423}
+                  height={580}
+                  priority
+                  className="w-full h-auto block object-contain"
                 />
               </div>
             </div>
 
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl md:text-[clamp(1.5rem,4vw,2.5rem)] font-bold italic tracking-wide m-0 text-secondary-blue font-signature">{product.name}</h1>
-              <p className="text-base m-0 capitalize" style={{ color: '#554433' }}>{product.category}</p>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex items-baseline gap-4">
-                  <span className="text-2xl md:text-[clamp(1.25rem,3vw,1.75rem)] font-bold">{currency}{product.price.toFixed(2)}</span>
-                  <span className="text-sm font-semibold uppercase tracking-wider">{product.variantLabel}: {selectedVariant}</span>
+                  <span className="text-2xl md:text-[clamp(1.25rem,3vw,1.75rem)] font-bold">
+                    {currency}{Number(displayPrice || 0).toFixed(2)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 cursor-pointer hover:opacity-70 transition-opacity" onClick={() => document.getElementById('reviews-section-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-                  <StarRow rating={Math.round(product.rating)} size={18} />
-                  <span className="font-semibold">{product.rating}</span>
-                  <span className="text-sm" style={{ color: '#554433' }}>{product.reviewCount} reviews</span>
+                  {heroRatingLabel != null ? (
+                    <>
+                      <StarRow rating={Math.round(parseFloat(heroRatingLabel))} size={18} />
+                      <span className="font-semibold">{heroRatingLabel}</span>
+                      <span className="text-sm" style={{ color: '#554433' }}>{heroReviewCount} reviews</span>
+                    </>
+                  ) : (
+                    <span className="text-sm text-gray-500">Loading reviews...</span>
+                  )}
                 </div>
               </div>
               <p className="leading-relaxed m-0 text-base">{product.description}</p>
+              {showVariantSelector && (
               <div className="flex flex-wrap gap-3 mt-6">
                 {product.variants.map((variant) => (
                   <button key={variant} onClick={() => setSelectedVariant(variant)} className="px-4 py-2 rounded text-sm font-medium transition-all cursor-pointer border-2" style={{ color: selectedVariant === variant ? 'var(--primary-brown)' : '#401E17', borderColor: selectedVariant === variant ? 'var(--secondary-blue)' : 'transparent' }}>{variant}</button>
                 ))}
               </div>
+              )}
+              {showPackSelector && (
+                <div className="flex flex-col gap-2 mt-4">
+                  <label className="text-sm font-bold tracking-wider uppercase">{packLabel}</label>
+                  <div className="flex flex-wrap gap-3">
+                    {packOptionsConfig.options.map((pack) => (
+                      <button
+                        key={pack.id}
+                        type="button"
+                        onClick={() => setSelectedPackId(pack.id)}
+                        className="px-4 py-2 rounded text-sm font-medium transition-all cursor-pointer border-2"
+                        style={{
+                          color: effectivePackId === pack.id ? 'var(--primary-brown)' : '#401E17',
+                          borderColor: effectivePackId === pack.id ? 'var(--secondary-blue)' : 'transparent',
+                        }}
+                      >
+                        {pack.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="flex flex-col gap-2 mt-8">
                 <label className="text-sm font-bold tracking-wider">QUANTITY</label>
                   <div className="flex flex-col sm:flex-row gap-3 w-full">
@@ -1054,10 +1359,13 @@ export default function ProductPage({ params }) {
 
         <DecadeSection product={product} />
         <PostcardsSection product={product} />
-        <ReviewsSection product={product} />
+        <YouMayAlsoLike contained className="!px-0 py-10" />
+        <ReviewsSection product={product} onStatsChange={handleReviewStatsChange} />
       </main>
       <BestSellers />
       <Footer />
     </div>
   );
 }
+
+export { ProductDetailView, ALL_PRODUCTS };

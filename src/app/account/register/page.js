@@ -1,12 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from "@/app/Components/Common/Navbar/Page";
 import Footer from "@/app/Components/Common/Footer/Page";
 import BestSellers from "@/app/Components/Common/BestSellers/Page";
 import { apiClient } from '@/services/apiClient';
+import { saveUser, clearLegacyTokenStorage } from '@/utils/authStorage';
+import {
+  validatePasswordStrength,
+  getPasswordStrengthScore,
+  getPasswordStrengthLabel,
+  PASSWORD_REQUIREMENTS,
+} from '@/utils/passwordValidation';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -24,6 +31,8 @@ export default function RegisterPage() {
 
   // Fetch CSRF token on component mount
   useEffect(() => {
+    clearLegacyTokenStorage();
+
     const fetchCSRFToken = async () => {
       try {
         console.log('🔐 Fetching CSRF token for registration...');
@@ -39,14 +48,7 @@ export default function RegisterPage() {
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const getPasswordStrength = (password) => {
-    let strength = 0;
-    if (password.length >= 8) strength += 25;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
-    if (/[0-9]/.test(password)) strength += 25;
-    if (/[!@#$%^&*]/.test(password)) strength += 25;
-    return strength;
-  };
+  const getPasswordStrength = (password) => getPasswordStrengthScore(password);
 
   const validateForm = () => {
     const newErrors = {};
@@ -54,8 +56,12 @@ export default function RegisterPage() {
     if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!validateEmail(formData.email)) newErrors.email = 'Invalid email format';
-    if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+
+    const passwordCheck = validatePasswordStrength(formData.password);
+    if (!passwordCheck.valid) {
+      newErrors.password = passwordCheck.error;
+    }
+
     return newErrors;
   };
 
@@ -95,14 +101,11 @@ export default function RegisterPage() {
         csrf_token: csrfToken  // Include CSRF token
       });
 
-      if (response.tokens?.access_token) {
-        localStorage.setItem('access_token', response.tokens.access_token);
-        if (response.tokens.refresh_token) {
-          localStorage.setItem('refresh_token', response.tokens.refresh_token);
-          apiClient.setRefreshToken(response.tokens.refresh_token);
-        }
-        localStorage.setItem('user', JSON.stringify(response.user));
-        apiClient.setToken(response.tokens.access_token);
+      if (response.user) {
+        saveUser(response.user);
+        apiClient.setCSRFToken(null);
+        await apiClient.fetchCSRFToken();
+        window?.dispatchEvent(new Event('auth:login'));
 
         setMessage({ type: 'success', text: 'Account created successfully! Redirecting...' });
         setTimeout(() => router.push('/account'), 1500);
@@ -123,10 +126,8 @@ export default function RegisterPage() {
         errorText = 'Password must be at least 12 characters with uppercase, lowercase, number, and special character.';
       } else if (errorText.includes('422') || errorText.includes('Unprocessable')) {
         errorText = 'Please check your input. Password must be at least 12 characters with uppercase, lowercase, number, and special character.';
-      } else if (errorText.includes('email')) {
-        errorText = 'Email is invalid or already registered.';
-      } else if (errorText.includes('already')) {
-        errorText = 'Email is already registered. Please login or use a different email.';
+      } else if (errorText.includes('400') || errorText.includes('already') || errorText.includes('Unable to create')) {
+        errorText = 'Unable to create an account with the provided details. Please check your information or sign in if you already have an account.';
       } else if (errorText.includes('403') || errorText.includes('CSRF')) {
         errorText = 'Security validation failed. Please refresh the page and try again.';
       }
@@ -224,8 +225,9 @@ export default function RegisterPage() {
                     ))}
                   </div>
                   <p className="mt-1 text-gray-600">
-                    {passwordStrength === 100 ? 'Strong' : passwordStrength >= 75 ? 'Good' : passwordStrength >= 50 ? 'Fair' : 'Weak'}
+                    {getPasswordStrengthLabel(passwordStrength)}
                   </p>
+                  <p className="mt-1 text-gray-500">{PASSWORD_REQUIREMENTS}</p>
                 </div>
               )}
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}

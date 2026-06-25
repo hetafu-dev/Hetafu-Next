@@ -8,6 +8,7 @@ import { IN, JP, US, CA, MX, BR, AT, BE, DK, DE, ES, FI, FR, GR, GB, IT } from "
 import { FaTooth } from "react-icons/fa6";
 import { useCart } from "@/app/context/CartContext";
 import { useCountry } from "@/app/context/CountryContext";
+import { getStoredUser } from '@/utils/authStorage';
 
 // All products data for search
 const ALL_PRODUCTS = [
@@ -96,6 +97,14 @@ const ALL_PRODUCTS = [
 
 const productsList = ALL_PRODUCTS;
 
+const NAV_LINKS = [
+  { href: '/products/pops', label: 'POPS' },
+  { href: '/products/cute', label: 'CUTE' },
+  { href: '/products/bits', label: 'BITS' },
+  { href: '/products/smarts', label: 'SMARTS' },
+  { href: '/dosage-calculator', label: 'QUIZ' },
+];
+
 const flagMap = {
   IN: IN,
   JP: JP,
@@ -136,8 +145,7 @@ export default function Navbar() {
 
   // Check if user is logged in
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    setIsLoggedIn(!!user);
+    setIsLoggedIn(!!getStoredUser());
   }, []);
 
   // Filter products based on search query
@@ -155,15 +163,6 @@ export default function Navbar() {
     if (searchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
     }
-    // Prevent body scroll when search is open
-    if (searchOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [searchOpen]);
 
   // Close search on escape key
@@ -317,7 +316,7 @@ export default function Navbar() {
               <MapPin size={16} />
               <span className="font-bold">Clinic Locators</span>
             </a>
-            <a href="http://dentalnutrition.org/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+            <a href="http://test.dentalnutrition.org/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
               <FaTooth size={16} />
               <span className="font-bold">Dental Nutrition</span>
             </a>
@@ -328,16 +327,18 @@ export default function Navbar() {
       {/* Main navbar */}
       <nav className="relative border-b border-gray-300 bg-background text-primary-brown font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center">
-              <button
-                type="button"
-                className="mr-4 md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
-                aria-label="Toggle menu"
-                onClick={() => setShowMobileMenu(!showMobileMenu)}
-              >
-                <Menu size={24} />
-              </button>
+          <div className="flex justify-between items-center h-20 gap-4">
+            <div className="flex items-center flex-shrink-0">
+              {!searchOpen && (
+                <button
+                  type="button"
+                  className="mr-4 md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+                  aria-label="Toggle menu"
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                >
+                  <Menu size={24} />
+                </button>
+              )}
               <Link href="/" className="w-32 block">
                 <Image
                   src="/Images/Logos/LogoBlack.svg"
@@ -349,125 +350,55 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Navigation menu */}
-            <div className="hidden tracking-widest md:flex gap-20 items-center font-bold">
-              <a href="/products/pops">POPS</a>
-              <a href="/products/cute">CUTE</a>
-              <a href="/products/bits">BITS</a>
-              <a href="/products/smarts">SMARTS</a>
-              <a href="/dosage-calculator">QUIZ</a>
-            </div>
+            {searchOpen ? (
+              <div className="flex-1 flex items-center gap-3 min-w-0">
+                <Search size={20} className="text-gray-400 flex-shrink-0" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="flex-1 min-w-0 py-2.5 text-sm bg-transparent border-0 border-b border-gray-300 focus:outline-none focus:border-secondary-blue transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchOpen(false);
+                    setSearchQuery('');
+                  }}
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer flex-shrink-0"
+                  aria-label="Close search"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            ) : (
+              <div className="hidden tracking-widest md:flex gap-20 items-center font-bold flex-1 justify-center">
+                {NAV_LINKS.map((link) => (
+                  <Link key={link.href} href={link.href} className="hover:opacity-70 transition-opacity">
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
 
-            {/* Search icon */}
-            <div className="p-2 flex items-center gap-6 relative" >
-              <button onClick={() => setSearchOpen(!searchOpen)} className="cursor-pointer"><Search size={20} /></button>
-              
-              {/* Search Dropdown - Positioned relative to this container */}
-              {searchOpen && (
-                <div className="absolute right-0 top-full mt-3 w-96 bg-background border border-gray-200 shadow-2xl rounded-xl z-50 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
-                  {/* Search Input */}
-                  <div className="p-4 border-b border-gray-100">
-                    <div className="relative">
-                      <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search products..."
-                        className="w-full pl-10 pr-10 py-3 text-sm bg-background border border-gray-200 rounded-lg focus:outline-none focus:bg-background focus:border-secondary-blue transition-all duration-300"
-                      />
-                      <button
-                        onClick={() => {
-                          setSearchOpen(false);
-                          setSearchQuery("");
-                        }}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-200 rounded-full transition-colors"
-                        aria-label="Close search"
-                      >
-                        <X size={18} className="text-gray-500" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Search Results - Compact list */}
-                  <div className="max-h-80 overflow-y-auto">
-                    {searchQuery ? (
-                      <>
-                        {filteredProducts.length === 0 ? (
-                          <div className="p-6 text-center">
-                            <p className="text-gray-500 text-sm">No products found</p>
-                            <p className="text-gray-400 text-xs mt-1">Try "whitening" or "strips"</p>
-                          </div>
-                        ) : (
-                          <div className="py-2">
-                            {filteredProducts.map((product) => (
-                              <Link
-                                key={product.id}
-                                href={`/products/${product.slug}`}
-                                onClick={() => {
-                                  setSearchOpen(false);
-                                  setSearchQuery("");
-                                }}
-                                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition-colors duration-200"
-                              >
-                                <div className="w-14 h-14 bg-gray-200 rounded overflow-hidden flex-shrink-0">
-                                  <Image
-                                    src={product.image}
-                                    alt={product.name}
-                                    width={56}
-                                    height={56}
-                                    className="w-full h-full object-contain"
-                                  />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs font-bold tracking-wider text-primary-brown/70 uppercase">{product.category}</p>
-                                  <h3 className="text-sm font-bold text-secondary-blue truncate">{product.name}</h3>
-                                  <p className="text-sm font-semibold text-primary-brown">${product.price.toFixed(2)}</p>
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      // Show quick list when no search yet
-                      <div className="py-2">
-                        <p className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Bestsellers</p>
-                        {productsList.map((product) => (
-                          <Link
-                            key={product.id}
-                            href={`/products/${product.slug}`}
-                            onClick={() => {
-                              setSearchOpen(false);
-                              setSearchQuery("");
-                            }}
-                            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition-colors duration-200"
-                          >
-                            <div className="w-14 h-14 bg-gray-200 rounded overflow-hidden flex-shrink-0">
-                              <Image
-                                src={product.image}
-                                alt={product.name}
-                                width={56}
-                                height={56}
-                                className="w-full h-full object-contain"
-                              />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-bold tracking-wider text-primary-brown/70 uppercase">{product.category}</p>
-                              <h3 className="text-sm font-bold text-secondary-blue truncate">{product.name}</h3>
-                              <p className="text-sm font-semibold text-primary-brown">${product.price.toFixed(2)}</p>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+            <div className="flex items-center gap-6 flex-shrink-0">
+              {!searchOpen && (
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(true)}
+                  className="cursor-pointer p-1"
+                  aria-label="Open search"
+                >
+                  <Search size={20} />
+                </button>
               )}
 
-              <Link href={isLoggedIn ? "/account" : "/account/login"} className="cursor-pointer"><User size={20} /></Link>
-              <button onClick={() => setDrawerOpen(true)} className="relative cursor-pointer">
+              <Link href={isLoggedIn ? '/account' : '/account/login'} className="cursor-pointer">
+                <User size={20} />
+              </Link>
+              <button type="button" onClick={() => setDrawerOpen(true)} className="relative cursor-pointer">
                 <Handbag size={20} />
                 {itemCount > 0 && (
                   <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full text-white text-[10px] flex items-center justify-center bg-secondary-blue">
@@ -478,14 +409,51 @@ export default function Navbar() {
             </div>
           </div>
 
-          {showMobileMenu && (
+          {searchOpen && searchQuery.trim() && (
+            <div className="border-t border-gray-200 pb-4">
+              {filteredProducts.length === 0 ? (
+                <p className="py-6 text-center text-sm text-gray-500">No products found</p>
+              ) : (
+                <div className="py-2 max-h-80 overflow-y-auto">
+                  {filteredProducts.map((product) => (
+                    <Link
+                      key={product.id}
+                      href={`/products/${product.slug}`}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      className="flex items-center gap-3 px-2 py-3 hover:bg-gray-100 transition-colors duration-200 rounded-lg"
+                    >
+                      <div className="w-14 h-14 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          width={56}
+                          height={56}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold tracking-wider text-primary-brown/70 uppercase">{product.category}</p>
+                        <h3 className="text-sm font-bold text-secondary-blue truncate">{product.name}</h3>
+                        <p className="text-sm font-semibold text-primary-brown">${product.price.toFixed(2)}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {showMobileMenu && !searchOpen && (
             <div className="md:hidden mt-2 border-t border-gray-200 py-4">
-              <div className="flex flex-col gap-3 text-sm font-bold" >
-                <a href="/products/pops" className="px-2 py-2 rounded-md">POPS</a>
-                <a href="/products/cute" className="px-2 py-2 rounded-md">CUTE</a>
-                <a href="/products/bits" className="px-2 py-2 rounded-md">BITS</a>
-                <a href="/products/smarts" className="px-2 py-2 rounded-md">SMARTS</a>
-                <a href="/dosage-calculator" className="px-2 py-2 rounded-md">QUIZ</a>
+              <div className="flex flex-col gap-3 text-sm font-bold">
+                {NAV_LINKS.map((link) => (
+                  <Link key={link.href} href={link.href} className="px-2 py-2 rounded-md">
+                    {link.label}
+                  </Link>
+                ))}
               </div>
             </div>
           )}

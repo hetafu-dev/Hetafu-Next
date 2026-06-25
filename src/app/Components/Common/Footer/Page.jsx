@@ -27,7 +27,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="transition hover:text-slate-950">
+                  <a href="https://test.dentalnutrition.org/sustainability" target="_blank" rel="noopener noreferrer" className="transition hover:text-slate-950">
                     Clinical Trials
                   </a>
                 </li>

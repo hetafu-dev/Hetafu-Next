@@ -6,9 +6,7 @@ export const CONFIG = {
     RETRY_DELAY: 1000,
   },
   STORAGE: {
-    TOKEN_KEY: 'access_token',
-    REFRESH_TOKEN_KEY: 'refresh_token',
-    USER_KEY: 'user',
+    USER_KEY: 'hetafu_user',
   },
   ERRORS: {
     NETWORK_ERROR: 'Network error. Please check your connection.',

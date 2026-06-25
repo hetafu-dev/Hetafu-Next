@@ -2,91 +2,73 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { apiClient } from '../services/apiClient';
-import { CONFIG } from '../config';
+import {
+  saveUser,
+  getStoredUser,
+  clearAuthStorage,
+  clearLegacyTokenStorage,
+} from '../utils/authStorage';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [refreshToken, setRefreshToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const initializeAuth = () => {
-      try {
-        // Tokens are now in HTTP-only cookies, automatically sent by browser
-        // No need to store in localStorage
-        const storedUser = localStorage?.getItem(CONFIG.STORAGE.USER_KEY);
+  const loadSession = useCallback(async () => {
+    clearLegacyTokenStorage();
 
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (err) {
-        console.error('Auth initialization error:', err);
-      } finally {
-        setLoading(false);
+    const cachedUser = getStoredUser();
+    if (cachedUser) {
+      setUser(cachedUser);
+    }
+
+    try {
+      const profile = await apiClient.get('/customer/me');
+      if (profile) {
+        setUser(profile);
+        saveUser(profile);
       }
-    };
-
-    if (typeof window !== 'undefined') {
-      initializeAuth();
-      
-      // Listen for token expiration events from apiClient
-      const handleTokenExpired = () => {
-        console.warn('🔐 Token expired event received - logging out');
+    } catch {
+      if (!cachedUser) {
         setUser(null);
-        setToken(null);
-        setRefreshToken(null);
-        setError('Session expired. Please login again.');
-      };
-      
-      window.addEventListener('auth:expired', handleTokenExpired);
-      
-      return () => {
-        window.removeEventListener('auth:expired', handleTokenExpired);
-      };
+        clearAuthStorage();
+      }
+    } finally {
+      setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    loadSession();
+
+    const handleTokenExpired = () => {
+      setUser(null);
+      clearAuthStorage();
+      setError('Session expired. Please login again.');
+    };
+
+    window.addEventListener('auth:expired', handleTokenExpired);
+    return () => window.removeEventListener('auth:expired', handleTokenExpired);
+  }, [loadSession]);
 
   const login = useCallback(async (identifier, password) => {
     setError(null);
     try {
-      const response = await apiClient.post('/customer/login', { 
-        identifier, 
-        password 
+      const response = await apiClient.post('/customer/login', {
+        identifier,
+        password,
       });
 
-      console.log('🔍 Login response:', response);
-      
-      // Get tokens from response
-      const accessToken = response.tokens?.access_token;
-      const newRefreshToken = response.tokens?.refresh_token;
-
-      console.log('🔑 Extracted tokens:', { 
-        accessToken: accessToken ? '✅ Present' : '❌ Missing',
-        newRefreshToken: newRefreshToken ? '✅ Present' : '❌ Missing'
-      });
-
-      if (accessToken) {
-        // Store tokens for use in Authorization headers
-        console.log('📝 Setting token in apiClient...');
-        apiClient.setToken(accessToken);
-        setToken(accessToken);
-        console.log('✅ apiClient.token is now:', apiClient.getToken() ? 'SET' : 'NOT SET');
-        
-        if (newRefreshToken) {
-          apiClient.setRefreshToken(newRefreshToken);
-          setRefreshToken(newRefreshToken);
-        }
-      } else {
-        console.error('❌ No access token in response!');
+      if (response.user) {
+        saveUser(response.user);
+        setUser(response.user);
+        apiClient.setCSRFToken(null);
+        await apiClient.fetchCSRFToken();
       }
-      
-      // Tokens are in HTTP-only cookies (production) + response body (development)
-      localStorage?.setItem(CONFIG.STORAGE.USER_KEY, JSON.stringify(response.user));
-      setUser(response.user);
 
       return response;
     } catch (err) {
@@ -98,48 +80,28 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     try {
-      // Call logout endpoint to clear cookies on backend
       await apiClient.post('/customer/logout', {});
     } catch (err) {
       console.error('Logout error:', err);
-      // Continue logout even if API call fails
     } finally {
-      // Clear frontend state
-      apiClient.setToken(null);
-      apiClient.setRefreshToken(null);
-      setToken(null);
-      setRefreshToken(null);
+      apiClient.setCSRFToken(null);
+      clearAuthStorage();
       setUser(null);
       setError(null);
-      localStorage?.removeItem(CONFIG.STORAGE.USER_KEY);
     }
   }, []);
 
-  const register = useCallback(async (email, otp, userData) => {
+  const register = useCallback(async (payload) => {
     setError(null);
     try {
-      const response = await apiClient.post('/customer/register', {
-        email,
-        ...userData,
-      });
+      const response = await apiClient.post('/customer/register', payload);
 
-      // Get tokens from response
-      const accessToken = response.tokens?.access_token;
-      const newRefreshToken = response.tokens?.refresh_token;
-
-      if (accessToken) {
-        // Store tokens for use in Authorization headers
-        apiClient.setToken(accessToken);
-        setToken(accessToken);
-        
-        if (newRefreshToken) {
-          apiClient.setRefreshToken(newRefreshToken);
-          setRefreshToken(newRefreshToken);
-        }
+      if (response.user) {
+        saveUser(response.user);
+        setUser(response.user);
+        apiClient.setCSRFToken(null);
+        await apiClient.fetchCSRFToken();
       }
-      
-      localStorage?.setItem(CONFIG.STORAGE.USER_KEY, JSON.stringify(response.user));
-      setUser(response.user);
 
       return response;
     } catch (err) {
@@ -149,57 +111,17 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const refreshAccessToken = useCallback(async () => {
-    if (!refreshToken) return false;
-
-    try {
-      const response = await apiClient.post('/auth/refresh', {
-        refresh_token: refreshToken
-      });
-
-      const newAccessToken = response.access_token;
-      if (newAccessToken) {
-        localStorage?.setItem(CONFIG.STORAGE.TOKEN_KEY, newAccessToken);
-        apiClient.setToken(newAccessToken);
-        setToken(newAccessToken);
-        return true;
-      }
-    } catch (err) {
-      logout();
-      return false;
-    }
-  }, [refreshToken, logout]);
-
-  const updateProfile = useCallback(async (profileData) => {
-    try {
-      const response = await apiClient.put('/auth/profile', profileData);
-      if (response.user) {
-        localStorage?.setItem(CONFIG.STORAGE.USER_KEY, JSON.stringify(response.user));
-        setUser(response.user);
-        return response;
-      }
-    } catch (err) {
-      const errorMsg = err.message || 'Profile update failed';
-      setError(errorMsg);
-      throw err;
-    }
-  }, []);
-
   const clearError = useCallback(() => setError(null), []);
 
   const value = {
     user,
-    token,
-    refreshToken,
     loading,
     error,
     login,
     logout,
     register,
-    refreshAccessToken,
-    updateProfile,
     clearError,
-    isAuthenticated: !!token && !!user
+    isAuthenticated: !!user,
   };
 
   return (

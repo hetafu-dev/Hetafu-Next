@@ -7,6 +7,8 @@ import Navbar from "@/app/Components/Common/Navbar/Page";
 import Footer from "@/app/Components/Common/Footer/Page";
 import BestSellers from "@/app/Components/Common/BestSellers/Page";
 import { apiClient } from '@/services/apiClient';
+import { saveUser, clearLegacyTokenStorage } from '@/utils/authStorage';
+import { validatePasswordStrength, PASSWORD_REQUIREMENTS } from '@/utils/passwordValidation';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,6 +27,8 @@ export default function LoginPage() {
 
   // Fetch CSRF token on component mount
   useEffect(() => {
+    clearLegacyTokenStorage();
+
     const fetchCSRFToken = async () => {
       try {
         console.log('🔐 Fetching CSRF token for login...');
@@ -55,8 +59,6 @@ export default function LoginPage() {
     
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
     }
     
     return newErrors;
@@ -115,14 +117,14 @@ export default function LoginPage() {
       setForgotLoading(false);
     } catch (error) {
       console.error('Send OTP error:', error);
-      let errorMsg = 'Failed to send OTP. Please try again.';
-      
-      if (error.message?.includes('404') || error.message?.includes('not found')) {
-        errorMsg = 'Email not found. Please check and try again or create a new account.';
-      } else if (error.message?.includes('422')) {
-        errorMsg = 'Invalid email. Please check and try again.';
+      let errorMsg = 'Unable to process your request. Please try again later.';
+
+      if (error.message?.includes('429') || error.message?.includes('Too many')) {
+        errorMsg = error.message.replace(/^HTTP \d+: /, '');
+      } else if (error.message?.includes('403') || error.message?.includes('CSRF')) {
+        errorMsg = 'Security validation failed. Please refresh the page and try again.';
       }
-      
+
       setForgotErrors({ email: errorMsg });
       setForgotLoading(false);
     }
@@ -174,8 +176,11 @@ export default function LoginPage() {
     
     if (!forgotData.newPassword) {
       newErrors.newPassword = 'New password is required';
-    } else if (forgotData.newPassword.length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters';
+    } else {
+      const passwordCheck = validatePasswordStrength(forgotData.newPassword);
+      if (!passwordCheck.valid) {
+        newErrors.newPassword = passwordCheck.error;
+      }
     }
     
     if (!forgotData.confirmPassword) {
@@ -208,12 +213,12 @@ export default function LoginPage() {
       setForgotLoading(false);
     } catch (error) {
       console.error('Update password error:', error);
-      let errorMsg = 'Failed to reset password. Please try again.';
-      
-      if (error.message?.includes('422')) {
+      let errorMsg = 'Unable to update password. Please verify your email and OTP, then try again.';
+
+      if (error.message?.includes('422') || error.message?.includes('Password must')) {
         errorMsg = 'Password does not meet requirements. Please try again.';
       }
-      
+
       setForgotErrors({ newPassword: errorMsg });
       setForgotLoading(false);
     }
@@ -253,15 +258,12 @@ export default function LoginPage() {
         csrf_token: csrfToken  // Include CSRF token
       });
 
-      if (response.tokens?.access_token) {
-        localStorage.setItem('access_token', response.tokens.access_token);
-        if (response.tokens.refresh_token) {
-          localStorage.setItem('refresh_token', response.tokens.refresh_token);
-          apiClient.setRefreshToken(response.tokens.refresh_token);
-        }
-        localStorage.setItem('user', JSON.stringify(response.user));
-        apiClient.setToken(response.tokens.access_token);
-        
+      if (response.user) {
+        saveUser(response.user);
+        apiClient.setCSRFToken(null);
+        await apiClient.fetchCSRFToken();
+        window?.dispatchEvent(new Event('auth:login'));
+
         setMessage({ type: 'success', text: 'Login successful! Redirecting...' });
         setTimeout(() => router.push('/account'), 1500);
       }
@@ -279,10 +281,8 @@ export default function LoginPage() {
           setMessage({ type: 'error', text: errorText });
         }
         // Handle rate limiting (429)
-        else if (error.message.includes('429') || error.message.includes('Too many requests')) {
-          const retryMatch = error.message.match(/(\d+)\s*seconds/);
-          const retrySeconds = retryMatch ? retryMatch[1] : '60';
-          errorText = `Too many login attempts. Please try again in ${retrySeconds} seconds.`;
+        else if (error.message.includes('429') || error.message.includes('Too many requests') || error.message.includes('Too many failed login attempts')) {
+          errorText = 'Too many failed login attempts. Please try again later or reset your password.';
           setMessage({ type: 'error', text: errorText });
         } 
         // Handle validation errors (422)
@@ -310,17 +310,14 @@ export default function LoginPage() {
         } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
           errorText = 'Invalid email or password. Please check and try again.';
           setMessage({ type: 'error', text: errorText });
-        } else if (error.message.includes('404')) {
-          errorText = 'Email address not found. Please check and try again or create a new account.';
-          setMessage({ type: 'error', text: errorText });
         } else if (error.message.includes('Connection')) {
           errorText = 'Connection error. Please check your internet and try again.';
           setMessage({ type: 'error', text: errorText });
         } else if (error.message.includes('inactive') || error.message.includes('Inactive')) {
-          errorText = 'Your account is inactive. Please contact support.';
+          errorText = 'Unable to sign in. Please contact support if you need assistance.';
           setMessage({ type: 'error', text: errorText });
         } else if (error.message.includes('locked') || error.message.includes('Account')) {
-          errorText = error.message; // Show the specific lockout or account message
+          errorText = 'Too many failed login attempts. Please try again later or reset your password.';
           setMessage({ type: 'error', text: errorText });
         }
       }
@@ -512,13 +509,14 @@ export default function LoginPage() {
                       name="newPassword"
                       value={forgotData.newPassword}
                       onChange={handleForgotChange}
-                      placeholder="Enter new password"
+                      placeholder="Min 12 characters"
                       className={`w-full bg-transparent border-b-2 text-sm text-primary-brown placeholder-gray-400 focus:outline-none py-2 transition ${
                         forgotErrors.newPassword 
                           ? 'border-red-500 focus:border-red-500' 
                           : 'border-primary-brown focus:border-secondary-blue'
                       }`}
                     />
+                    <p className="mt-1 text-xs text-gray-500">{PASSWORD_REQUIREMENTS}</p>
                     {forgotErrors.newPassword && <p className="text-red-500 text-xs mt-1">{forgotErrors.newPassword}</p>}
                   </div>
 
