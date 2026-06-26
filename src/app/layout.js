@@ -24,6 +24,9 @@ const shareTech = Share_Tech({
 export const metadata = {
   title: "Hetafu - World's First Dental Nutrition Brand",
   description: "Hetafu is a dental nutrition brand that provides a unique solution to the problem of dental health",
+  icons: {
+    icon: '/Images/Logos/LogoBlack.svg',
+  },
 };
 
 export default function RootLayout({ children }) {

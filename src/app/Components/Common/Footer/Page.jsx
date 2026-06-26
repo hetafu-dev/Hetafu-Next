@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   TiSocialFacebook,
   TiSocialInstagram,
@@ -8,10 +8,16 @@ import {
 } from "react-icons/ti";
 import { FaTwitter } from "react-icons/fa";
 import PrivacyModal from "../PrivacyModal/Page";
+import { getStoredUser } from '@/utils/authStorage';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!getStoredUser());
+  }, []);
 
   return (
     <>
@@ -28,7 +34,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a href="https://test.dentalnutrition.org/sustainability" target="_blank" rel="noopener noreferrer" className="transition hover:text-slate-950">
-                    Clinical Trials
+                    Sustainability
                   </a>
                 </li>
               </ul>
@@ -69,8 +75,8 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/signin" className="transition hover:text-slate-950">
-                    Sign In
+                  <a href={isLoggedIn ? "/account" : "/account/login"} className="transition hover:text-slate-950">
+                    {isLoggedIn ? "My Account" : "Sign In"}
                   </a>
                 </li>
                 <li>

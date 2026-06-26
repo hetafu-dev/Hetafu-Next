@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from "react";
 
 const carouselSlides = [
   {
-    src: "/Images/Banners/banner.png",
+    src: "/Images/Banners/banner1.png",
     title: null,
     description: null,
   },
