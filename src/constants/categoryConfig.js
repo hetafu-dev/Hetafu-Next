@@ -37,7 +37,7 @@ export const CATEGORY_CONFIG = {
       {
         label: 'Mixed Berry',
         staticSlug: 'pops-mixed-berry',
-        defaultPrice: 75.0,
+        defaultPrice: 29.0,
         keywords: ['mixed berry', 'mixed-berry', 'dollipop mixed'],
         fallbackImages: [
           '/Images/Products/Dollipops/Mixedberry.png',
@@ -58,12 +58,12 @@ export const CATEGORY_CONFIG = {
     variantLabel: 'Variant',
     defaultVariant: 'Powder',
     staticBaseSlug: 'cute-powder',
-    defaultPrice: 35.0,
+    defaultPrice: 249.0,
     variants: [
       {
         label: 'Powder',
         staticSlug: 'cute-powder',
-        defaultPrice: 35.0,
+        defaultPrice: 249.0,
         keywords: ['powder'],
         packOptions: {
           defaultPackId: '180g',
@@ -83,7 +83,7 @@ export const CATEGORY_CONFIG = {
       {
         label: 'Tablets',
         staticSlug: 'cute-tablets',
-        defaultPrice: 35.0,
+        defaultPrice: 199.0,
         keywords: ['tablets', 'tablet'],
         packOptions: {
           defaultPackId: 'pack-1',
@@ -111,7 +111,7 @@ export const CATEGORY_CONFIG = {
     variantLabel: 'Flavour',
     defaultVariant: 'Mint',
     staticBaseSlug: 'bits-dentabits',
-    defaultPrice: 45.0,
+    defaultPrice: 299.0,
     packOptions: {
       defaultPackId: 'pack-1',
       alwaysShow: true,
@@ -139,9 +139,9 @@ export const CATEGORY_CONFIG = {
       'Introducing Denta Smarts - our intelligent enamel protection serum that uses advanced nanotechnology to repair and strengthen weakened tooth enamel. Formulated with dentists and backed by clinical studies, this powerful daily treatment reverses early signs of decay.',
     heroImage: '/Images/Products/Smarts/Smartspagetop.png',
     variantLabel: 'Formula',
-    defaultVariant: 'Prime Smarts',
+    defaultVariant: 'Junior Smarts',
     staticBaseSlug: 'smarts-prime',
-    defaultPrice: 55.0,
+    defaultPrice: 299.0,
     packOptions: {
       defaultPackId: 'pack-1',
       options: [
@@ -151,20 +151,10 @@ export const CATEGORY_CONFIG = {
     },
     variants: [
       {
-        label: 'Prime Smarts',
-        staticSlug: 'smarts-prime',
-        keywords: ['prime'],
-        fallbackImages: ['/Images/Products/Smarts/prime.png',
-          '/Images/Products/Smarts/prime1.png',
-          '/Images/Products/Smarts/prime2.png',
-          '/Images/Products/Smarts/prime3.png',
-          '/Images/Products/Smarts/prime4.png',
-        ],
-      },
-      {
         label: 'Junior Smarts',
         staticSlug: 'smarts-junior',
         keywords: ['junior'],
+        disclaimer: 'junior smarts only for the kids',
         fallbackImages: ['/Images/Products/Smarts/junior.png',
           '/Images/Products/Smarts/junior1.png',
           '/Images/Products/Smarts/junior2.png',
@@ -173,9 +163,22 @@ export const CATEGORY_CONFIG = {
         ],
       },
       {
+        label: 'Prime Smarts',
+        staticSlug: 'smarts-prime',
+        keywords: ['prime'],
+        disclaimer: 'prime smarts for adult',
+        fallbackImages: ['/Images/Products/Smarts/prime.png',
+          '/Images/Products/Smarts/prime1.png',
+          '/Images/Products/Smarts/prime2.png',
+          '/Images/Products/Smarts/prime3.png',
+          '/Images/Products/Smarts/prime4.png',
+        ],
+      },
+      {
         label: 'Dia Smarts',
         staticSlug: 'smarts-dia',
         keywords: ['dia'],
+        disclaimer: 'dia smarts for diabetics',
         fallbackImages: ['/Images/Products/Smarts/dia.png',
           '/Images/Products/Smarts/dia1.png',
           '/Images/Products/Smarts/dia2.png',
@@ -187,6 +190,7 @@ export const CATEGORY_CONFIG = {
         label: 'Pink Smarts',
         staticSlug: 'smarts-pink',
         keywords: ['pink'],
+        disclaimer: 'pink smarts for women',
         fallbackImages: ['/Images/Products/Smarts/pink.png',
           '/Images/Products/Smarts/pink1.png',
           '/Images/Products/Smarts/pink2.png',

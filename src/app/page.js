@@ -8,19 +8,14 @@ import { useState, useEffect, useRef } from "react";
 
 const carouselSlides = [
   {
-    src: "/Images/Banners/bannercontent1.png",
-    title: <><span className="font-bold text-4xl md:text-8xl text-primary-brown">H</span><span className="font-bold text-3xl md:text-6xl text-primary-brown">e</span><span className="font-light text-3xl md:text-6xl text-primary-brown opacity-50">alth</span></>,
-    description: "Professional-grade whitening solutions that deliver visible results in just days. Safe for enamel, easy to use, and designed to give you a brighter, more confident smile.",
+    src: "/Images/Banners/banner.png",
+    title: null,
+    description: null,
   },
   {
-    src: "/Images/Banners/bannercontent2.png",
-    title: <><span className="font-bold text-4xl md:text-8xl text-primary-brown">T</span><span className="font-bold text-3xl md:text-6xl text-primary-brown">a</span><span className="font-light text-3xl md:text-6xl text-primary-brown opacity-50">ste</span></>,
-    description: "Eco-friendly formulas that transform your oral care routine. Sustainable products that care for your teeth and the planet while delivering exceptional cleaning power.",
-  },
-  {
-    src: "/Images/Banners/bannercontent3.png",
-    title: <><span className="font-bold text-4xl md:text-8xl text-primary-brown">F</span><span className="font-bold text-3xl md:text-6xl text-primary-brown">u</span><span className="font-light text-3xl md:text-6xl text-primary-brown opacity-50">n</span></>,
-    description: "Innovative dental products that make oral care enjoyable for the whole family. Advanced nanotechnology serum that repairs and strengthens your tooth enamel.",
+    src: "/Images/Banners/banner1.png",
+    title: null,
+    description: null,
   },
 ];
 
@@ -68,10 +63,11 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeProduct, setActiveProduct] = useState(0);
 
+  // Re-enable carousel for 2 banners
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((s) => (s + 1) % carouselSlides.length);
-    }, 4000);
+    }, 7000); // Increased to 7 seconds per slide for slower rotation
     return () => clearInterval(timer);
   }, []);
 
@@ -123,12 +119,12 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         {/* Hero Section - Carousel */}
-        <section className="relative h-[90vh] flex items-center justify-start text-left overflow-hidden">
-          <div className="absolute inset-0 w-full h-full">
+        <section className="relative h-screen flex items-center justify-start text-left overflow-hidden">
+          <div className="absolute inset-0 w-full h-screen">
             {carouselSlides.map((slide, index) => (
               <div
                 key={index}
-                className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+                className={`absolute inset-0 transition-opacity duration-2000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
               >
                 <Image
                   src={slide.src}
@@ -171,21 +167,6 @@ export default function Home() {
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
-          </div>
-
-          <div className="relative z-10 max-w-xl mx-auto md:ml-20 p-4 md:p-8">
-            <h1 className="mb-4 md:mb-6 text-primary-brown">
-              {carouselSlides[currentSlide].title}
-            </h1>
-            <p className="text-base md:text-xl mb-6 md:mb-10 text-foreground">
-              {carouselSlides[currentSlide].description}
-            </p>
-            <Link
-              href="#products"
-              className="inline-block px-6 md:px-8 py-3 md:py-4 bg-primary-brown text-white font-semibold rounded-full transition hover:opacity-90"
-            >
-              Explore Our Products
-            </Link>
           </div>
         </section>
 

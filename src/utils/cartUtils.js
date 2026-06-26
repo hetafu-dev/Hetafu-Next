@@ -4,6 +4,7 @@ import {
   resolvePackPrice,
   resolveStoreProductPackOptions,
 } from '@/utils/packOptions';
+import { resolveStorefrontImageUrl } from '@/utils/productImages';
 
 export function getLineTotal(item) {
   const unit = Number(item?.price) || 0;
@@ -28,7 +29,7 @@ export function mapStoreCartItem(row) {
     originalPrice: null,
     qty: row.quantity,
     promo: null,
-    image: row.product_image || '/Images/Products/Dollipops/Dollipop.png',
+    image: resolveStorefrontImageUrl(row.product_image, '/Images/Products/Dollipops/Dollipop.png'),
     packId: row.pack_id || null,
     serverSynced: true,
   };
@@ -56,7 +57,10 @@ export function mapStoreProduct(product, fallbackImage = '/Images/Products/Dolli
     defaultPackId,
     price,
     originalPrice: product.original_price ?? null,
-    image: product.image_url || product.images?.[0] || fallbackImage,
+    image: resolveStorefrontImageUrl(
+      product.image_url || product.images?.[0],
+      fallbackImage,
+    ),
     link: product.slug ? `/products/${product.slug}` : `/products/${(product.category || '').toLowerCase()}`,
     rating: Number(product.average_rating ?? product.rating ?? 0) || 0,
     reviews: Number(product.review_count ?? product.reviews ?? 0) || 0,

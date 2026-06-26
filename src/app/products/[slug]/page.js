@@ -1271,9 +1271,23 @@ function ProductDetailView({ product: rawProduct, variantCatalog = null, default
               <p className="leading-relaxed m-0 text-base">{product.description}</p>
               {showVariantSelector && (
               <div className="flex flex-wrap gap-3 mt-6">
-                {product.variants.map((variant) => (
-                  <button key={variant} onClick={() => setSelectedVariant(variant)} className="px-4 py-2 rounded text-sm font-medium transition-all cursor-pointer border-2" style={{ color: selectedVariant === variant ? 'var(--primary-brown)' : '#401E17', borderColor: selectedVariant === variant ? 'var(--secondary-blue)' : 'transparent' }}>{variant}</button>
-                ))}
+                {CATEGORY_CONFIG[baseProduct.category].variants.map((variant) => (
+                <div key={variant.label}>
+                  <button
+                    onClick={() => setSelectedVariant(variant.label)}
+                    className="px-4 py-2 rounded text-sm font-medium transition-all cursor-pointer border-2"
+                    style={{
+                      color: selectedVariant === variant.label ? 'var(--primary-brown)' : '#401E17',
+                      borderColor: selectedVariant === variant.label ? 'var(--secondary-blue)' : 'transparent'
+                    }}
+                  >
+                    {variant.label}
+                  </button>
+                  {selectedVariant === variant.label && variant.disclaimer && (
+                    <p className="text-xs text-gray-500 mt-1">{variant.disclaimer}</p>
+                  )}
+                </div>
+              ))}
               </div>
               )}
               {showPackSelector && (

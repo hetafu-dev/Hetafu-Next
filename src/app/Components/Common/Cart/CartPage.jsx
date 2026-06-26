@@ -29,6 +29,7 @@ export default function CartPage() {
             {items.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-sm text-slate-500 mb-4">Your bag is empty</p>
+                <p className="text-xs text-slate-400 mb-6">Add items to your cart to proceed.</p>
                 <Link
                   href="/"
                   className="inline-block py-3 px-8 cursor-pointer text-white text-xs font-bold tracking-widest uppercase bg-primary-brown hover:opacity-90 transition-opacity"
@@ -37,7 +38,7 @@ export default function CartPage() {
                 </Link>
               </div>
             ) : (
-              <div className="divide-y divide-slate-200">
+              <div className="divide-y divide-slate-200 max-h-[500px] overflow-y-auto">
                 {items.map((item) => {
                   const qty = item.qty ?? 1;
                   const lineTotal = getLineTotal(item);

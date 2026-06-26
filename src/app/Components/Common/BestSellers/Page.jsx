@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 import { useCountry } from "@/app/context/CountryContext";
-import { fetchBestSellers } from "@/services/productService";
+import { fetchStoreCatalog } from "@/services/productService";
 import { mapStoreProduct } from "@/utils/cartUtils";
 import StoreProductReviewSummary from "@/app/Components/Common/StoreProductReviewSummary";
 import {
@@ -36,27 +36,12 @@ function mapFallbackProduct(raw) {
 }
 
 const FALLBACK_PRODUCTS = FALLBACK_RAW.map(mapFallbackProduct);
-const BEST_SELLERS_LOAD_KEY = '__hetafuBestSellersLoad';
+const DISPLAY_LIMIT = 12;
 
 async function loadBestSellers() {
-  if (typeof globalThis !== 'undefined' && globalThis[BEST_SELLERS_LOAD_KEY]) {
-    return globalThis[BEST_SELLERS_LOAD_KEY];
-  }
-
-  const promise = (async () => {
-    const data = await fetchBestSellers(12);
-    if (!data?.items?.length) return FALLBACK_PRODUCTS;
-    return data.items.map((product) => mapStoreProduct(product));
-  })();
-
-  if (typeof globalThis !== 'undefined') {
-    globalThis[BEST_SELLERS_LOAD_KEY] = promise;
-    promise.catch(() => {
-      delete globalThis[BEST_SELLERS_LOAD_KEY];
-    });
-  }
-
-  return promise;
+  const data = await fetchStoreCatalog(50);
+  if (!data?.items?.length) return FALLBACK_PRODUCTS;
+  return data.items.slice(0, DISPLAY_LIMIT).map((product) => mapStoreProduct(product));
 }
 
 function BestSellerCard({ product }) {

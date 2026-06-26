@@ -15,6 +15,33 @@ export function isBackendUploadUrl(url) {
 }
 
 /**
+ * Normalize API image paths to relative URLs (/uploads/... or /Images/...).
+ * Strips hardcoded backend origins like http://localhost:8000.
+ */
+export function normalizeStorefrontImagePath(path) {
+  if (!path || typeof path !== 'string') return null;
+  const trimmed = path.trim();
+  if (!trimmed) return null;
+  if (trimmed.startsWith('/Images/')) return trimmed;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    try {
+      return new URL(trimmed).pathname;
+    } catch {
+      return trimmed;
+    }
+  }
+  return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+}
+
+/** Relative storefront image path for img src (proxied via Next.js /uploads rewrite). */
+export function resolveStorefrontImageUrl(
+  path,
+  fallback = '/Images/Products/Dollipops/Dollipop.png',
+) {
+  return normalizeStorefrontImagePath(path) || fallback;
+}
+
+/**
  * Prefer static public/Images assets for display.
  * API upload URLs are often missing on disk (404) — static fallbacks are reliable.
  * When no static fallback exists, use API URLs as last resort.
@@ -23,12 +50,16 @@ export function resolveProductImages(apiImages, fallbackImages = []) {
   const fromStatic = (fallbackImages || []).filter(isValidImageUrl);
   if (fromStatic.length) return fromStatic;
 
-  return (apiImages || []).filter(isValidImageUrl);
+  return (apiImages || [])
+    .map((url) => normalizeStorefrontImagePath(url))
+    .filter(isValidImageUrl);
 }
 
 /** Build gallery entries with src + fallback for runtime error handling. */
 export function resolveProductImageGallery(apiImages, fallbackImages = []) {
-  const api = (apiImages || []).filter(isValidImageUrl);
+  const api = (apiImages || [])
+    .map((url) => normalizeStorefrontImagePath(url))
+    .filter(isValidImageUrl);
   const fallback = (fallbackImages || []).filter(isValidImageUrl);
 
   if (!fallback.length) {
@@ -54,12 +85,6 @@ export function resolvePrimaryImage(apiImageUrl, apiImages, fallbackImages = [])
   return gallery[0]?.src || gallery[0]?.fallback || null;
 }
 
-/** Match an API product name to a variant label using keywords. */
-export function matchVariantLabel(apiName, variantDef) {
-  const name = (apiName || '').toLowerCase();
-  return variantDef.keywords.some((keyword) => name.includes(keyword.toLowerCase()));
-}
-
 /** Pick fallback image for a gallery index. */
 export function getImageFallback(fallbackImages, index = 0) {
   if (!fallbackImages?.length) return undefined;
@@ -83,6 +108,12 @@ export function resolveProductPrice(apiItem, staticItem, variantDef, config) {
   if (variantDef?.defaultPrice > 0) return variantDef.defaultPrice;
   if (config?.defaultPrice > 0) return config.defaultPrice;
   return apiItem?.price ?? 0;
+}
+
+/** Match an API product name to a variant label using keywords. */
+export function matchVariantLabel(apiName, variantDef) {
+  const name = (apiName || '').toLowerCase();
+  return variantDef.keywords.some((keyword) => name.includes(keyword.toLowerCase()));
 }
 
 /** Display name from API product, falling back to variant label. */
