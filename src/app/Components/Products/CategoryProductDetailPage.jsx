@@ -13,7 +13,7 @@ const ProductDetailView = dynamic(
   { loading: () => null },
 );
 
-const CATEGORY_CACHE_KEY = '__hetafuCategoryProductCache';
+const CATEGORY_CACHE_KEY = '__hetafuCategoryProductCache_v2';
 
 function getCategoryCache() {
   if (typeof globalThis === 'undefined') return new Map();

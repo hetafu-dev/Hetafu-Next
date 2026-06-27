@@ -136,8 +136,8 @@ export default function Navbar() {
     <>
       {/* Top utility bar */}
       <div className="bg-primary-brown text-white text-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-7">
-          <div className="relative" ref={countryDropdownRef}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-7 min-w-0 gap-2">
+          <div className="relative min-w-0 shrink" ref={countryDropdownRef}>
             <button
               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -145,7 +145,7 @@ export default function Navbar() {
               <div className="w-5 h-4 rounded-full overflow-hidden shadow-sm">
                 <FlagIcon code={selectedCountry.countryCode} />
               </div>
-              <span className="font-bold tracking-wide">{selectedCountry.name}</span>
+              <span className="font-bold tracking-wide truncate max-w-[120px] sm:max-w-none">{selectedCountry.name}</span>
               {showCountryDropdown ? (
                 <ChevronUp size={14} className="text-white/80" />
               ) : (
@@ -245,14 +245,14 @@ export default function Navbar() {
             )}
           </div>
 
-          <div className="flex gap-6 items-center">
-            <a href="/locator" className="flex items-center gap-1">
-              <MapPin size={16} />
-              <span className="font-bold">Clinic Locators</span>
+          <div className="flex gap-3 md:gap-6 items-center shrink-0">
+            <a href="/locator" className="flex items-center gap-1 whitespace-nowrap">
+              <MapPin size={16} className="shrink-0" />
+              <span className="font-bold hidden sm:inline">Clinic Locators</span>
             </a>
-            <a href="http://test.dentalnutrition.org/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-              <FaTooth size={16} />
-              <span className="font-bold">Dental Nutrition</span>
+            <a href="http://test.dentalnutrition.org/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 whitespace-nowrap">
+              <FaTooth size={16} className="shrink-0" />
+              <span className="font-bold hidden md:inline">Dental Nutrition</span>
             </a>
           </div>
         </div>
@@ -323,9 +323,9 @@ export default function Navbar() {
             )}
           </>
         ) : (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20 gap-4">
-              <div className="flex items-center flex-shrink-0">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-w-0">
+            <div className="flex justify-between items-center h-20 gap-2 md:gap-4 min-w-0">
+              <div className="flex items-center shrink-0">
                 <button
                   type="button"
                   className="mr-4 md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
@@ -345,15 +345,15 @@ export default function Navbar() {
                 </Link>
               </div>
 
-              <div className="hidden tracking-widest md:flex gap-20 items-center font-bold flex-1 justify-center">
+              <div className="hidden md:flex gap-4 lg:gap-10 xl:gap-20 items-center font-bold flex-1 justify-center min-w-0 tracking-wide xl:tracking-widest">
                 {NAV_LINKS.map((link) => (
-                  <Link key={link.href} href={link.href} className="hover:opacity-70 transition-opacity">
+                  <Link key={link.href} href={link.href} className="hover:opacity-70 transition-opacity whitespace-nowrap shrink-0">
                     {link.label}
                   </Link>
                 ))}
               </div>
 
-              <div className="flex items-center gap-6 flex-shrink-0">
+              <div className="flex items-center gap-4 md:gap-6 shrink-0">
                 <button
                   type="button"
                   onClick={() => setSearchOpen(true)}

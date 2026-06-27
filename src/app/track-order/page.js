@@ -27,12 +27,12 @@ export default function TrackOrderPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col bg-background">
       <Navbar />
-      <main className="flex-1">
-        <div style={{ backgroundColor: 'var(--background)', fontFamily: 'var(--font-sans-family)' }} className="min-h-screen py-20">
+      <main>
+        <div className="bg-background text-primary-brown font-sans py-12 md:py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-5xl font-light text-center mb-16 text-slate-950">Track Your Order</h1>
+            <h1 className="text-4xl md:text-5xl font-light text-center mb-8 md:mb-12 text-slate-950">Track Your Order</h1>
             <div className="prose prose-slate max-w-none">
               <p className="text-sm leading-7 text-slate-600 mb-8">
                 Enter your tracking number to check the status of your order. You can find your tracking number in the shipment confirmation email you received, or in your account under order history.

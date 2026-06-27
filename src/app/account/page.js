@@ -12,7 +12,9 @@ import { apiClient } from '@/services/apiClient';
 import { fetchMyOrders } from '@/services/orderService';
 import { getStoredUser, saveUser, clearAuthStorage } from '@/utils/authStorage';
 
-const ORDERS_PAGE_SIZE = 10;
+const ORDERS_PAGE_SIZE = 5;
+const ORDER_ITEMS_PREVIEW = 3;
+const ORDER_ITEMS_COLLAPSE_THRESHOLD = 1;
 
 function formatOrderDate(value) {
   if (!value) return '';
@@ -52,31 +54,172 @@ function statusClass(status) {
 }
 
 function OrderPagination({ page, totalPages, onPageChange, loading }) {
-  if (totalPages <= 1) return null;
+  const safeTotalPages = Math.max(1, totalPages || 1);
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-slate-200">
+    <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-slate-200">
       <button
         type="button"
         disabled={loading || page <= 1}
         onClick={() => onPageChange(page - 1)}
-        className="p-2 rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50 cursor-pointer"
+        className="p-1.5 rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50 cursor-pointer"
         aria-label="Previous page"
       >
-        <ChevronLeft size={16} />
+        <ChevronLeft size={14} />
       </button>
-      <span className="text-xs text-slate-600 min-w-[80px] text-center">
-        Page {page} of {totalPages}
+      <span className="text-[11px] text-slate-600 min-w-[72px] text-center">
+        Page {page} of {safeTotalPages}
       </span>
       <button
         type="button"
-        disabled={loading || page >= totalPages}
+        disabled={loading || page >= safeTotalPages}
         onClick={() => onPageChange(page + 1)}
-        className="p-2 rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50 cursor-pointer"
+        className="p-1.5 rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50 cursor-pointer"
         aria-label="Next page"
       >
-        <ChevronRight size={16} />
+        <ChevronRight size={14} />
       </button>
+    </div>
+  );
+}
+
+function ReviewedBadge() {
+  return (
+    <span className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 whitespace-nowrap">
+      Reviewed
+    </span>
+  );
+}
+
+function OrderItemThumb({ item, className = 'w-8 h-8' }) {
+  if (item.image_url) {
+    return (
+      <img
+        src={item.image_url}
+        alt=""
+        className={`${className} object-contain rounded bg-[#f0ece6] flex-shrink-0 border border-white`}
+      />
+    );
+  }
+  return <div className={`${className} rounded bg-[#f0ece6] flex-shrink-0 border border-white`} />;
+}
+
+function OrderHistoryCard({ order, onReview }) {
+  const [expanded, setExpanded] = useState(false);
+  const items = order.items || [];
+  const reviewableItems = items.filter((item) => item.can_review);
+  const reviewedItems = items.filter((item) => item.already_reviewed);
+  const singleReviewable = reviewableItems.length === 1 ? reviewableItems[0] : null;
+  const singleReviewed = items.length === 1 && items[0]?.already_reviewed;
+  const allReviewed = items.length > 0 && reviewedItems.length === items.length;
+  const canCollapse = items.length > ORDER_ITEMS_COLLAPSE_THRESHOLD;
+  const previewItems = items.slice(0, ORDER_ITEMS_PREVIEW);
+  const hiddenCount = Math.max(0, items.length - previewItems.length);
+  const actionClass =
+    'text-[10px] font-bold tracking-wide uppercase text-primary-brown underline underline-offset-2 hover:opacity-70 transition cursor-pointer whitespace-nowrap';
+
+  return (
+    <div className="border border-slate-200 rounded-md px-3 py-2.5 bg-white">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center -space-x-1.5 shrink-0">
+          {previewItems.map((item, itemIndex) => (
+            <OrderItemThumb
+              key={`${order.id}-preview-${item.product_id}-${itemIndex}`}
+              item={item}
+              className="w-8 h-8"
+            />
+          ))}
+          {hiddenCount > 0 && (
+            <div className="w-8 h-8 rounded bg-slate-100 border border-white flex items-center justify-center text-[10px] font-semibold text-slate-600 flex-shrink-0">
+              +{hiddenCount}
+            </div>
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <p className="text-xs font-semibold text-primary-brown truncate">{order.order_number}</p>
+            <span className={`text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full ${statusClass(order.status)}`}>
+              {statusLabel(order.status)}
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-500 truncate">
+            {formatOrderDate(order.created_at)}
+            {' · '}
+            {items.length} {items.length === 1 ? 'item' : 'items'}
+            {' · '}
+            <span className="font-medium text-primary-brown">{formatInr(order.total_amount)}</span>
+          </p>
+        </div>
+
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <Link href={`/track-order?order=${encodeURIComponent(order.order_number)}`} className={actionClass}>
+            Track
+          </Link>
+          {canCollapse && (
+            <button type="button" onClick={() => setExpanded((open) => !open)} className={actionClass}>
+              {expanded ? 'Hide' : 'Items'}
+            </button>
+          )}
+          {singleReviewable && (
+            <button
+              type="button"
+              onClick={() => onReview({
+                productId: singleReviewable.product_id,
+                productName: singleReviewable.product_name,
+              })}
+              className={actionClass}
+            >
+              Review
+            </button>
+          )}
+          {!singleReviewable && reviewableItems.length > 1 && (
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className={actionClass}
+            >
+              Review ({reviewableItems.length})
+            </button>
+          )}
+          {(singleReviewed || (allReviewed && reviewableItems.length === 0)) && (
+            <ReviewedBadge />
+          )}
+        </div>
+      </div>
+
+      {expanded && items.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-slate-100 space-y-1.5 max-h-40 overflow-y-auto">
+          {items.map((item, itemIndex) => (
+            <div
+              key={`${order.id}-${item.product_id}-${itemIndex}`}
+              className="flex items-center gap-2"
+            >
+              <OrderItemThumb item={item} className="w-7 h-7" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-slate-800 line-clamp-1">{item.product_name}</p>
+                <p className="text-[10px] text-slate-500">
+                  Qty {item.quantity}
+                  {item.unit_price != null ? ` · ${formatInr(item.unit_price)}` : ''}
+                </p>
+              </div>
+              {!singleReviewable && item.can_review && (
+                <button
+                  type="button"
+                  onClick={() => onReview({
+                    productId: item.product_id,
+                    productName: item.product_name,
+                  })}
+                  className={actionClass}
+                >
+                  Review
+                </button>
+              )}
+              {item.already_reviewed && <ReviewedBadge />}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -215,89 +358,14 @@ export default function AccountPage() {
                 <p className="text-sm text-slate-600">You haven&apos;t placed any orders yet.</p>
               ) : (
                 <>
-                  <div className="space-y-3">
-                    {orders.map((order) => {
-                      const reviewableItems = (order.items || []).filter((item) => item.can_review);
-                      const singleReviewable = reviewableItems.length === 1 ? reviewableItems[0] : null;
-
-                      return (
-                      <div
+                  <div className="space-y-2">
+                    {orders.map((order) => (
+                      <OrderHistoryCard
                         key={order.id}
-                        className="border border-slate-200 rounded-lg p-4 bg-white"
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                          <div>
-                            <p className="text-xs text-slate-500">{formatOrderDate(order.created_at)}</p>
-                            <p className="text-sm font-semibold text-primary-brown">{order.order_number}</p>
-                          </div>
-                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${statusClass(order.status)}`}>
-                            {statusLabel(order.status)}
-                          </span>
-                        </div>
-
-                        <div className="space-y-2 mb-3">
-                          {(order.items || []).map((item) => (
-                            <div key={`${order.id}-${item.product_id}`} className="flex items-center gap-3">
-                              {item.image_url ? (
-                                <img
-                                  src={item.image_url}
-                                  alt=""
-                                  className="w-12 h-12 object-contain rounded bg-[#f0ece6] flex-shrink-0"
-                                />
-                              ) : (
-                                <div className="w-12 h-12 rounded bg-[#f0ece6] flex-shrink-0" />
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm text-slate-800 line-clamp-1">{item.product_name}</p>
-                                <p className="text-xs text-slate-500">Qty {item.quantity}</p>
-                              </div>
-                              {!singleReviewable && item.can_review && (
-                                <button
-                                  type="button"
-                                  onClick={() => setReviewTarget({
-                                    productId: item.product_id,
-                                    productName: item.product_name,
-                                  })}
-                                  className="text-xs font-bold tracking-widest uppercase text-primary-brown underline underline-offset-4 hover:opacity-70 transition cursor-pointer whitespace-nowrap"
-                                >
-                                  Write a review
-                                </button>
-                               )}
-                              {!singleReviewable && item.already_reviewed && (
-                                <span className="text-xs text-slate-500 whitespace-nowrap">Reviewed</span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 text-sm">
-                          <span>
-                            <span className="text-slate-600">Total </span>
-                            <span className="font-semibold text-primary-brown">{formatInr(order.total_amount)}</span>
-                          </span>
-                          <div className="flex flex-wrap items-center gap-4">
-                            {singleReviewable && (
-                              <button
-                                type="button"
-                                onClick={() => setReviewTarget({
-                                  productId: singleReviewable.product_id,
-                                  productName: singleReviewable.product_name,
-                                })}
-                                className="text-xs font-bold tracking-widest uppercase text-primary-brown underline underline-offset-4 hover:opacity-70 transition cursor-pointer"
-                              >
-                                Write a review
-                              </button>
-                            )}
-                            <Link
-                              href={`/track-order?order=${encodeURIComponent(order.order_number)}`}
-                              className="text-xs font-bold tracking-widest uppercase text-primary-brown underline underline-offset-4 hover:opacity-70 transition"
-                            >
-                              Track order
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    );})}
+                        order={order}
+                        onReview={setReviewTarget}
+                      />
+                    ))}
                   </div>
 
                   <OrderPagination

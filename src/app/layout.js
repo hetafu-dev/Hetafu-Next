@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${shareTech.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col overflow-x-clip" suppressHydrationWarning>
         <CountryProvider>
           <CartProvider>
             <CartDrawer />

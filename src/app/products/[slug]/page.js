@@ -1749,7 +1749,7 @@ function ensureProductDisplayFields(product) {
     postcardBody: product.postcardBody || product.description || "",
     postcardQuote: product.postcardQuote || "",
     reviewList: product.reviewList || [],
-    rating: product.rating ?? 4.8,
+    rating: product.rating ?? 0,
     reviewCount: product.reviewCount ?? 0,
     accordion: product.accordion || {
       details: product.description || "",
@@ -2136,7 +2136,7 @@ function ReviewsSection({ product, onStatsChange }) {
   useEffect(() => {
     if (!usesApiReviews) {
       setReviews([...(product.reviewList || [])]);
-      setAverageRating(product.rating ?? 4.8);
+      setAverageRating(product.rating ?? 0);
       setReviewCount(product.reviewCount ?? product.reviewList?.length ?? 0);
       return undefined;
     }
@@ -2194,7 +2194,7 @@ function ReviewsSection({ product, onStatsChange }) {
       ? (
           reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
         ).toFixed(1)
-      : (product.rating ?? 4.8).toFixed(1);
+      : (product.rating ?? 0).toFixed(1);
   const displayReviewCount = usesApiReviews
     ? reviewCount
     : (product.reviewCount ?? reviews.length);
@@ -2232,7 +2232,7 @@ function ReviewsSection({ product, onStatsChange }) {
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const showPagination = !loadingReviews && displayedTotalPages > 1;
+  const showPagination = !loadingReviews;
 
   return (
     <section
@@ -2514,7 +2514,7 @@ export default function ProductPage({ params }) {
 
 function ProductDetail({ slug }) {
   const staticProduct = ALL_PRODUCTS[slug];
-  const [product, setProduct] = useState(staticProduct);
+  const [product, setProduct] = useState(null);
   const [apiLoaded, setApiLoaded] = useState(false);
 
   useEffect(() => {
@@ -2525,63 +2525,46 @@ function ProductDetail({ slug }) {
         const apiProduct = await fetchProductBySlug(slug);
         if (cancelled) return;
 
-        setProduct((prev) => {
-          const base = prev || {
+        const staticMarketing = staticProduct || {};
+
+        setProduct(
+          ensureProductDisplayFields({
             id: apiProduct.id,
             name: apiProduct.name,
             category: apiProduct.category,
-            price: apiProduct.discount_price ?? apiProduct.price,
-            rating: 4.8,
-            reviewCount: 0,
-            description: apiProduct.description || "",
+            price: apiProduct.discount_price ?? apiProduct.price ?? 0,
+            rating: apiProduct.average_rating ?? 0,
+            reviewCount: apiProduct.review_count ?? 0,
+            description: apiProduct.description || '',
             variants: [apiProduct.name],
-            variantLabel: "Variant",
-            images: apiProduct.images?.length
-              ? apiProduct.images
-              : [apiProduct.image_url].filter(Boolean),
-            accordion: {
-              details: apiProduct.description || "",
-              ingredients: "",
-              "how-to-use": [],
-            },
-            sectionImage: apiProduct.image_url,
-            sectionTitle: [apiProduct.name, ""],
-            sectionBody: apiProduct.description || "",
-            postcardImage: apiProduct.image_url,
-            postcardTitle: ["", ""],
-            postcardBody: "",
-            postcardQuote: "",
-            notes: [],
-            reviewList: [],
-          };
-
-          return ensureProductDisplayFields({
-            ...base,
-            id: apiProduct.id,
-            name: apiProduct.name,
-            category: apiProduct.category || base.category,
-            price: apiProduct.discount_price ?? apiProduct.price ?? base.price,
-            description: apiProduct.description || base.description,
+            variantLabel: 'Variant',
             images: resolveProductImages(
               apiProduct.images?.length
                 ? apiProduct.images
                 : [apiProduct.image_url].filter(Boolean),
-              base.images || base.fallbackImages,
+              staticMarketing.images || staticMarketing.fallbackImages,
             ),
-            fallbackImages: base.images || base.fallbackImages || [],
-            sectionImage:
-              apiProduct.images?.[0] ||
-              apiProduct.image_url ||
-              base.sectionImage,
-            postcardImage:
-              apiProduct.images?.[0] ||
-              apiProduct.image_url ||
-              base.postcardImage,
-            notes: base.notes?.length >= 3 ? base.notes : undefined,
-          });
-        });
+            fallbackImages: staticMarketing.images || staticMarketing.fallbackImages || [],
+            accordion: staticMarketing.accordion || {
+              details: apiProduct.description || '',
+              ingredients: '',
+              'how-to-use': [],
+            },
+            sectionImage: apiProduct.images?.[0] || apiProduct.image_url || staticMarketing.sectionImage,
+            sectionTitle: staticMarketing.sectionTitle,
+            sectionBody: staticMarketing.sectionBody || apiProduct.description || '',
+            postcardImage: apiProduct.images?.[0] || apiProduct.image_url || staticMarketing.postcardImage,
+            postcardTitle: staticMarketing.postcardTitle,
+            postcardBody: staticMarketing.postcardBody,
+            postcardQuote: staticMarketing.postcardQuote,
+            notes: staticMarketing.notes,
+            reviewList: [],
+          }),
+        );
       } catch {
-        // Keep static fallback when API product is unavailable
+        if (!cancelled && staticProduct) {
+          setProduct(staticProduct);
+        }
       } finally {
         if (!cancelled) {
           setApiLoaded(true);
@@ -2593,7 +2576,7 @@ function ProductDetail({ slug }) {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, staticProduct]);
 
   if (!product && apiLoaded) return notFound();
   if (!product) {
@@ -2658,6 +2641,9 @@ function ProductDetailView({
           packOptions: activeVariantData.packOptions ?? baseProduct.packOptions,
           price: activeVariantData.price ?? baseProduct.price,
           description: activeVariantData.description ?? baseProduct.description,
+          rating: activeVariantData.rating ?? baseProduct.rating ?? 0,
+          reviewCount: activeVariantData.reviewCount ?? baseProduct.reviewCount ?? 0,
+          reviewList: activeVariantData.reviewList ?? [],
           images: activeVariantData.images?.length
             ? activeVariantData.images
             : baseProduct.images,
@@ -2729,7 +2715,7 @@ function ProductDetailView({
       : liveReviewStats?.reviewCount > 0
         ? Number(liveReviewStats.averageRating).toFixed(1)
         : "0.0"
-    : Number(product.rating ?? 4.8).toFixed(1);
+    : Number(product.rating ?? 0).toFixed(1);
   const heroReviewCount = reviewProductId
     ? loadingReviewStats
       ? null
@@ -2771,8 +2757,8 @@ function ProductDetailView({
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
-        <div className="max-w-[1400px] mx-auto px-4 py-6 md:px-8 md:py-8 font-sans bg-background text-primary-brown">
-          <div className="flex items-center gap-2 mb-3 text-sm uppercase tracking-wider text-primary-brown">
+        <div className="max-w-[1400px] mx-auto px-3 py-4 md:px-5 md:py-5 lg:px-8 lg:py-8 font-sans bg-background text-primary-brown">
+          <div className="flex items-center gap-2 mb-2 text-xs sm:text-sm uppercase tracking-wider text-primary-brown">
             <Link
               href="/"
               className="no-underline font-bold transition-colors hover:text-amber-700"
@@ -2783,11 +2769,11 @@ function ProductDetailView({
             <span className="font-bold">{product.name.toUpperCase()}</span>
           </div>
           <div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 mt-8 md:mt-12"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-16 mt-4 md:mt-6 lg:mt-12"
             style={{ alignItems: "start" }}
           >
-            <div className="flex flex-col lg:flex-row gap-3 lg:items-start">
-              {/* Thumbnails hidden on mobile, only visible on lg screens and above */}
+            <div className="flex flex-col lg:flex-row gap-2 lg:gap-3 lg:items-start">
+              {/* Desktop: vertical thumbnails */}
               <div
                 className="hidden lg:flex flex-col items-center gap-2 flex-shrink-0"
                 style={{ width: "98px" }}
@@ -2829,25 +2815,55 @@ function ProductDetailView({
                   ↓
                 </button>
               </div>
-              {/* Main product image - fully responsive for all screens */}
-              <div className="w-full bg-amber-50 lg:flex-1 lg:min-w-0 overflow-hidden">
-                <ProductImage
-                  src={mainImage}
-                  fallbackSrc={imageFallback(mainImage)}
-                  alt={product.name}
-                  width={423}
-                  height={580}
-                  priority
-                  className="w-full h-auto block object-contain"
-                />
+
+              <div className="w-full lg:flex-1 lg:min-w-0 flex flex-col gap-2">
+                <div className="w-full bg-amber-50 overflow-hidden">
+                  <ProductImage
+                    src={mainImage}
+                    fallbackSrc={imageFallback(mainImage)}
+                    alt={product.name}
+                    width={423}
+                    height={580}
+                    priority
+                    className="w-full h-auto block object-contain"
+                  />
+                </div>
+
+                {/* Mobile & tablet: horizontal thumbnails below main image */}
+                {product.images.length > 1 && (
+                  <div className="flex lg:hidden gap-2 overflow-x-auto pb-1 hide-scrollbar snap-x snap-mandatory">
+                    {product.images.map((thumbnail, index) => (
+                      <button
+                        key={`${thumbnail}-${index}`}
+                        type="button"
+                        onClick={() => setMainImage(thumbnail)}
+                        className={`shrink-0 snap-start w-16 h-16 sm:w-[72px] sm:h-[72px] overflow-hidden border-2 bg-amber-50 transition-all ${
+                          mainImage === thumbnail
+                            ? "border-amber-700"
+                            : "border-gray-200 hover:border-amber-600"
+                        }`}
+                        aria-label={`View image ${index + 1}`}
+                      >
+                        <ProductImage
+                          src={thumbnail}
+                          fallbackSrc={imageFallback(thumbnail)}
+                          alt={`${product.name} ${index + 1}`}
+                          width={72}
+                          height={72}
+                          className="w-full h-full object-contain"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 lg:gap-4">
               <h1 className="text-4xl md:text-[clamp(1.5rem,4vw,2.5rem)] font-bold italic tracking-wide m-0 text-secondary-blue font-signature">
                 {CATEGORY_CONFIG[baseProduct.category]?.displayName || product.name}
               </h1>
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
                 <div className="flex items-baseline gap-4">
                   <span className="text-2xl md:text-[clamp(1.25rem,3vw,1.75rem)] font-bold">
                     {currency}
@@ -2884,7 +2900,7 @@ function ProductDetailView({
                 {product.description}
               </p>
               {showVariantSelector && (
-                <div className="flex flex-wrap gap-3 mt-6">
+                <div className="flex flex-wrap gap-2 sm:gap-3 mt-3 lg:mt-6">
                   {CATEGORY_CONFIG[baseProduct.category].variants.map(
                     (variant) => (
                       <div key={variant.label}>
@@ -2906,7 +2922,7 @@ function ProductDetailView({
                 </div>
               )}
               {showPackSelector && (
-                <div className="flex flex-col gap-2 mt-4">
+                <div className="flex flex-col gap-2 mt-3 lg:mt-4">
                   <label className="text-sm font-bold tracking-wider uppercase">
                     {packLabel}
                   </label>
@@ -2916,7 +2932,7 @@ function ProductDetailView({
                         key={pack.id}
                         type="button"
                         onClick={() => setSelectedPackId(pack.id)}
-                        className={`px-4 py-2 text-sm font-medium transition-all cursor-pointer ${effectivePackId === pack.id ? 'bg-[var(--primary-brown)] text-white' : 'text-primary-brown border border-[#d4c5b2] hover:bg-[var(--primary-brown)] hover:text-white'}`}
+                        className={`px-4 py-2 text-sm font-medium transition-all cursor-pointer ${effectivePackId === pack.id ? 'bg-[var(--primary-brown)] text-white' : 'text-primary-brown border border-primary-brown hover:bg-[var(--primary-brown)] hover:text-white'}`}
                       >
                         {pack.label}
                       </button>
@@ -2924,16 +2940,14 @@ function ProductDetailView({
                   </div>
                 </div>
               )}
-              <div className="flex flex-col gap-2 mt-8">
-                <label className="text-sm font-bold tracking-wider">
-                  QUANTITY
-                </label>
-                <div className="flex flex-col sm:flex-row gap-3 w-full">
-                  <div className="flex border border-primary-brown overflow-hidden shrink-0 h-14 min-w-[140px] w-full max-w-[180px]">
+              <div className="mt-4 lg:mt-8">
+                <div className="flex flex-row items-center gap-2 sm:gap-3 w-full">
+                  <div className="flex border border-primary-brown overflow-hidden shrink-0 h-11 sm:h-12 w-[108px] sm:w-[120px]">
                     <button
-                      className="w-10 p-2 border-none cursor-pointer text-xl transition-colors hover:bg-amber-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 bg-white text-primary-brown"
+                      className="w-9 sm:w-10 p-0 border-none cursor-pointer text-lg sm:text-xl transition-colors hover:bg-amber-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 bg-white text-primary-brown"
                       onClick={() => quantity > 1 && setQuantity(quantity - 1)}
                       disabled={quantity === 1}
+                      aria-label="Decrease quantity"
                     >
                       −
                     </button>
@@ -2941,17 +2955,19 @@ function ProductDetailView({
                       type="text"
                       value={quantity}
                       readOnly
-                      className="flex-1 border-none border-x border-secondary-blue text-center text-base focus:outline-none min-w-0 text-primary-brown cursor-default"
+                      className="flex-1 border-none border-x border-secondary-blue text-center text-sm sm:text-base focus:outline-none min-w-0 text-primary-brown cursor-default"
+                      aria-label="Quantity"
                     />
                     <button
-                      className="w-10 p-2 border-none cursor-pointer text-xl transition-colors hover:bg-amber-50 flex items-center justify-center shrink-0 bg-white text-primary-brown"
+                      className="w-9 sm:w-10 p-0 border-none cursor-pointer text-lg sm:text-xl transition-colors hover:bg-amber-50 flex items-center justify-center shrink-0 bg-white text-primary-brown"
                       onClick={() => setQuantity(quantity + 1)}
+                      aria-label="Increase quantity"
                     >
                       +
                     </button>
                   </div>
                   <button
-                    className="flex-1 p-4 border border-[var(--primary-brown)] bg-[var(--primary-brown)] text-base font-bold uppercase tracking-wider cursor-pointer transition-colors w-full sm:w-auto h-14 text-white hover:bg-[var(--primary-brown)]/90 flex items-center justify-center gap-2"
+                    className="flex-1 min-w-0 h-11 sm:h-12 px-2 sm:px-4 border border-[var(--primary-brown)] bg-[var(--primary-brown)] text-xs sm:text-base font-bold uppercase tracking-wide cursor-pointer transition-colors text-white hover:bg-[var(--primary-brown)]/90 flex items-center justify-center gap-2"
                     onClick={handleAddToBag}
                     disabled={isAdding}
                   >
@@ -2991,7 +3007,7 @@ function ProductDetailView({
                   </button>
                 </div>
               </div>
-              <div className="mt-8 pt-8">
+              <div className="mt-4 pt-4 lg:mt-8 lg:pt-8">
                 {["details", "ingredients", "how-to-use"].map((key) => (
                   <div
                     key={key}
@@ -2999,7 +3015,7 @@ function ProductDetailView({
                     style={{ borderColor: "#d4c5b2" }}
                   >
                     <button
-                      className="w-full flex items-center justify-between py-4 text-left"
+                      className="w-full flex items-center justify-between py-3 lg:py-4 text-left"
                       onClick={() =>
                         setOpenAccordion(openAccordion === key ? null : key)
                       }

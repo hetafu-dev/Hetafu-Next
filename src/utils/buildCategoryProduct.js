@@ -45,7 +45,9 @@ export function buildCategoryProductState(categoryKey, apiItems = [], staticProd
       name: apiName,
       displayName: config.displayName || config.title,
       variantName: variantDef.label,
-      description: apiItem?.description || staticItem?.description || config.description,
+      description: apiItem
+        ? (apiItem.description || config.description || '')
+        : (staticItem?.description || config.description || ''),
       price,
       packOptions,
       original_price: apiItem?.original_price ?? null,
@@ -64,9 +66,13 @@ export function buildCategoryProductState(categoryKey, apiItems = [], staticProd
       postcardTitle: staticItem?.postcardTitle,
       postcardBody: staticItem?.postcardBody,
       postcardQuote: staticItem?.postcardQuote,
-      reviewList: staticItem?.reviewList,
-      rating: staticItem?.rating ?? 4.8,
-      reviewCount: staticItem?.reviewCount ?? 0,
+      rating: apiItem?.id
+        ? (apiItem.average_rating ?? 0)
+        : (staticItem?.rating ?? 0),
+      reviewCount: apiItem?.id
+        ? (apiItem.review_count ?? 0)
+        : (staticItem?.reviewCount ?? 0),
+      reviewList: apiItem?.id ? [] : (staticItem?.reviewList || []),
     };
 
     variantLabels.push(variantDef.label);
@@ -81,22 +87,22 @@ export function buildCategoryProductState(categoryKey, apiItems = [], staticProd
   const baseStatic = staticProducts[config.staticBaseSlug] || staticProducts[defaultVariantDef?.staticSlug] || {};
 
   const product = {
-    ...baseStatic,
     id: defaultEntry?.id,
     apiName: defaultEntry?.apiName,
     name: defaultEntry?.name || config.displayName,
     displayName: config.displayName || config.title,
     category: categoryKey,
-    price: defaultEntry?.price ?? baseStatic.price ?? config.defaultPrice ?? 0,
-    description: defaultEntry?.description ?? config.description,
-    images: defaultEntry?.images?.length ? defaultEntry.images : baseStatic.images || defaultVariantDef?.fallbackImages,
-    fallbackImages: defaultEntry?.fallbackImages || defaultVariantDef?.fallbackImages || baseStatic.images,
+    price: defaultEntry?.price ?? config.defaultPrice ?? 0,
+    description: defaultEntry?.description ?? config.description ?? '',
+    images: defaultEntry?.images?.length ? defaultEntry.images : defaultVariantDef?.fallbackImages || [],
+    fallbackImages: defaultEntry?.fallbackImages || defaultVariantDef?.fallbackImages || [],
     imageGallery: defaultEntry?.imageGallery,
-    variants: variantLabels.length ? variantLabels : baseStatic.variants || [defaultVariant],
+    variants: variantLabels.length ? variantLabels : [defaultVariant],
     variantLabel: config.variantLabel || 'Flavour',
     packOptions: defaultEntry?.packOptions || getPackOptionsForVariant(defaultVariantDef, config),
-    rating: defaultEntry?.rating ?? baseStatic.rating ?? 4.8,
-    reviewCount: defaultEntry?.reviewCount ?? baseStatic.reviewCount ?? 0,
+    rating: defaultEntry?.rating ?? 0,
+    reviewCount: defaultEntry?.reviewCount ?? 0,
+    reviewList: defaultEntry?.reviewList ?? [],
     accordion: defaultEntry?.accordion ?? baseStatic.accordion,
     sectionImage: defaultEntry?.sectionImage ?? baseStatic.sectionImage,
     sectionTitle: defaultEntry?.sectionTitle ?? baseStatic.sectionTitle,
@@ -106,7 +112,6 @@ export function buildCategoryProductState(categoryKey, apiItems = [], staticProd
     postcardBody: defaultEntry?.postcardBody ?? baseStatic.postcardBody,
     postcardQuote: defaultEntry?.postcardQuote ?? baseStatic.postcardQuote,
     notes: defaultEntry?.notes ?? baseStatic.notes,
-    reviewList: defaultEntry?.reviewList ?? baseStatic.reviewList,
   };
 
   return { product, variantCatalog, defaultVariant };

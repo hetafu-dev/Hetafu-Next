@@ -45,50 +45,67 @@ export default function LocatorPage() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-background font-sans text-primary-brown">
+    <div className="flex flex-col bg-background font-sans text-primary-brown overflow-x-clip">
       <Navbar />
-      <main className="flex-1">
-        <div className="min-h-screen bg-background text-primary-brown">
-          <div className="max-w-7xl mx-auto px-6 py-10">
-            <h1 className="text-4xl mb-8">Clinic Locators</h1>
-            <div className="flex gap-0 h-[600px]">
-              <div className="w-80 flex-shrink-0 flex flex-col border border-gray-200 overflow-hidden">
-                <div className="flex border-b border-gray-200">
+      <main>
+        <div className="bg-background text-primary-brown py-8 md:py-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-6 md:mb-8">Clinic Locators</h1>
+
+            <div className="flex flex-col lg:flex-row border border-gray-200 overflow-hidden lg:h-[600px]">
+              {/* Clinic list */}
+              <div className="w-full lg:w-80 lg:flex-shrink-0 flex flex-col lg:h-full max-h-[45vh] sm:max-h-[50vh] lg:max-h-none">
+                <div className="flex border-b border-gray-200 bg-white">
                   <input
                     type="text"
                     placeholder="Type a postcode or address..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 px-3 py-2 text-sm outline-none bg-white"
+                    className="flex-1 min-w-0 px-3 py-2.5 sm:py-3 text-sm outline-none bg-white"
                   />
-                  <button className="px-3 py-2 text-white bg-primary-brown">
+                  <button
+                    type="button"
+                    className="px-3 sm:px-4 py-2.5 sm:py-3 text-white bg-primary-brown shrink-0"
+                    aria-label="Search clinics"
+                  >
                     <Search size={16} />
                   </button>
                 </div>
-                <div className="overflow-y-auto flex-1 bg-white">
-                  {filtered.map((clinic) => (
-                    <div key={clinic.id} className="flex gap-3 px-3 py-4 border-b border-gray-100">
-                      <div className="mt-1 flex-shrink-0">
-                        <MapPin size={18} className="text-primary-brown" />
+
+                <div className="overflow-y-auto flex-1 bg-white min-h-0">
+                  {filtered.length === 0 ? (
+                    <p className="px-4 py-8 text-sm text-center text-gray-500">No clinics found for your search.</p>
+                  ) : (
+                    filtered.map((clinic) => (
+                      <div key={clinic.id} className="flex gap-3 px-3 sm:px-4 py-4 border-b border-gray-100 last:border-b-0">
+                        <div className="mt-1 shrink-0">
+                          <MapPin size={18} className="text-primary-brown" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-semibold mb-0.5 text-secondary-blue">{clinic.distance}</p>
+                          <p className="text-sm sm:text-base font-medium mb-1">{clinic.name}</p>
+                          <p className="text-xs sm:text-sm text-gray-500 whitespace-pre-line mb-1 break-words">{clinic.address}</p>
+                          {clinic.email && (
+                            <a
+                              href={`mailto:${clinic.email}`}
+                              className="text-xs sm:text-sm underline text-gray-600 block mb-1 break-all"
+                            >
+                              {clinic.email}
+                            </a>
+                          )}
+                          <p className="text-xs sm:text-sm text-gray-500">{clinic.category}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-xs font-semibold mb-0.5 text-secondary-blue">{clinic.distance}</p>
-                        <p className="text-sm font-medium mb-1">{clinic.name}</p>
-                        <p className="text-xs text-gray-500 whitespace-pre-line mb-1">{clinic.address}</p>
-                        {clinic.email && (
-                          <a href={`mailto:${clinic.email}`} className="text-xs underline text-gray-600 block mb-1">{clinic.email}</a>
-                        )}
-                        <p className="text-xs text-gray-500">{clinic.category}</p>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
-              <div className="flex-1">
+
+              {/* Map */}
+              <div className="w-full h-[280px] sm:h-[360px] md:h-[420px] lg:h-auto lg:flex-1 lg:min-h-0">
                 <iframe
-                  title="Salon Locator Map"
-                  width="100%"
-                  height="100%"
+                  title="Clinic Locator Map"
+                  className="w-full h-full"
                   style={{ border: 0 }}
                   loading="lazy"
                   allowFullScreen
@@ -98,8 +115,9 @@ export default function LocatorPage() {
             </div>
           </div>
         </div>
+
+        <BestSellers />
       </main>
-      <BestSellers />
       <Footer />
     </div>
   );

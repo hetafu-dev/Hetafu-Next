@@ -46,6 +46,12 @@
   }
 }
 
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--primary-brown);

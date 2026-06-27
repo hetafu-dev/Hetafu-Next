@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from "react";
 
 const carouselSlides = [
   {
-    src: "/Images/Banners/banner1.png",
+    src: "/Images/Banners/banner2.png",
     title: null,
     description: null,
   },
@@ -115,7 +115,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background font-sans text-primary-brown">
+    <div className="flex flex-col min-h-screen bg-background font-sans text-primary-brown overflow-x-clip">
       <Navbar />
       <main className="flex-1">
         {/* Hero Section - Carousel */}
@@ -171,12 +171,12 @@ export default function Home() {
         </section>
 
         {/* Categories Section */}
-        <section className="py-8 md:py-16 px-2 md:px-4">
+        <section className="py-8 md:py-16 px-4 overflow-hidden">
           <div className="max-w-7xl mx-auto">
-            <div className="flex space-x-4 md:space-x-8 overflow-x-auto justify-center pb-2">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 sm:gap-6 md:gap-10">
               {products.map((product) => (
-                <Link href={product.link} key={product.id} className="flex-shrink-0 flex flex-col items-center group">
-                  <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Link href={product.link} key={product.id} className="flex flex-col items-center group min-w-0">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
                     <Image
                       src={product.image}
                       alt={product.category}
@@ -185,7 +185,9 @@ export default function Home() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <p className="mt-4 text-lg font-medium text-primary-brown">{product.category}</p>
+                  <p className="mt-3 md:mt-4 text-sm sm:text-base md:text-lg font-medium text-primary-brown text-center">
+                    {product.category}
+                  </p>
                 </Link>
               ))}
             </div>
@@ -194,16 +196,16 @@ export default function Home() {
 
         {/* Products Scroll Section */}
         <div id="products-section" className="relative" style={{ height: '400vh' }}>
-          <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-2 md:px-4">
-            <h2 className="text-2xl md:text-4xl font-light text-center mb-4 md:mb-8 text-primary-brown">
+          <div className="sticky top-0 h-[100dvh] flex flex-col items-center justify-center px-4 py-4 sm:py-6 min-h-0 overflow-hidden">
+            <h2 className="shrink-0 text-xl sm:text-2xl md:text-4xl font-light text-center mb-3 sm:mb-4 md:mb-6 text-primary-brown">
               Our Products
             </h2>
 
-            <div className="relative w-full px-0 md:px-4" style={{ height: '98vh' }}>
+            <div className="relative w-full max-w-7xl mx-auto flex-1 min-h-0">
               {products.map((product, index) => (
                 <div
                   key={product.id}
-                  className="absolute inset-0"
+                  className="absolute inset-0 min-h-0"
                   style={{
                     opacity: index === activeProduct ? 1 : 0,
                     transition: 'opacity 300ms ease-in-out',
@@ -212,37 +214,37 @@ export default function Home() {
                 >
                   <Link
                     href={product.link}
-                    className="group flex flex-col md:flex-row overflow-hidden w-full h-full bg-background text-primary-brown"
+                    className="group flex flex-col lg:flex-row overflow-hidden w-full h-full min-h-0 bg-background text-primary-brown"
                   >
                     {index % 2 === 0 ? (
                       <>
                         {/* Image */}
-                        <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex-shrink-0">
+                        <div className="relative w-full lg:w-1/2 h-[36vh] min-h-[150px] max-h-[240px] sm:h-[40vh] sm:max-h-[280px] lg:h-full lg:max-h-none flex-shrink-0">
                           <Image
                             src={product.image}
                             alt={product.name}
                             fill
                             style={{ objectFit: 'cover' }}
                           />
-                          <div className="absolute top-2 md:top-4 left-2 md:left-4 px-2 md:px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-background text-primary-brown">
+                          <div className="absolute top-2 md:top-4 left-2 md:left-4 px-2 md:px-3 py-1 text-[10px] sm:text-xs font-semibold uppercase tracking-wider rounded-full bg-background text-primary-brown">
                             {product.category}
                           </div>
                         </div>
                         {/* Content */}
-                        <div className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center px-4 md:px-16 py-6 md:py-12">
-                          <h3 className="text-xl md:text-3xl font-medium mb-2 md:mb-4 text-primary-brown">
+                        <div className="w-full lg:w-1/2 flex-1 min-h-0 flex flex-col justify-center px-4 sm:px-6 lg:px-16 py-4 sm:py-6 lg:py-12 overflow-y-auto lg:overflow-visible">
+                          <h3 className="text-lg sm:text-xl md:text-3xl font-medium mb-2 md:mb-4 text-primary-brown line-clamp-2">
                             {product.name}
                           </h3>
-                          <p className="text-sm md:text-slate-600 mb-4 md:mb-8 leading-relaxed md:text-lg">
+                          <p className="text-xs sm:text-sm md:text-lg text-slate-600 mb-3 sm:mb-4 md:mb-8 leading-relaxed line-clamp-4 sm:line-clamp-none">
                             {product.description}
                           </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xl md:text-3xl font-semibold text-primary-brown">
+                          <div className="flex items-center justify-between gap-3 mt-auto">
+                            <span className="text-lg sm:text-xl md:text-3xl font-semibold text-primary-brown shrink-0">
                               ${product.price.toFixed(2)}
                             </span>
-                            <span className="inline-flex items-center gap-2 font-medium group-hover:gap-4 transition-all text-sm md:text-base text-primary-brown">
+                            <span className="inline-flex items-center gap-1 sm:gap-2 font-medium group-hover:gap-3 transition-all text-xs sm:text-sm md:text-base text-primary-brown">
                               View Product
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
                                 <path d="M5 12h14M12 5l7 7-7 7" />
                               </svg>
                             </span>
@@ -252,41 +254,41 @@ export default function Home() {
                     ) : (
                       <>
                         {/* Content */}
-                        <div 
-                          className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center px-4 md:px-16 py-6 md:py-12 order-1 md:order-none"
+                        <div
+                          className="w-full lg:w-1/2 flex-1 min-h-0 flex flex-col justify-center px-4 sm:px-6 lg:px-16 py-4 sm:py-6 lg:py-12 order-2 lg:order-none overflow-y-auto lg:overflow-visible"
                           style={{
                             backgroundImage: index === 1 ? `url(/Images/Products/CUTE/cutemouthwash1left.png)` : 'none',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                           }}
                         >
-                          <h3 className="text-xl md:text-3xl font-medium mb-2 md:mb-4 text-primary-brown">
+                          <h3 className="text-lg sm:text-xl md:text-3xl font-medium mb-2 md:mb-4 text-primary-brown line-clamp-2">
                             {product.name}
                           </h3>
-                          <p className="text-sm md:text-slate-600 mb-4 md:mb-8 leading-relaxed md:text-lg">
+                          <p className="text-xs sm:text-sm md:text-lg text-slate-600 mb-3 sm:mb-4 md:mb-8 leading-relaxed line-clamp-4 sm:line-clamp-none">
                             {product.description}
                           </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xl md:text-3xl font-semibold text-primary-brown">
+                          <div className="flex items-center justify-between gap-3 mt-auto">
+                            <span className="text-lg sm:text-xl md:text-3xl font-semibold text-primary-brown shrink-0">
                               ${product.price.toFixed(2)}
                             </span>
-                            <span className="inline-flex items-center gap-2 font-medium group-hover:gap-4 transition-all text-sm md:text-base text-primary-brown">
+                            <span className="inline-flex items-center gap-1 sm:gap-2 font-medium group-hover:gap-3 transition-all text-xs sm:text-sm md:text-base text-primary-brown">
                               View Product
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
                                 <path d="M5 12h14M12 5l7 7-7 7" />
                               </svg>
                             </span>
                           </div>
                         </div>
                         {/* Image */}
-                        <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex-shrink-0 order-0 md:order-none">
+                        <div className="relative w-full lg:w-1/2 h-[36vh] min-h-[150px] max-h-[240px] sm:h-[40vh] sm:max-h-[280px] lg:h-full lg:max-h-none flex-shrink-0 order-1 lg:order-none">
                           <Image
                             src={product.image}
                             alt={product.name}
                             fill
                             style={{ objectFit: 'cover' }}
                           />
-                          <div className="absolute top-2 md:top-4 right-2 md:right-4 px-2 md:px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-background text-primary-brown">
+                          <div className="absolute top-2 md:top-4 right-2 md:right-4 px-2 md:px-3 py-1 text-[10px] sm:text-xs font-semibold uppercase tracking-wider rounded-full bg-background text-primary-brown">
                             {product.category}
                           </div>
                         </div>
@@ -298,7 +300,7 @@ export default function Home() {
             </div>
 
             {/* Dot indicators */}
-            <div className="flex gap-2 md:gap-3 mt-4 md:6">
+            <div className="shrink-0 flex gap-2 md:gap-3 mt-3 md:mt-4">
               {products.map((_, i) => (
                 <button
                   key={i}
@@ -311,7 +313,8 @@ export default function Home() {
                       });
                     }
                   }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${i === activeProduct ? 'bg-primary-brown scale-140' : 'bg-gray-300'}`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${i === activeProduct ? 'bg-primary-brown scale-125' : 'bg-gray-300'}`}
+                  aria-label={`Go to product ${i + 1}`}
                 />
               ))}
             </div>

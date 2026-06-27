@@ -103,11 +103,13 @@ export function resolveProductPrice(apiItem, staticItem, variantDef, config) {
     if (apiItem.price != null && apiItem.price > 0) {
       return apiItem.price;
     }
+    if (apiItem.discount_price != null) return apiItem.discount_price;
+    if (apiItem.price != null) return apiItem.price;
   }
   if (staticItem?.price > 0) return staticItem.price;
   if (variantDef?.defaultPrice > 0) return variantDef.defaultPrice;
   if (config?.defaultPrice > 0) return config.defaultPrice;
-  return apiItem?.price ?? 0;
+  return 0;
 }
 
 /** Match an API product name to a variant label using keywords. */
