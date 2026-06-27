@@ -95,7 +95,7 @@ export default function TrackOrderPage() {
               </p>
               <ul className="text-sm leading-7 text-slate-600 list-disc pl-6">
                 <li>Email: <a href="mailto:reachthebest@hetafu.com" className="text-blue-500">reachthebest@hetafu.com</a></li>
-                <li>Phone: <a href="tel:+919876543210" className="text-blue-500">+91 98765 43210</a> (Mon-Sat, 9:00 AM - 6:00 PM IST)</li>
+                <li>Phone: <a href="tel:+918106989955" className="text-blue-500">+91 8106989955</a> (Mon-Sat, 10:00 AM - 7:00 PM IST)</li>
                 <li>Check your order confirmation email for your tracking number</li>
                 <li>Track your order directly on <a href="https://www.dtdc.com" target="_blank" rel="noopener noreferrer" className="underline">DTDC's website</a></li>
               </ul>
