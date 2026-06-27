@@ -8,12 +8,15 @@ import { useState, useEffect, useRef } from "react";
 
 const carouselSlides = [
   {
-    src: "/Images/Banners/banner2.png",
+    src: "/Images/Banners/banner1.png",
+    // Optional: add a wider desktop banner (recommended 3840×1920, 2:1) to avoid side gaps without cropping
+    desktopSrc: "/Images/Banners/banner1-desktop.png",
     title: null,
     description: null,
   },
   {
     src: "/Images/Banners/banner1.png",
+    desktopSrc: "/Images/Banners/banner1-desktop.png",
     title: null,
     description: null,
   },
@@ -118,19 +121,30 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-background font-sans text-primary-brown overflow-x-clip">
       <Navbar />
       <main className="flex-1">
-        {/* Hero Section - Carousel */}
-        <section className="relative h-screen flex items-center justify-start text-left overflow-hidden">
-          <div className="absolute inset-0 w-full h-screen">
+        {/* Hero: mobile/tablet = full 16:9 visible | desktop = 2:1 container, edge-to-edge */}
+        <section className="relative w-full overflow-hidden bg-background min-h-[200px] h-[min(calc(100dvh-7rem),56.25vw)] sm:min-h-[240px] lg:aspect-[2/1] lg:h-auto lg:min-h-0">
+          <div className="absolute inset-0">
             {carouselSlides.map((slide, index) => (
               <div
                 key={index}
                 className={`absolute inset-0 transition-opacity duration-2000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
               >
+                {/* Mobile & tablet: show full banner, no crop */}
                 <Image
                   src={slide.src}
                   alt={`Slide ${index + 1}`}
                   fill
-                  style={{ objectFit: 'cover' }}
+                  className="object-contain object-center lg:hidden"
+                  sizes="100vw"
+                  priority={index === 0}
+                />
+                {/* Desktop: 2:1 banner fills the 2:1 hero box */}
+                <Image
+                  src={slide.desktopSrc || slide.src}
+                  alt={`Slide ${index + 1}`}
+                  fill
+                  className="hidden lg:block object-cover object-center"
+                  sizes="100vw"
                   priority={index === 0}
                 />
               </div>
@@ -140,25 +154,25 @@ export default function Home() {
           {/* Carousel Arrows */}
           <button
             onClick={prevSlide}
-            className="absolute cursor-pointer left-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 rounded-full p-2 transition"
+            className="absolute cursor-pointer left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 rounded-full p-1.5 sm:p-2 transition"
             aria-label="Previous"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="sm:w-6 sm:h-6">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
           <button
             onClick={nextSlide}
-            className="absolute cursor-pointer right-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 rounded-full p-2 transition"
+            className="absolute cursor-pointer right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 rounded-full p-1.5 sm:p-2 transition"
             aria-label="Next"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="sm:w-6 sm:h-6">
               <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
 
           {/* Carousel Dots */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
             {carouselSlides.map((_, index) => (
               <button
                 key={index}
