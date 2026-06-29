@@ -70,7 +70,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((s) => (s + 1) % carouselSlides.length);
-    }, 7000); // Increased to 7 seconds per slide for slower rotation
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
