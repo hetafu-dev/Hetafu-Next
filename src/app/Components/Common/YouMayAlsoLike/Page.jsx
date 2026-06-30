@@ -11,43 +11,17 @@ import {
   useStoreProductPack,
 } from "@/app/Components/Common/StoreProductPackOptions";
 
-const FALLBACK_RAW = [
-  { id: 'ymal-1', name: 'Prime Smarts', slug: 'smarts-prime', category: 'SMARTS', price: 55.0, image: '/Images/Products/Smarts/prime.png', rating: 4.9, reviews: 312 },
-  { id: 'ymal-2', name: 'Dentabits', slug: 'bits-dentabits', category: 'BITS', price: 45.0, image: '/Images/Products/Bits/Dentabits.png', rating: 4.8, reviews: 256 },
-  { id: 'ymal-3', name: 'Powder', slug: 'cute-powder', category: 'CUTE', price: 35.0, image: '/Images/Products/CUTE/cutepowder.png', rating: 4.6, reviews: 189 },
-  { id: 'ymal-4', name: 'Green Apple', slug: 'pops-green-apple', category: 'POPS', price: 75.0, image: '/Images/Products/Dollipops/Dollipop.png', rating: 4.7, reviews: 347 },
-];
-
-function mapFallbackProduct(raw) {
-  return {
-    ...mapStoreProduct({
-      id: raw.id,
-      name: raw.name,
-      slug: raw.slug,
-      category: raw.category,
-      price: raw.price,
-      discount_price: raw.price,
-      image_url: raw.image,
-    }),
-    rating: raw.rating,
-    reviews: raw.reviews,
-  };
-}
-
-const FALLBACK_PRODUCTS = FALLBACK_RAW.map(mapFallbackProduct);
 const YMAL_LOAD_KEY = '__hetafuYouMayAlsoLikeLoad';
 
 async function loadYouMayAlsoLike(limit) {
   const cacheKey = `${YMAL_LOAD_KEY}:${limit}`;
   if (typeof globalThis !== 'undefined' && globalThis[cacheKey]) {
-    return globalThis[cacheKey];
+    const data = await globalThis[cacheKey];
+    if (!data?.items?.length) return [];
+    return data.items.map((product) => mapStoreProduct(product));
   }
 
-  const promise = (async () => {
-    const data = await fetchYouMayAlsoLike(limit);
-    if (!data?.items?.length) return FALLBACK_PRODUCTS.slice(0, limit);
-    return data.items.map((product) => mapStoreProduct(product));
-  })();
+  const promise = fetchYouMayAlsoLike(limit);
 
   if (typeof globalThis !== 'undefined') {
     globalThis[cacheKey] = promise;
@@ -56,7 +30,9 @@ async function loadYouMayAlsoLike(limit) {
     });
   }
 
-  return promise;
+  const data = await promise;
+  if (!data?.items?.length) return [];
+  return data.items.map((product) => mapStoreProduct(product));
 }
 
 function YouMayAlsoLikeCard({ product }) {
@@ -67,7 +43,14 @@ function YouMayAlsoLikeCard({ product }) {
   return (
     <div className="flex flex-col border border-slate-200 overflow-hidden h-full">
       <div className="aspect-square bg-slate-100">
-        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
       </div>
       <div className="p-5 flex flex-col flex-1 space-y-2">
         <p className="text-base font-medium leading-snug mb-1">{product.name}</p>
@@ -97,7 +80,7 @@ export default function YouMayAlsoLike({
   bordered = false,
   contained = false,
 }) {
-  const [products, setProducts] = useState(FALLBACK_PRODUCTS.slice(0, limit));
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -108,7 +91,7 @@ export default function YouMayAlsoLike({
         const items = await loadYouMayAlsoLike(limit);
         if (!cancelled) setProducts(items);
       } catch {
-        if (!cancelled) setProducts(FALLBACK_PRODUCTS.slice(0, limit));
+        if (!cancelled) setProducts([]);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -126,6 +109,8 @@ export default function YouMayAlsoLike({
 
       {loading ? (
         <p className="text-center text-sm text-slate-500">Loading recommendations...</p>
+      ) : products.length === 0 ? (
+        <p className="text-center text-sm text-slate-500">No recommendations available at the moment.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product) => (

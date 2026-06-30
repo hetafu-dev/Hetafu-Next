@@ -12,35 +12,11 @@ import {
   useStoreProductPack,
 } from "@/app/Components/Common/StoreProductPackOptions";
 
-const FALLBACK_RAW = [
-  { id: 'bs-1', name: 'Prime Smarts', slug: 'smarts-prime', image: '/Images/Products/Smarts/prime.png', price: 55.0, category: 'SMARTS', rating: 4.9, reviews: 312 },
-  { id: 'bs-2', name: 'Dentabits', slug: 'bits-dentabits', image: '/Images/Products/Bits/Dentabits.png', price: 45.0, category: 'BITS', rating: 4.8, reviews: 256 },
-  { id: 'bs-3', name: 'Powder', slug: 'cute-powder', image: '/Images/Products/CUTE/cutepowder.png', price: 35.0, category: 'CUTE', rating: 4.6, reviews: 189 },
-  { id: 'bs-4', name: 'Green Apple', slug: 'pops-green-apple', image: '/Images/Products/Dollipops/Dollipop.png', price: 75.0, category: 'POPS', rating: 4.7, reviews: 347 },
-];
-
-function mapFallbackProduct(raw) {
-  return {
-    ...mapStoreProduct({
-      id: raw.id,
-      name: raw.name,
-      slug: raw.slug,
-      category: raw.category,
-      price: raw.price,
-      discount_price: raw.price,
-      image_url: raw.image,
-    }),
-    rating: raw.rating,
-    reviews: raw.reviews,
-  };
-}
-
-const FALLBACK_PRODUCTS = FALLBACK_RAW.map(mapFallbackProduct);
 const DISPLAY_LIMIT = 12;
 
 async function loadBestSellers() {
   const data = await fetchStoreCatalog(50);
-  if (!data?.items?.length) return FALLBACK_PRODUCTS;
+  if (!data?.items?.length) return [];
   return data.items.slice(0, DISPLAY_LIMIT).map((product) => mapStoreProduct(product));
 }
 
@@ -55,7 +31,14 @@ function BestSellerCard({ product }) {
       className="flex flex-col flex-shrink-0 snap-start w-[72vw] max-w-[260px] sm:w-[44vw] sm:max-w-none md:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)]"
     >
       <div className="relative overflow-hidden bg-gray-100 aspect-[3/4] mb-3">
-        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
       </div>
       <div className="flex flex-col gap-2 sm:gap-3 flex-1">
         <p className="text-sm sm:text-base font-bold leading-snug text-primary-brown line-clamp-2">{product.name}</p>
@@ -80,7 +63,7 @@ function BestSellerCard({ product }) {
 
 export default function BestSellers() {
   const scrollRef = useRef(null);
-  const [products, setProducts] = useState(FALLBACK_PRODUCTS);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -90,7 +73,7 @@ export default function BestSellers() {
         const items = await loadBestSellers();
         if (!cancelled) setProducts(items);
       } catch {
-        if (!cancelled) setProducts(FALLBACK_PRODUCTS);
+        if (!cancelled) setProducts([]);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -119,6 +102,8 @@ export default function BestSellers() {
 
       {loading ? (
         <p className="text-center text-sm text-slate-500">Loading best sellers...</p>
+      ) : products.length === 0 ? (
+        <p className="text-center text-sm text-slate-500">No best sellers available at the moment.</p>
       ) : (
         <div className="relative max-w-7xl mx-auto md:px-10 min-w-0">
           <button

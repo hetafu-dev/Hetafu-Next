@@ -32,6 +32,7 @@ export async function fetchProductBySlug(slug) {
 }
 
 const STORE_CATALOG_CACHE_KEY = '__hetafuStoreCatalog';
+const STORE_CATALOG_CACHE_TTL_MS = 30_000;
 
 /**
  * All active storefront products via a single best-sellers request (cached).
@@ -39,15 +40,18 @@ const STORE_CATALOG_CACHE_KEY = '__hetafuStoreCatalog';
  */
 export async function fetchStoreCatalog(limit = 50) {
   const cacheKey = `${STORE_CATALOG_CACHE_KEY}:${limit}`;
-  if (typeof globalThis !== 'undefined' && globalThis[cacheKey]) {
-    return globalThis[cacheKey];
+  if (typeof globalThis !== 'undefined') {
+    const cached = globalThis[cacheKey];
+    if (cached && Date.now() - cached.at < STORE_CATALOG_CACHE_TTL_MS) {
+      return cached.promise;
+    }
   }
 
   const params = new URLSearchParams({ limit: String(limit) });
   const promise = apiClient.requestWithoutAuth(`/ecommerce/store/best-sellers?${params.toString()}`);
 
   if (typeof globalThis !== 'undefined') {
-    globalThis[cacheKey] = promise;
+    globalThis[cacheKey] = { promise, at: Date.now() };
     promise.catch(() => {
       delete globalThis[cacheKey];
     });

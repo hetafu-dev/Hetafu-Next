@@ -40,7 +40,7 @@ export function mapStoreCartSummary(summary) {
 }
 
 /** Map storefront API product to carousel / add-to-bag shape. */
-export function mapStoreProduct(product, fallbackImage = '/Images/Products/Dollipops/Dollipop.png') {
+export function mapStoreProduct(product, fallbackImage = null) {
   const basePrice = Number(product.discount_price ?? product.price ?? 0);
   const packOptions = resolveStoreProductPackOptions(product);
   const defaultPackId = getDefaultPackId(packOptions);
