@@ -38,11 +38,6 @@ export default function Footer() {
                   </a>
                 </li>
               </ul>
-              <p className="mt-5 text-xs font-bold text-slate-500">
-                Manufacture information : <a href="https://lasarkaali.com/" target="_blank" rel="noopener noreferrer" className="underline transition text-xs">
-                  LASARKAALI LIFE SCIENCES PRIVATE LIMITED
-                </a>
-              </p>
             </div>
 
             <div>
@@ -134,14 +129,19 @@ export default function Footer() {
                   <FaTwitter />
                 </a>
               </div>
+              <p className="mt-2 text-xs font-bold text-slate-500">
+                Manufacture info : <a href="https://lasarkaali.com/" target="_blank" rel="noopener noreferrer" className="underline transition text-xs">
+                  LASARKAALI LIFE SCIENCES PRIVATE LIMITED
+                </a>
+              </p>
             </div>
 
           </div>
 
           <div className="mt-10 border-t border-slate-400 pt-4">
             <div className="flex flex-col gap-2 text-[11px] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-              <p className="tracking-[0.06em]">&copy; {currentYear} HETAFU INDIA PRIVATE LIMITED</p>
-              <div className="flex flex-wrap items-center gap-x-10 gap-y-1 text-primary-brown text-[12px] tracking-[0.09em] font-bold">
+               <p className="tracking-[0.06em]" suppressHydrationWarning>&copy; {currentYear} HETAFU INDIA PRIVATE LIMITED</p>
+              <div className="flex items-center gap-x-10 gap-y-1 text-primary-brown text-[12px] tracking-[0.09em] font-bold">
                 <button onClick={() => setShowPrivacyModal(true)} className="transition hover:text-slate-950 text-left">
                   Your Privacy Choices
                 </button>

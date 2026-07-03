@@ -164,10 +164,13 @@ const faqData = [
 
 export default function FaqsPage() {
   const [openIndex, setOpenIndex] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('General');
 
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  const filtered = faqData.filter(c => c.category === activeCategory);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -175,9 +178,25 @@ export default function FaqsPage() {
       <main className="flex-1">
         <div className="min-h-screen bg-background font-sans py-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-5xl font-light text-center mb-16 text-slate-950">FAQ</h1>
+            <h1 className="text-5xl font-light text-center mb-10 text-slate-950">FAQ</h1>
+            {/* Category filter */}
+            <div className="flex flex-wrap gap-2 justify-center mb-12">
+              {faqData.map(c => (
+                <button
+                  key={c.category}
+                  onClick={() => { setActiveCategory(c.category); setOpenIndex(null); }}
+                  className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider border transition-colors ${
+                    activeCategory === c.category
+                      ? 'bg-primary-brown text-white border-primary-brown'
+                      : 'bg-white text-primary-brown border-[#d4c5b2] hover:bg-[#f5ede4]'
+                  }`}
+                >
+                  {c.category}
+                </button>
+              ))}
+            </div>
             <div className="space-y-16">
-              {faqData.map((category, categoryIndex) => (
+              {filtered.map((category, categoryIndex) => (
                 <section key={category.category}>
                   <h2 className="text-2xl font-medium text-center text-slate-950 mb-8">{category.category}</h2>
                   <div className="divide-y divide-slate-200">

@@ -1,7 +1,6 @@
 "use client";
 
 import { use, useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -16,7 +15,7 @@ import { useCountry } from "@/app/context/CountryContext";
 import Navbar from "@/app/Components/Common/Navbar/Page";
 import Footer from "@/app/Components/Common/Footer/Page";
 import BestSellers from "@/app/Components/Common/BestSellers/Page";
-import YouMayAlsoLike from "@/app/Components/Common/YouMayAlsoLike/Page";
+// import YouMayAlsoLike from "@/app/Components/Common/YouMayAlsoLike/Page";
 import dynamic from "next/dynamic";
 import ProductImage from "@/app/Components/Products/ProductImage";
 import { slugToCategoryKey, CATEGORY_CONFIG } from "@/constants/categoryConfig";
@@ -1781,7 +1780,7 @@ function DecadeSection({ product }) {
   if (!product.notes?.[0]?.image) return null;
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-12 md:py-20 bg-[#fdf8f4] font-sans text-primary-brown">
+    <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-6 md:py-20 bg-[#fdf8f4] font-sans text-primary-brown">
       {/* Original desktop layout preserved, only mobile responsiveness added */}
       <div
         className="hidden lg:grid grid-cols-2"
@@ -1804,7 +1803,7 @@ function DecadeSection({ product }) {
           >
             {product.sectionTitle[0]}
           </h2>
-          <p className="text-5xl italic font-light mb-8 font-signature text-secondary-blue tracking-tight">
+          <p className="text-5xl italic font-light mb-2 font-signature text-secondary-blue tracking-tight">
             {product.sectionTitle[1]}
           </p>
           <div className="w-12 h-0.5 bg-[#d4c5b2] mb-8"></div>
@@ -1914,7 +1913,7 @@ function DecadeSection({ product }) {
           <div
             className="bg-white shadow-md absolute hover:shadow-lg transition-all"
             style={{
-              width: "550px",
+              width: "420px",
               left: "220px",
               transform: "rotate(10deg)",
               padding: "14px",
@@ -1923,9 +1922,9 @@ function DecadeSection({ product }) {
             <img
               src={product.postcardImage}
               alt={product.name}
-              className="w-full h-[500px] object-cover rounded-sm"
+              className="w-full h-[380px] object-cover rounded-sm"
             />
-            <p className="text-center mt-4 pr-1 font-signature text-[3.4rem]">
+            <p className="text-center mt-4 pr-1 font-signature text-[2rem]">
               key benefits
             </p>
           </div>
@@ -1950,7 +1949,7 @@ function DecadeSection({ product }) {
           >
             {product.sectionTitle[0]}
           </h2>
-          <p className="text-3xl italic font-light mb-8 font-signature text-secondary-blue tracking-tight">
+          <p className="text-3xl italic font-light mb-2 font-signature text-secondary-blue tracking-tight">
             {product.sectionTitle[1]}
           </p>
           <div className="w-12 h-0.5 bg-[#d4c5b2] mb-8"></div>
@@ -1967,7 +1966,7 @@ function DecadeSection({ product }) {
             Be Transported
           </p>
         </div>
-        <div className="relative pt-4" style={{ minHeight: "800px" }}>
+        <div className="relative pt-4" style={{ minHeight: "1250px", overflow: "hidden" }}>
           <div
             className="absolute flex items-start gap-4"
             style={{ top: "20px", left: "10px", transform: "rotate(-7deg)" }}
@@ -1999,7 +1998,7 @@ function DecadeSection({ product }) {
           </div>
           <div
             className="absolute flex items-start gap-4"
-            style={{ top: "350px", left: "30%", transform: "rotate(-8deg)" }}
+            style={{ top: "270px", left: "30%", transform: "rotate(-8deg)" }}
           >
             <div
               className="bg-white shadow-md flex-shrink-0"
@@ -2028,7 +2027,7 @@ function DecadeSection({ product }) {
           </div>
           <div
             className="absolute flex items-start gap-4"
-            style={{ top: "580px", left: "20px", transform: "rotate(3deg)" }}
+            style={{ top: "510px", left: "20px", transform: "rotate(3deg)" }}
           >
             <div
               className="bg-white shadow-md flex-shrink-0"
@@ -2055,23 +2054,23 @@ function DecadeSection({ product }) {
               ))}
             </div>
           </div>
-        </div>
-        <div
-          className="flex items-start relative justify-center"
-          style={{ minHeight: "450px" }}
-        >
           <div
-            className="bg-white shadow-md absolute hover:shadow-lg transition-all"
-            style={{ width: "90%", transform: "rotate(5deg)", padding: "14px" }}
+            className="absolute"
+            style={{ top: "760px", left: "50%", transform: "translateX(-50%) rotate(5deg)", width: "90%" }}
           >
-            <img
-              src={product.postcardImage}
-              alt={product.name}
-              className="w-full h-auto object-cover rounded-sm"
-            />
-            <p className="text-center mt-4 pr-1 font-signature text-[2.5rem]">
-              key benefits
-            </p>
+            <div
+              className="bg-white shadow-md hover:shadow-lg transition-all"
+              style={{ padding: "14px" }}
+            >
+              <img
+                src={product.postcardImage}
+                alt={product.name}
+                className="w-full h-auto object-cover rounded-sm"
+              />
+              <p className="text-center mt-4 pr-1 font-signature text-[1.6rem]">
+                key benefits
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -2083,7 +2082,7 @@ function PostcardsSection({ product }) {
   if (!product.postcardImage) return null;
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-12 md:py-20 bg-[#fdf8f4] text-[#401E17]">
+    <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-4 md:py-20 bg-[#fdf8f4] text-[#401E17]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-15 items-center">
         <div
           className="relative w-full order-2 lg:order-none"
@@ -2099,7 +2098,7 @@ function PostcardsSection({ product }) {
           <h2 className="text-3xl md:text-5xl font-light text-[#401E17] leading-tight mb-1 tracking-tight">
             {product.postcardTitle[0]}
           </h2>
-          <p className="text-3xl md:text-5xl italic font-light text-secondary-blue mb-6 tracking-tight font-signature">
+          <p className="text-3xl md:text-5xl italic font-light text-secondary-blue mb-1 tracking-tight font-signature">
             {product.postcardTitle[1]}
           </p>
           <div className="w-12 h-0.5 bg-[#1998B1] mb-7"></div>
@@ -2258,6 +2257,13 @@ function ReviewsSection({ product, onStatsChange }) {
               className="h-[150px] w-auto block"
             />
           </div>
+          <div className="flex md:hidden absolute top-[-20px] left-1/2 -translate-x-1/2 z-[1] w-full">
+            <img
+              src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/footer_plants.png"
+              alt="decorative plants"
+              className="w-full h-auto block"
+            />
+          </div>
           <svg
             className="w-full"
             viewBox="0 0 1400 80"
@@ -2304,6 +2310,26 @@ function ReviewsSection({ product, onStatsChange }) {
               src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/right_leg.png"
               alt="tiger right paw"
               className="w-[75px] h-auto"
+            />
+          </div>
+          {/* Mobile tiger */}
+          <div className="flex md:hidden absolute top-[-35px] left-1/2 -translate-x-1/2 z-[1.5] flex-col items-center">
+            <img
+              src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/tiger_head.png"
+              alt="tiger head"
+              className="w-[180px] h-auto mb-[-20px]"
+            />
+          </div>
+          <div className="flex md:hidden absolute top-[18px] left-1/2 -translate-x-1/2 z-10 gap-[60px]">
+            <img
+              src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/left_leg.png"
+              alt="tiger left paw"
+              className="w-[50px] h-auto"
+            />
+            <img
+              src="https://cdn.shopify.com/s/files/1/0178/3798/1796/files/right_leg.png"
+              alt="tiger right paw"
+              className="w-[50px] h-auto"
             />
           </div>
         </div>
@@ -2869,6 +2895,26 @@ function ProductDetailView({
                     {currency}
                     {Number(displayPrice || 0).toFixed(2)}
                   </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = window.location.href;
+                      if (navigator.share) {
+                        navigator.share({ title: product.name, url }).catch((e) => {
+                          if (e?.name !== 'AbortError') navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
+                        });
+                      } else {
+                        navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
+                      }
+                    }}
+                    className="text-primary-brown cursor-pointer hover:opacity-60 transition-opacity"
+                    aria-label="Share product"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                  </button>
                 </div>
                 <div
                   className="flex items-center gap-3 cursor-pointer hover:opacity-70 transition-opacity"
@@ -3058,8 +3104,8 @@ function ProductDetailView({
           </div>
         </div>
 
-        <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-12 md:py-16">
-          <h1 className="text-3xl md:text-[clamp(2.5rem,4vw,3.5rem)] font-bold tracking-wide text-center m-0 mb-12 text-secondary-blue font-signature">
+        <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-6 md:py-16">
+          <h1 className="text-4xl md:text-[clamp(2.5rem,4vw,3.5rem)] font-bold tracking-wide text-center m-0 mb-12 text-secondary-blue font-signature">
             faq
           </h1>
           <div>
@@ -3100,7 +3146,7 @@ function ProductDetailView({
 
         <DecadeSection product={product} />
         <PostcardsSection product={product} />
-        <YouMayAlsoLike contained className="!px-0 py-10" />
+        {/* <YouMayAlsoLike contained className="!px-0 py-10" /> */}
         <ReviewsSection
           product={product}
           onStatsChange={handleReviewStatsChange}
