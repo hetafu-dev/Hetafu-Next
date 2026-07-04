@@ -138,7 +138,7 @@ export default function Footer() {
 
           </div>
 
-          <div className="mt-10 border-t border-slate-400 pt-4">
+          <div className="mt-5 border-t border-slate-400 pt-4">
             <div className="flex flex-col gap-2 text-[11px] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                <p className="tracking-[0.06em]" suppressHydrationWarning>&copy; {currentYear} HETAFU INDIA PRIVATE LIMITED</p>
               <div className="flex items-center gap-x-10 gap-y-1 text-primary-brown text-[12px] tracking-[0.09em] font-bold">

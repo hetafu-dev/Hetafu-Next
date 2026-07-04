@@ -445,7 +445,7 @@ const ALL_PRODUCTS = {
     sectionTitle: ["Gentle on everyone", "in the family"],
     sectionBody:
       "Our alcohol-free formula was developed with families in mind. No harsh chemicals, no burning sensation - just fresh, clean breath that lasts all day. Perfect for kids and adults with sensitive gums.",
-    postcardImage: "/Images/Products/CUTE/cutepowder.png",
+    postcardImage: "/Images/Products/Dollipops/Dollipopsection3.png",
     postcardTitle: ["Made For", "every smile"],
     postcardBody:
       "When we created Cute, we wanted a product that brought families together. Our formula has become a staple in households across the world, making oral care simple and enjoyable for everyone.",
@@ -540,7 +540,7 @@ const ALL_PRODUCTS = {
     id: 8,
     name: "Tablets",
     category: "CUTE",
-    price: 35.0,
+    price: 299.0,
     rating: 4.6,
     reviewCount: 189,
     description:
@@ -570,7 +570,7 @@ const ALL_PRODUCTS = {
     sectionTitle: ["Gentle on everyone", "in the family"],
     sectionBody:
       "Our alcohol-free formula was developed with families in mind. No harsh chemicals, no burning sensation - just fresh, clean breath that lasts all day. Perfect for kids and adults with sensitive gums.",
-    postcardImage: "/Images/Products/CUTE/cutetablets.png",
+    postcardImage: "/Images/Products/Dollipops/Dollipopsection3.png",
     postcardTitle: ["Made For", "every smile"],
     postcardBody:
       "When we created Cute, we wanted a product that brought families together. Our formula has become a staple in households across the world, making oral care simple and enjoyable for everyone.",
@@ -665,7 +665,7 @@ const ALL_PRODUCTS = {
     id: 5,
     name: "Green Apple",
     category: "POPS",
-    price: 75.0,
+    price: 29.0,
     rating: 4.7,
     reviewCount: 347,
     description:
@@ -790,7 +790,7 @@ const ALL_PRODUCTS = {
     id: 6,
     name: "Mixed Berry",
     category: "POPS",
-    price: 75.0,
+    price: 29.0,
     rating: 4.7,
     reviewCount: 347,
     description:
@@ -949,17 +949,17 @@ const ALL_PRODUCTS = {
       {
         label: "nano-hydroxyapatite",
         description: "mineral restoration · enamel rebuilding",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng1.png",
       },
       {
         label: "fluoride-free",
         description: "safe · natural · effective",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng2.png",
       },
       {
         label: "xylitol enriched",
         description: "cavity prevention · pH balancing",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng3.png",
       },
     ],
     reviewList: [
@@ -1064,7 +1064,7 @@ const ALL_PRODUCTS = {
     sectionTitle: ["Science you can", "trust for your smile"],
     sectionBody:
       "Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.",
-    postcardImage: "/Images/Products/Smarts/Prime.png",
+    postcardImage: "/Images/Products/Dollipops/Dollipopsection3.png",
     postcardTitle: ["Stories From", "our users"],
     postcardBody:
       "Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.",
@@ -1074,17 +1074,17 @@ const ALL_PRODUCTS = {
       {
         label: "nano-hydroxyapatite",
         description: "mineral restoration · enamel rebuilding",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng1.png",
       },
       {
         label: "fluoride-free",
         description: "safe · natural · effective",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng2.png",
       },
       {
         label: "xylitol enriched",
         description: "cavity prevention · pH balancing",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng3.png",
       },
     ],
     reviewList: [
@@ -1189,7 +1189,7 @@ const ALL_PRODUCTS = {
     sectionTitle: ["Science you can", "trust for your smile"],
     sectionBody:
       "Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.",
-    postcardImage: "/Images/Products/Smarts/Prime.png",
+    postcardImage: "/Images/Products/Dollipops/Dollipopsection3.png",
     postcardTitle: ["Stories From", "our users"],
     postcardBody:
       "Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.",
@@ -1199,17 +1199,17 @@ const ALL_PRODUCTS = {
       {
         label: "nano-hydroxyapatite",
         description: "mineral restoration · enamel rebuilding",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng1.png",
       },
       {
         label: "fluoride-free",
         description: "safe · natural · effective",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng2.png",
       },
       {
         label: "xylitol enriched",
         description: "cavity prevention · pH balancing",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng3.png",
       },
     ],
     reviewList: [
@@ -1314,7 +1314,7 @@ const ALL_PRODUCTS = {
     sectionTitle: ["Science you can", "trust for your smile"],
     sectionBody:
       "Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.",
-    postcardImage: "/Images/Products/Smarts/Prime.png",
+    postcardImage: "/Images/Products/Dollipops/Dollipopsection3.png",
     postcardTitle: ["Stories From", "our users"],
     postcardBody:
       "Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.",
@@ -1324,17 +1324,17 @@ const ALL_PRODUCTS = {
       {
         label: "nano-hydroxyapatite",
         description: "mineral restoration · enamel rebuilding",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng1.png",
       },
       {
         label: "fluoride-free",
         description: "safe · natural · effective",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng2.png",
       },
       {
         label: "xylitol enriched",
         description: "cavity prevention · pH balancing",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng3.png",
       },
     ],
     reviewList: [
@@ -1439,7 +1439,7 @@ const ALL_PRODUCTS = {
     sectionTitle: ["Science you can", "trust for your smile"],
     sectionBody:
       "Developed over 8 years with leading dental researchers, Denta Smarts represents the cutting edge of at-home dental care. Our proprietary nanotechnology actively repairs damaged enamel, blocks sensitivity, and prevents future decay.",
-    postcardImage: "/Images/Products/Smarts/Prime.png",
+    postcardImage: "/Images/Products/Dollipops/Dollipopsection3.png",
     postcardTitle: ["Stories From", "our users"],
     postcardBody:
       "Thousands of dentists and patients across the world have made Denta Smarts part of their daily routine. Real people, real results — backed by 5 clinical studies with over 2,000 participants.",
@@ -1449,17 +1449,17 @@ const ALL_PRODUCTS = {
       {
         label: "nano-hydroxyapatite",
         description: "mineral restoration · enamel rebuilding",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng1.png",
       },
       {
         label: "fluoride-free",
         description: "safe · natural · effective",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng2.png",
       },
       {
         label: "xylitol enriched",
         description: "cavity prevention · pH balancing",
-        image: "/Images/Products/Smarts/Prime.png",
+        image: "/Images/Products/Dollipops/DIng3.png",
       },
     ],
     reviewList: [
@@ -1564,7 +1564,7 @@ const ALL_PRODUCTS = {
     sectionTitle: ["Years of Research", "in every bit"],
     sectionBody:
       "After years of research and development, we created Dentabits to revolutionize oral care. Our dissolvable whitening bits combine natural ingredients with advanced technology to deliver professional-level results from the comfort of your home.",
-    postcardImage: "/Images/Products/Bits/Dentabits.png",
+    postcardImage: "/Images/Products/Dollipops/Dollipopsection3.png",
     postcardTitle: ["Inspired By", "nature"],
     postcardBody:
       "Dentabits was born from a desire to make oral care sustainable and effective. Every ingredient is sourced responsibly, and our zero-plastic packaging means you can care for your smile while caring for the planet.",
@@ -1574,17 +1574,17 @@ const ALL_PRODUCTS = {
       {
         label: "natural",
         description: "fluoride free · eco-friendly · cruelty free",
-        image: "/Images/Products/Bits/Dentabits.png",
+        image: "/Images/Products/Dollipops/DIng1.png",
       },
       {
         label: "whitening",
         description: "polishing minerals · enamel safe · stain removal",
-        image: "/Images/Products/Bits/Dentabits.png",
+        image: "/Images/Products/Dollipops/DIng2.png",
       },
       {
         label: "fresh",
         description: "long lasting · minty cool · alcohol free",
-        image: "/Images/Products/Bits/Dentabits.png",
+        image: "/Images/Products/Dollipops/DIng3.png",
       },
     ],
     reviewList: [
@@ -1783,7 +1783,7 @@ function DecadeSection({ product }) {
     <section className="max-w-[1400px] mx-auto px-4 md:px-10 py-6 md:py-20 bg-[#fdf8f4] font-sans text-primary-brown">
       {/* Original desktop layout preserved, only mobile responsiveness added */}
       <div
-        className="hidden lg:grid grid-cols-2"
+        className="hidden xl:grid grid-cols-2"
         style={{ gridTemplateRows: "auto auto" }}
       >
         <div className="relative">
@@ -1830,7 +1830,7 @@ function DecadeSection({ product }) {
               style={{ width: "280px", padding: "10px" }}
             >
               <img
-                src={product.notes[0].image}
+                src="/Images/Products/Dollipops/DIng1.png"
                 alt={product.notes[0].label}
                 className="w-full aspect-square object-cover"
               />
@@ -1859,7 +1859,7 @@ function DecadeSection({ product }) {
               style={{ width: "280px", padding: "10px" }}
             >
               <img
-                src={product.notes[2].image}
+                src="/Images/Products/Dollipops/DIng3.png"
                 alt={product.notes[2].label}
                 className="w-full aspect-square object-cover"
               />
@@ -1888,7 +1888,7 @@ function DecadeSection({ product }) {
               style={{ width: "280px", padding: "10px" }}
             >
               <img
-                src={product.notes[1].image}
+                src="/Images/Products/Dollipops/DIng2.png"
                 alt={product.notes[1].label}
                 className="w-full aspect-square object-cover"
               />
@@ -1909,29 +1909,29 @@ function DecadeSection({ product }) {
             </div>
           </div>
         </div>
-        <div className="flex items-start relative justify-end">
+        <div className="flex items-start relative justify-end" style={{ height: "420px" }}>
           <div
-            className="bg-white shadow-md absolute hover:shadow-lg transition-all"
+            className="hidden xl:block bg-white shadow-md absolute hover:shadow-lg transition-all"
             style={{
-              width: "420px",
-              left: "220px",
-              transform: "rotate(10deg)",
-              padding: "14px",
+              width: "clamp(420px, 34vw, 560px)",
+              left: "180px",
+              transform: "rotate(8deg)",
+              padding: "16px",
             }}
           >
             <img
               src={product.postcardImage}
               alt={product.name}
-              className="w-full h-[380px] object-cover rounded-sm"
+              className="w-full h-auto object-cover rounded-sm"
             />
-            <p className="text-center mt-4 pr-1 font-signature text-[2rem]">
+            <p className="text-center mt-4 pr-1 font-signature text-[2.4rem] leading-tight">
               key benefits
             </p>
           </div>
         </div>
       </div>
-      {/* Mobile-specific layout that doesn't affect desktop */}
-      <div className="lg:hidden grid grid-cols-1 gap-8">
+      {/* Tablet and mobile layout */}
+      <div className="xl:hidden grid grid-cols-1 gap-8">
         <div className="relative">
           <img
             src={product.sectionImage}
@@ -1966,7 +1966,7 @@ function DecadeSection({ product }) {
             Be Transported
           </p>
         </div>
-        <div className="relative pt-4" style={{ minHeight: "1250px", overflow: "hidden" }}>
+        <div className="relative pt-4" style={{ minHeight: "1100px" }}>
           <div
             className="absolute flex items-start gap-4"
             style={{ top: "20px", left: "10px", transform: "rotate(-7deg)" }}
@@ -1976,7 +1976,7 @@ function DecadeSection({ product }) {
               style={{ width: "220px", padding: "10px" }}
             >
               <img
-                src={product.notes[0].image}
+                src="/Images/Products/Dollipops/DIng1.png"
                 alt={product.notes[0].label}
                 className="w-full aspect-square object-cover"
               />
@@ -2005,7 +2005,7 @@ function DecadeSection({ product }) {
               style={{ width: "200px", padding: "10px" }}
             >
               <img
-                src={product.notes[2].image}
+                src="/Images/Products/Dollipops/DIng3.png"
                 alt={product.notes[2].label}
                 className="w-full aspect-square object-cover"
               />
@@ -2034,7 +2034,7 @@ function DecadeSection({ product }) {
               style={{ width: "200px", padding: "10px" }}
             >
               <img
-                src={product.notes[1].image}
+                src="/Images/Products/Dollipops/DIng2.png"
                 alt={product.notes[1].label}
                 className="w-full aspect-square object-cover"
               />
@@ -2056,7 +2056,7 @@ function DecadeSection({ product }) {
           </div>
           <div
             className="absolute"
-            style={{ top: "760px", left: "50%", transform: "translateX(-50%) rotate(5deg)", width: "90%" }}
+            style={{ top: "760px", left: "50%", transform: "translateX(-50%) rotate(5deg)", width: "90%", maxWidth: "420px" }}
           >
             <div
               className="bg-white shadow-md hover:shadow-lg transition-all"
@@ -2782,8 +2782,8 @@ function ProductDetailView({
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1">
-        <div className="max-w-[1400px] mx-auto px-3 py-4 md:px-5 md:py-5 lg:px-8 lg:py-8 font-sans bg-background text-primary-brown">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden">
+        <div className="w-full max-w-[1400px] mx-auto px-2 sm:px-3 py-4 md:px-5 md:py-5 lg:px-8 lg:py-8 font-sans bg-background text-primary-brown">
           <div className="flex items-center gap-2 mb-2 text-xs sm:text-sm uppercase tracking-wider text-primary-brown">
             <Link
               href="/"

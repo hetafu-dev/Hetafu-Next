@@ -30,7 +30,7 @@ const products = [
     category: "POPS",
     price: 40.00,
     description: "Professional-grade teeth whitening strips that deliver visible results in. Safe for enamel. Safe for enamel and easy to use.",
-    image: "/Images/Products/Dollipops/Dollipopmockup.png",
+    image: "/Images/Home/Dollipopmockup.png",
     link: "/products/pops"
   },
   {
@@ -39,7 +39,7 @@ const products = [
     category: "BITS",
     price: 45.00,
     description: "Revolutionary dissolvable whitening bits that transform your oral care routine. Eco-friendly and perfect for travel.",
-    image: "/Images/Products/Bits/Dentabits.png",
+    image: "/Images/Home/bitsmockup.png",
     link: "/products/bits"
   },
   {
@@ -48,7 +48,7 @@ const products = [
     category: "CUTE",
     price: 35.00,
     description: "Gentle, alcohol-free family-friendly mouthwash that keeps breath fresh all day. Kid-safe and made with natural ingredients.",
-    image: "/Images/Products/CUTE/cutemouthwash.png",
+    image: "/Images/Home/cutemockup.png",
     link: "/products/cute"
   },
   {
@@ -57,7 +57,7 @@ const products = [
     category: "SMARTS",
     price: 55.00,
     description: "Advanced nanotechnology enamel protection serum that repairs and strengthens weakened tooth enamel. Dentist-formulated.",
-    image: "/Images/Products/Smarts/prime.png",
+    image: "/Images/Home/smartsmockup.png",
     link: "/products/smarts"
   }
 ];
@@ -176,10 +176,10 @@ export default function Home() {
               <Link
                 key={product.id}
                 href={product.link}
-                className={`group flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} lg:h-[42vh]`}
+                className={`group flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} lg:h-[65vh]`}
               >
                 {/* Image */}
-                <div className="relative w-full lg:w-1/2 h-[40vw] min-h-[200px] lg:h-full flex-shrink-0">
+                <div className="relative w-full lg:w-1/2 h-[55vw] min-h-[280px] lg:h-full flex-shrink-0">
                   <Image
                     src={product.image}
                     alt={product.name}

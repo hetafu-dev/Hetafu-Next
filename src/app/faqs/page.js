@@ -1,10 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { ChevronDown, Search, X } from 'lucide-react';
 import Navbar from "@/app/Components/Common/Navbar/Page";
 import Footer from "@/app/Components/Common/Footer/Page";
 import BestSellers from "@/app/Components/Common/BestSellers/Page";
+
+const topCategories = [
+  'General', 'Products', 'Orders', 'Shipping & Delivery',
+  'Returns & Refunds', 'Account', 'Subscription', 'Health & Safety',
+  'Dental Specific FAQs', 'Support', 'Wholesale / Distributor', 'Legal / Privacy'
+];
+
+const productNames = [
+  'Denta-Smarts', 'Dia-Smarts', 'Junior-Smarts', 'Prime-Smarts',
+  'Pink-Smarts', 'CUTE Mouthwash', 'DentaBits', 'Dollipops'
+];
 
 const faqData = [
     {
@@ -145,7 +156,7 @@ const faqData = [
       ]
     },
     {
-      category: "Clinical Applications",
+      category: "Dental Specific FAQs",
       faqs: [
         { question: "What role do Hetafu products play in orthodontic care?", answer: "Braces and aligners trap food, increase plaque, and cause ulcers and bad breath. Hetafu products help by reducing plaque-causing bacteria within 1 minute, lowering mouth dryness, and soothing appliance-related irritation." },
         { question: "How are Hetafu products useful in Periodontics?", answer: "Patients with gum issues have swelling, bleeding, and microbial imbalance. Hetafu products help by lowering harmful oral bacteria, stabilising oral pH, and supporting reduced gum inflammation & bleeding." },
@@ -162,15 +173,41 @@ const faqData = [
     },
 ];
 
+function highlight(text, query) {
+  if (!query) return text;
+  const parts = text.split(new RegExp(`(${query})`, 'gi'));
+  return parts.map((part, i) =>
+    part.toLowerCase() === query.toLowerCase()
+      ? <mark key={i} className="bg-yellow-200 text-slate-950">{part}</mark>
+      : part
+  );
+}
+
 export default function FaqsPage() {
   const [openIndex, setOpenIndex] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('General');
+  const [activeTab, setActiveTab] = useState('General');
+  const [activeProduct, setActiveProduct] = useState('Denta-Smarts');
+  const [search, setSearch] = useState('');
 
-  const toggleAccordion = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  const toggleAccordion = (index) => setOpenIndex(openIndex === index ? null : index);
 
-  const filtered = faqData.filter(c => c.category === activeCategory);
+  const searchResults = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return [];
+    const results = [];
+    faqData.forEach(cat => {
+      cat.faqs.forEach((faq, i) => {
+        if (faq.question.toLowerCase().includes(q) || faq.answer.toLowerCase().includes(q)) {
+          results.push({ ...faq, category: cat.category, key: `${cat.category}-${i}` });
+        }
+      });
+    });
+    return results;
+  }, [search]);
+
+  const isSearching = search.trim().length > 0;
+  const activeCategoryName = activeTab === 'Products' ? activeProduct : activeTab;
+  const filtered = faqData.filter(c => c.category === activeCategoryName);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -179,45 +216,117 @@ export default function FaqsPage() {
         <div className="min-h-screen bg-background font-sans py-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-5xl font-light text-center mb-10 text-slate-950">FAQ</h1>
-            {/* Category filter */}
-            <div className="flex flex-wrap gap-2 justify-center mb-12">
-              {faqData.map(c => (
-                <button
-                  key={c.category}
-                  onClick={() => { setActiveCategory(c.category); setOpenIndex(null); }}
-                  className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider border transition-colors ${
-                    activeCategory === c.category
-                      ? 'bg-primary-brown text-white border-primary-brown'
-                      : 'bg-white text-primary-brown border-[#d4c5b2] hover:bg-[#f5ede4]'
-                  }`}
-                >
-                  {c.category}
+
+            {/* Search bar */}
+            <div className="relative max-w-xl mx-auto mb-8">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search FAQs..."
+                className="w-full pl-11 pr-10 py-3 border border-[#d4c5b2] text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary-brown bg-white"
+              />
+              {search && (
+                <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  <X size={16} />
                 </button>
-              ))}
+              )}
             </div>
-            <div className="space-y-16">
-              {filtered.map((category, categoryIndex) => (
-                <section key={category.category}>
-                  <h2 className="text-2xl font-medium text-center text-slate-950 mb-8">{category.category}</h2>
+
+            {/* Search results */}
+            {isSearching ? (
+              <div className="space-y-0">
+                <p className="text-xs text-slate-400 uppercase tracking-wider mb-4 text-center">
+                  {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for &ldquo;{search}&rdquo;
+                </p>
+                {searchResults.length === 0 ? (
+                  <p className="text-center text-slate-400 py-12">No FAQs found for your search.</p>
+                ) : (
                   <div className="divide-y divide-slate-200">
-                    {category.faqs.map((item, index) => {
-                      const itemIndex = `${categoryIndex}-${index}`;
-                      return (
-                        <div key={itemIndex} className={`px-6 ${index !== category.faqs.length - 1 ? 'border-b border-slate-300' : ''}`}>
-                          <button onClick={() => toggleAccordion(itemIndex)} className="w-full flex items-center justify-between py-6 text-left text-slate-950 hover:text-slate-900 transition-colors">
-                            <span className="text-base font-semibold leading-6">{item.question}</span>
-                            <ChevronDown size={24} className={`text-slate-950 flex-shrink-0 ml-4 transition-transform duration-300 ${openIndex === itemIndex ? 'transform rotate-180' : ''}`} />
-                          </button>
-                          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openIndex === itemIndex ? 'max-h-96 pb-6' : 'max-h-0'}`}>
-                            <div className="text-sm leading-7 text-slate-600">{item.answer}</div>
-                          </div>
+                    {searchResults.map((item) => (
+                      <div key={item.key} className="px-6">
+                        <div className="pt-3 pb-1">
+                          <span className="text-xs font-semibold uppercase tracking-wider text-primary-brown border border-[#d4c5b2] px-2 py-0.5">{item.category}</span>
                         </div>
-                      );
-                    })}
+                        <button onClick={() => toggleAccordion(item.key)} className="w-full flex items-center justify-between py-4 text-left text-slate-950 hover:text-slate-900 transition-colors">
+                          <span className="text-base font-semibold leading-6">{highlight(item.question, search.trim())}</span>
+                          <ChevronDown size={24} className={`text-slate-950 flex-shrink-0 ml-4 transition-transform duration-300 ${openIndex === item.key ? 'rotate-180' : ''}`} />
+                        </button>
+                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openIndex === item.key ? 'max-h-96 pb-6' : 'max-h-0'}`}>
+                          <div className="text-sm leading-7 text-slate-600">{highlight(item.answer, search.trim())}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </section>
-              ))}
-            </div>
+                )}
+              </div>
+            ) : (
+              <>
+                {/* Top-level tabs */}
+                <div className="flex flex-wrap gap-2 justify-center mb-4">
+                  {topCategories.map(tab => (
+                    <button
+                      key={tab}
+                      onClick={() => { setActiveTab(tab); setOpenIndex(null); }}
+                      className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider border transition-colors ${
+                        activeTab === tab
+                          ? 'bg-primary-brown text-white border-primary-brown'
+                          : 'bg-white text-primary-brown border-[#d4c5b2] hover:bg-[#f5ede4]'
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Product sub-tabs */}
+                {activeTab === 'Products' && (
+                  <div className="flex flex-wrap gap-2 justify-center mb-8 pt-3 border-t border-[#e8ddd3]">
+                    {productNames.map(p => (
+                      <button
+                        key={p}
+                        onClick={() => { setActiveProduct(p); setOpenIndex(null); }}
+                        className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider border transition-colors ${
+                          activeProduct === p
+                            ? 'bg-primary-brown text-white border-primary-brown'
+                            : 'bg-white text-primary-brown border-[#d4c5b2] hover:bg-[#f5ede4]'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="space-y-16 mt-8">
+                  {filtered.map((category, categoryIndex) => (
+                    <section key={category.category}>
+                      <h2 className="text-2xl font-medium text-center text-slate-950 mb-8">{category.category}</h2>
+                      <div className="divide-y divide-slate-200">
+                        {category.faqs.map((item, index) => {
+                          const itemIndex = `${categoryIndex}-${index}`;
+                          return (
+                            <div key={itemIndex} className={`px-6 ${index !== category.faqs.length - 1 ? 'border-b border-slate-300' : ''}`}>
+                              <button onClick={() => toggleAccordion(itemIndex)} className="w-full flex items-center justify-between py-6 text-left text-slate-950 hover:text-slate-900 transition-colors">
+                                <span className="text-base font-semibold leading-6">{item.question}</span>
+                                <ChevronDown size={24} className={`text-slate-950 flex-shrink-0 ml-4 transition-transform duration-300 ${openIndex === itemIndex ? 'rotate-180' : ''}`} />
+                              </button>
+                              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openIndex === itemIndex ? 'max-h-96 pb-6' : 'max-h-0'}`}>
+                                <div className="text-sm leading-7 text-slate-600">{item.answer}</div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  ))}
+                  {filtered.length === 0 && (
+                    <p className="text-center text-slate-400 py-12">No FAQs available for this section yet.</p>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>
