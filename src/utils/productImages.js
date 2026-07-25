@@ -15,21 +15,39 @@ export function isBackendUploadUrl(url) {
 }
 
 /**
- * Normalize API image paths to relative URLs (/uploads/... or /Images/...).
- * Strips hardcoded backend origins like http://localhost:8000.
+ * Normalize API image paths to relative URLs (/Images/...) or full backend URLs for uploads.
+ * Only strips localhost origins (for development), prepends backend origin to /uploads/ paths in production.
  */
 export function normalizeStorefrontImagePath(path) {
   if (!path || typeof path !== 'string') return null;
   const trimmed = path.trim();
   if (!trimmed) return null;
+  
+  // Static local images - return as-is
   if (trimmed.startsWith('/Images/')) return trimmed;
-  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+  
+  // Only extract pathname for localhost URLs (development)
+  if (trimmed.startsWith('http://localhost') || trimmed.startsWith('http://127.0.0.1')) {
     try {
       return new URL(trimmed).pathname;
     } catch {
       return trimmed;
     }
   }
+  
+  // For all other full URLs (including production HTTPS), return them as-is
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  
+  // For /uploads/ paths in production, prepend the API origin to avoid rewrite issues
+  if (trimmed.startsWith('/uploads/')) {
+    const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1')
+      .replace(/\/api\/v1\/?$/, '');
+    return `${apiOrigin}${trimmed}`;
+  }
+  
+  // All other relative paths - add leading slash if needed
   return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
 }
 
