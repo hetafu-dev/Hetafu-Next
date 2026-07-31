@@ -1,48 +1,312 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Hetafu Next
 
-## Environment Setup
+Hetafu Next is a **Next.js 16** web application built using the App Router. This guide explains how to clone the repository, install dependencies, configure environment variables, run the application locally, and build it for production.
 
-First, copy the example environment file and configure it with your values:
+---
+
+# Tech Stack
+
+- Next.js 16
+- React
+- JavaScript
+- App Router
+- Turbopack
+- Tailwind CSS (if configured)
+
+---
+
+# Prerequisites
+
+Before getting started, ensure the following are installed:
+
+- Node.js 20.x or later (Recommended LTS)
+- npm (comes with Node.js)
+- Git
+
+Verify your installation:
+
+```bash
+node -v
+npm -v
+git --version
+```
+
+---
+
+# Clone the Repository
+
+Clone the project from GitHub:
+
+```bash
+git clone https://github.com/hetafu-dev/Hetafu-Next.git
+```
+
+Navigate into the project directory:
+
+```bash
+cd Hetafu-Next
+```
+
+---
+
+# Install Dependencies
+
+Install all required packages:
+
+```bash
+npm install
+```
+
+Example output:
+
+```text
+added 353 packages
+audited 354 packages
+```
+
+> **Note**
+>
+> During installation you may see:
+>
+> - npm audit warnings
+> - allow-scripts warnings for `sharp`
+> - allow-scripts warnings for `unrs-resolver`
+>
+> These warnings are normal and do not prevent the application from running.
+
+---
+
+# Environment Setup
+
+After installing dependencies, create your environment file.
+
+### Windows (Command Prompt)
+
+```cmd
+copy .env.example .env
+```
+
+### Windows (PowerShell)
+
+```powershell
+Copy-Item .env.example .env
+```
+
+### Linux / macOS
 
 ```bash
 cp .env.example .env
 ```
 
-Update the `.env` file with your specific configuration:
-- `NEXT_PUBLIC_API_URL`: Your backend API URL
-- `NEXT_PUBLIC_API_TIMEOUT`: API request timeout in milliseconds (default: 30000)
+Update the `.env` file with your environment-specific values.
 
-## Getting Started
+Example:
 
-First, run the development server:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_TIMEOUT=30000
+```
+
+### Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_API_URL` | Backend API Base URL | `http://localhost:8000` |
+| `NEXT_PUBLIC_API_TIMEOUT` | API timeout in milliseconds | `30000` |
+
+---
+
+# Run the Development Server
+
+Start the application:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You should see output similar to:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```text
+▲ Next.js 16.x.x (Turbopack)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Local:   http://localhost:3000
+Network: http://172.xxx.xxx.xxx:3000
 
-## Learn More
+✓ Ready
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open your browser and visit:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application automatically reloads whenever you save changes.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+Hetafu-Next/
+│
+├── app/
+├── components/
+├── public/
+├── lib/
+├── hooks/
+├── styles/
+├── utils/
+├── .env.example
+├── package.json
+├── next.config.js
+└── README.md
+```
+
+---
+
+# Available Scripts
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Start Production Server
+
+```bash
+npm start
+```
+
+### Run Lint
+
+```bash
+npm run lint
+```
+
+---
+
+# Production Build
+
+Create an optimized production build:
+
+```bash
+npm run build
+```
+
+Start the production server:
+
+```bash
+npm start
+```
+
+---
+
+# Troubleshooting
+
+## Port 3000 Already in Use
+
+Run the application on another port:
+
+```bash
+npm run dev -- -p 3001
+```
+
+Then open:
+
+```
+http://localhost:3001
+```
+
+---
+
+## npm Audit Warnings
+
+View vulnerabilities:
+
+```bash
+npm audit
+```
+
+Automatically fix issues:
+
+```bash
+npm audit fix
+```
+
+Force fix (may introduce breaking changes):
+
+```bash
+npm audit fix --force
+```
+
+---
+
+## Deprecation Warning
+
+You may see:
+
+```text
+[DEP0205] module.register() is deprecated
+```
+
+This is a Node.js dependency warning and does not affect the application's functionality.
+
+---
+
+## Next.js Image Warnings
+
+Warnings such as:
+
+```text
+Image has "fill" prop and "sizes" prop...
+```
+
+or
+
+```text
+Image width or height modified...
+```
+
+are optimization recommendations from Next.js and do not prevent the application from running.
+
+---
+
+# Development Workflow
+
+1. Clone the repository.
+2. Navigate to the project folder.
+3. Install dependencies using `npm install`.
+4. Create the `.env` file from `.env.example`.
+5. Update environment variables.
+6. Run the application using `npm run dev`.
+7. Open the application in your browser.
+8. Make changes and verify locally.
+9. Build the application using `npm run build` before deployment.
+
+---
+
+# Repository
+
+GitHub Repository:
+
+https://github.com/hetafu-dev/Hetafu-Next
+
+---
+
+# License
+
+This project is intended for internal development and maintenance by the Hetafu development team.
