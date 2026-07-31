@@ -1,5 +1,17 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Environment Setup
+
+First, copy the example environment file and configure it with your values:
+
+```bash
+cp .env.example .env
+```
+
+Update the `.env` file with your specific configuration:
+- `NEXT_PUBLIC_API_URL`: Your backend API URL
+- `NEXT_PUBLIC_API_TIMEOUT`: API request timeout in milliseconds (default: 30000)
+
 ## Getting Started
 
 First, run the development server:
